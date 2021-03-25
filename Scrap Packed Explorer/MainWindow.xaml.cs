@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Scrap_Packed_Explorer
+namespace ch.romibi.Scrap.PackedExplorer
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

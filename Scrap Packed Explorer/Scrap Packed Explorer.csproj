@@ -1,10 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RootNamespace>Scrap_Packed_Explorer</RootNamespace>
+    <RootNamespace>ch.romibi.Scrap.PackedExplorer</RootNamespace>
     <UseWPF>true</UseWPF>
+    <StartupObject>ch.romibi.Scrap.PackedExplorer.MainApp</StartupObject>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Page Remove="GuiApp.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ApplicationDefinition Include="GuiApp.xaml" />
+  </ItemGroup>
 
 </Project>

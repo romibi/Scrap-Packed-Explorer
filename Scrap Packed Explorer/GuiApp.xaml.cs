@@ -6,12 +6,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Scrap_Packed_Explorer
+namespace ch.romibi.Scrap.PackedExplorer
 {
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class GuiApp : Application
     {
     }
 }
