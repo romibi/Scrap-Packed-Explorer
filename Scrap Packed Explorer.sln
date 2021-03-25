@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30611.23
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scrap Packed Explorer", "Scrap Packed Explorer\Scrap Packed Explorer.csproj", "{EE49CEFE-78B9-42A8-A17C-9696B586D630}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scrap Packed Explorer", "Scrap Packed Explorer\Scrap Packed Explorer.csproj", "{EE49CEFE-78B9-42A8-A17C-9696B586D630}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scrap Packed Library", "Scrap Packed Library\Scrap Packed Library.csproj", "{04D08A84-E84D-4D64-BED9-BDAF9E1CB55A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{EE49CEFE-78B9-42A8-A17C-9696B586D630}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE49CEFE-78B9-42A8-A17C-9696B586D630}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE49CEFE-78B9-42A8-A17C-9696B586D630}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04D08A84-E84D-4D64-BED9-BDAF9E1CB55A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04D08A84-E84D-4D64-BED9-BDAF9E1CB55A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04D08A84-E84D-4D64-BED9-BDAF9E1CB55A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04D08A84-E84D-4D64-BED9-BDAF9E1CB55A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

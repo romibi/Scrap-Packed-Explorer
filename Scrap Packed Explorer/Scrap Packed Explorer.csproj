@@ -3,9 +3,9 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RootNamespace>ch.romibi.Scrap.PackedExplorer</RootNamespace>
+    <RootNamespace>ch.romibi.Scrap.Packed.Explorer</RootNamespace>
     <UseWPF>true</UseWPF>
-    <StartupObject>ch.romibi.Scrap.PackedExplorer.MainApp</StartupObject>
+    <StartupObject>ch.romibi.Scrap.Packed.Explorer.MainApp</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,6 +18,10 @@
 
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.8.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Scrap Packed Library\Scrap Packed Library.csproj" />
   </ItemGroup>
 
 </Project>

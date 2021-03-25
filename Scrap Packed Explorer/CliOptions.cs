@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ch.romibi.Scrap.PackedExplorer
+namespace ch.romibi.Scrap.Packed.Explorer
 {
     [Verb("add", HelpText = "Add file to the archive")]
     class AddOptions

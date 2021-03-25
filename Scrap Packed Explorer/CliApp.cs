@@ -1,9 +1,10 @@
-﻿using CommandLine;
+﻿using ch.romibi.Scrap.Packed.PackerLib;
+using CommandLine;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ch.romibi.Scrap.PackedExplorer
+namespace ch.romibi.Scrap.Packed.Explorer
 {
     class CliApp
     {
@@ -20,6 +21,8 @@ namespace ch.romibi.Scrap.PackedExplorer
         private int RunAdd(AddOptions options)
         {
             Console.WriteLine("test add");
+            var packer = new ScrapPacker();
+            packer.OpenPack("test");
             return 0;
         }
 
