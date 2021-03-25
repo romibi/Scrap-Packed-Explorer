@@ -8,12 +8,12 @@ namespace ch.romibi.Scrap.PackedExplorer
     class MainApp
     {
         [STAThread]
-        public static void Main(string[] args)
+        public static int Main(string[] args)
         {
             if (args != null && args.Length > 0)
             {
-                // ...
-                Console.WriteLine("test");
+                var cliApp = new CliApp();
+                return cliApp.Run(args);
             }
             else
             {
@@ -21,6 +21,7 @@ namespace ch.romibi.Scrap.PackedExplorer
                 var guiApp = new GuiApp();
                 guiApp.InitializeComponent();
                 guiApp.Run();
+                return 0;
             }
         }
 
