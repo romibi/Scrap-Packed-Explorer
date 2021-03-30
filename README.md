@@ -6,7 +6,7 @@ With this App it is planned to make it userfriendly to create a new or modify th
 See also the [Scrap Hacks Project by Earthnuker](https://gitdab.com/Earthnuker/ScrapHacks) (on gitdab)  
 There is already a CLI implementation to modify packed files using Python (3.5 ?)
 
-## Todo (ordered by priority)
+## Todo (not strictly ordered by priority)
 - [x] Create Project structure
 - Command Line Interface
 	- [x] define cli arguments
