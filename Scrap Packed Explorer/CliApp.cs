@@ -1,6 +1,7 @@
 ﻿using ch.romibi.Scrap.Packed.PackerLib;
 using CommandLine;
 using System;
+using System.Collections.Generic;
 
 namespace ch.romibi.Scrap.Packed.Explorer
 {
@@ -21,8 +22,7 @@ namespace ch.romibi.Scrap.Packed.Explorer
         private int RunAdd(AddOptions options)
         {
             Console.WriteLine("test add");
-            var packer = new ScrapPacker();
-            packer.OpenPack("test");
+            // var packer = new ScrapPackedFile(options.packedFile);
             // Todo: implement RunAdd
             return 0;
         }
@@ -50,8 +50,14 @@ namespace ch.romibi.Scrap.Packed.Explorer
 
         private int RunList(ListOptions options)
         {
-            Console.WriteLine("test list");
-            // Todo: implement RunList
+            var packedFile = new ScrapPackedFile(options.packedFile);
+            List<string> fileNames = packedFile.GetFileNames();
+
+            foreach (var fileName in fileNames)
+            {
+                Console.WriteLine(fileName);
+            }
+            // Todo: implement RunList output styles
             return 0;
         }
 

@@ -9,10 +9,10 @@ There is already a CLI implementation to modify packed files using Python (3.5 ?
 ## Todo (ordered by priority)
 - [x] Create Project structure
 - Command Line Interface
-	- [ ] define cli arguments
+	- [x] define cli arguments
 	- [ ] add file to new
 	- [ ] add file to existing
-	- [ ] list files/folders
+	- :white_square_button: list files/folders
 	- [ ] replace file in existing
 	- [ ] tree list
 	- [ ] search file or folder name
@@ -22,6 +22,8 @@ There is already a CLI implementation to modify packed files using Python (3.5 ?
 	- [ ] remove folder
 	- [ ] extract file
 	- [ ] extract folder
+	- [ ] rename file
+	- [ ] rename folder
 	- [ ] search content (maybe)
 	- [ ] copy file between packed (maybe)
 	- [ ] copy folder between packed (maybe)
@@ -32,6 +34,7 @@ There is already a CLI implementation to modify packed files using Python (3.5 ?
 	- [ ] replace warning
 	- [ ] remove file/folder
 	- [ ] extract file/folder
+	- [ ] rename file/folder
 	- [ ] search name
 	- [ ] search content (maybe)
 	- [ ] drag & drop
