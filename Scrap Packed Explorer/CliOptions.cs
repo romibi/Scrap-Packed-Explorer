@@ -1,21 +1,67 @@
 ﻿using CommandLine;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ch.romibi.Scrap.Packed.Explorer
 {
-    [Verb("add", HelpText = "Add file to the archive")]
-    class AddOptions
+    abstract class BaseOptions
     {
-        [Option("packedName")]
-        public string packedName { get; set; }
+        [Option("packedFile", Required = true, HelpText = "The .packed file to use as basis")]
+        public string packedFile { get; set; }
+    }
+
+    abstract class ModifyingOptions : BaseOptions
+    {
+        [Option("outputPackedFile", Required = false, Default = "", HelpText = "Where to store the new .packed file. Modify input if not provided.")]
+        public string outputPackedFile { get; set; }
+
+        [Option("keepBackup", Required = false, Default = true, HelpText = "Keep the backup file that gets created during saving even after successful processing.")]
+        public bool keepBackup { get; set; }
+    }
+
+    [Verb("add", HelpText = "Add file to the archive")]
+    class AddOptions : ModifyingOptions
+    {
+        [Option("sourcePath", Required = true, HelpText = "What file or folder to add to the .packed file")]
+        public string sourcePath { get; set; }
+
+        [Option("packedPath", Required = true, HelpText = "What path to put the source file(s) into")]
+        public string packedPath { get; set; }
     }
 
     [Verb("remove", HelpText = "Remove a file from the archive")]
-    class RemoveOptions
-    { 
-        [Option("packedName")]
-        public string packedName { get; set; }
+    class RemoveOptions : ModifyingOptions
+    {
+        [Option("packedPath", Required = true, HelpText = "What path to remove from the archive")]
+        public string packedPath { get; set; }
     }
+
+    [Verb("rename", HelpText = "rename a file or folder inside the archive")]
+    class RenameOptions : ModifyingOptions
+    {
+        [Option("oldPackedPath", Required = true, HelpText = "What path to rename inside the archive")]
+        public string oldPackedPath { get; set; }
+
+        [Option("newPackedPath", Required = true, HelpText = "The new path to use for the files to rename")]
+        public string newPackedPath { get; set; }
+    }
+
+    [Verb("extract", HelpText = "Extract/unpack a file from the archive")]
+    class ExtractOptions : BaseOptions
+    {
+        [Option("packedPath", Required = true, HelpText = "What path to extract from the archive")]
+        public string packedPath { get; set; }
+
+        [Option("destinationPath", Required = true, HelpText = "The path to extract the files from the archive to")]
+        public string destinationPath { get; set; }
+    }
+
+    [Verb("list", HelpText = "list or search files and folders in the archive")]
+    class ListOptions : BaseOptions
+    {
+        [Option("outputStyle", Required = false, Default = "list", HelpText = "Output list (default) or tree view")]
+        public string outputStyle { get; set; }
+
+        [Option("searchString", Required = false, Default = "", HelpText = "A Search string to filter the output with")]
+        public string searchString { get; set; }
+    }
+
 }
