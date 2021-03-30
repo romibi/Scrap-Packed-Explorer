@@ -10,20 +10,26 @@ There is already a CLI implementation to modify packed files using Python (3.5 ?
 - [x] Create Project structure
 - Command Line Interface
 	- [x] define cli arguments
-	- [ ] add file to new
-	- [ ] add file to existing
-	- :white_square_button: list files/folders
-	- [ ] replace file in existing
-	- [ ] tree list
-	- [ ] search file or folder name
-	- [ ] add folder to new
-	- [ ] add folder to existing
-	- [ ] remove file
-	- [ ] remove folder
-	- [ ] extract file
-	- [ ] extract folder
-	- [ ] rename file
-	- [ ] rename folder
+	- [ ] list files/folders
+		- [X] basic list
+		- [ ] filter/search file or folder
+		- [ ] show additional info (properly)
+		- [ ] tree structure
+	- [ ] add
+		- [ ] file to new
+		- [ ] file to existing
+		- [ ] replace file in existing
+		- [ ] folder to new
+		- [ ] folder to existing
+	- [ ] remove
+		- [ ] file
+		- [ ] folder
+	- [ ] extract
+		- [ ] file
+		- [ ] folder
+	- [ ] rename
+		- [ ] file
+		- [ ] folder
 	- [ ] search content (maybe)
 	- [ ] copy file between packed (maybe)
 	- [ ] copy folder between packed (maybe)
