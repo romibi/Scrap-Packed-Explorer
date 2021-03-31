@@ -45,6 +45,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.DataTypes
             FileSize = p_FileSize;
             OriginalOffset = p_Offset;
             Offset = p_Offset;
+            NewFileContent = false;
         }
 
         public string FilePath { get; set; }
@@ -52,6 +53,8 @@ namespace ch.romibi.Scrap.Packed.PackerLib.DataTypes
         public UInt32 FileSize { get; set; }
         public UInt32 OriginalOffset { get; private set; }
         public UInt32 Offset { get; set; }
+
+        public bool NewFileContent { get; private set; }
 
         public UInt32 IndexEntrySize {
             get {
