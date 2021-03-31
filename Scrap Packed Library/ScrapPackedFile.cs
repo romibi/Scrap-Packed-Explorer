@@ -39,18 +39,23 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             // read number of files
             fsPacked.Read(readBytes);
             var numFiles = BitConverter.ToUInt32(readBytes);
-            metaData.fileList = new List<PackedFileMetaData>();
+            metaData.fileList = new List<PackedFileIndexData>();
+            metaData.fileByPath = new Dictionary<string, PackedFileIndexData>();
             for (int i = 0; i < numFiles; i++)
             {
-                metaData.fileList.Add(ReadFileMetaData(fsPacked));
+                var fileMetaData = ReadFileMetaData(fsPacked);
+                metaData.fileList.Add(fileMetaData);
+                metaData.fileByPath.Add(fileMetaData.FilePath, fileMetaData);
             }
 
             fsPacked.Close();
         }
 
-        private PackedFileMetaData ReadFileMetaData(FileStream p_fsPacked)
+        private PackedFileIndexData ReadFileMetaData(FileStream p_fsPacked)
         {
-            var fileMetaData = new PackedFileMetaData();
+            string fileName;
+            UInt32 fileSize;
+            UInt32 fileOffset;
             byte[] readByte = new byte[4];
 
             // Read file name length
@@ -61,17 +66,17 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             byte[] fileNameBytes = new byte[fileNameLength];
             p_fsPacked.Read(fileNameBytes);
 
-            fileMetaData.filePath = System.Text.Encoding.Default.GetString(fileNameBytes);
+            fileName = System.Text.Encoding.Default.GetString(fileNameBytes);
 
             // read file size
             p_fsPacked.Read(readByte);
-            fileMetaData.fileSize = BitConverter.ToUInt32(readByte);
+            fileSize = BitConverter.ToUInt32(readByte);
 
             // read file offset
             p_fsPacked.Read(readByte);
-            fileMetaData.originalOffset = BitConverter.ToUInt32(readByte);
+            fileOffset = BitConverter.ToUInt32(readByte);
 
-            return fileMetaData;
+            return new PackedFileIndexData(fileName, fileSize, fileOffset);
         }
 
         public List<string> GetFileNames()
@@ -80,9 +85,34 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             var list = new List<string>();
             foreach (var file in metaData.fileList)
             {
-                list.Add(file.filePath + " Size: " + file.fileSize + " Offset: " + file.originalOffset);
+                list.Add(file.FilePath + " Size: " + file.FileSize + " Offset: " + file.OriginalOffset);
             }
             return list;
+        }
+
+        public void Rename(string p_oldName, string p_newName)
+        {
+            if (p_oldName.EndsWith("/"))
+                RenameFolder(p_oldName, p_newName);
+            RenameFile(p_oldName, p_newName);
+        }
+
+        private void RenameFile(string p_oldFileName, string p_newFileName)
+        {
+            var fileMetaData = metaData.fileByPath[p_oldFileName];
+            fileMetaData.FilePath = p_newFileName;
+            metaData.fileByPath.Remove(p_oldFileName);
+            metaData.fileByPath.Add(p_newFileName, fileMetaData);
+        }
+
+        private void RenameFolder(string p_oldPath, string p_newPath)
+        {
+            foreach (var file in metaData.fileList)
+            {
+                if (file.FilePath.StartsWith(p_oldPath)) {
+                    RenameFile(file.FilePath, p_newPath + file.FilePath.Substring(p_oldPath.Length)); // todo check off by 1 error
+                }
+            }
         }
     }
 }

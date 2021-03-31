@@ -1,4 +1,4 @@
-﻿using ch.romibi.Scrap.Packed.PackerLib;
+using ch.romibi.Scrap.Packed.PackerLib;
 using CommandLine;
 using System;
 using System.Collections.Generic;
@@ -36,8 +36,9 @@ namespace ch.romibi.Scrap.Packed.Explorer
 
         private int RunRename(RenameOptions options)
         {
-            Console.WriteLine("test rename");
-            // Todo: implement RunRename
+            var packedFile = new ScrapPackedFile(options.packedFile);
+            packedFile.Rename(options.oldPackedPath, options.newPackedPath);
+            // Todo: save to self?
             return 0;
         }
 

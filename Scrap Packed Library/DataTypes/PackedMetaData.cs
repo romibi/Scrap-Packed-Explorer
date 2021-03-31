@@ -6,15 +6,57 @@ namespace ch.romibi.Scrap.Packed.PackerLib.DataTypes
 {
     class PackedMetaData
     {
+        private const UInt32 DATA_LENGTH_STATIC = 12; // 4 bytes each: "PFBK", version (all 0s), number of files
+
         public const string fileHeader = "BFPK";
         public UInt32 packedVersion { get; set; } // always 0 (not sure if really a version number)
-        public List<PackedFileMetaData> fileList { get; set; }
+        public List<PackedFileIndexData> fileList { get; set; }
+        public Dictionary<string, PackedFileIndexData> fileByPath { get; set; }
+
+        public void RecalcFileOffsets()
+        {
+            UInt32 currentOffset = CalculateFirstFileOffset();
+            foreach (var file in fileList)
+            {
+                file.Offset = currentOffset;
+                currentOffset += file.FileSize;
+            }
+        }
+
+        private UInt32 CalculateFirstFileOffset()
+        {
+            UInt32 result = DATA_LENGTH_STATIC;
+            foreach (var fileEntry in fileList)
+            {
+                result += fileEntry.IndexEntrySize;
+            }
+            return result;
+        }
     }
 
-    class PackedFileMetaData
+    class PackedFileIndexData
     {
-        public string filePath { get; set; }
-        public UInt32 fileSize { get; set; }
-        public UInt32 originalOffset { get; set; } // todo: no setter?
+        private const UInt32 DATA_LENGTH_STATIC = 12; // 4 bytes each: path length, file size, offset
+
+        public PackedFileIndexData(string p_FilePath, UInt32 p_FileSize, UInt32 p_Offset)
+        {
+            FilePath = p_FilePath;
+            OriginalFilePath = p_FilePath;
+            FileSize = p_FileSize;
+            OriginalOffset = p_Offset;
+            Offset = p_Offset;
+        }
+
+        public string FilePath { get; set; }
+        public string OriginalFilePath { get; private set; }
+        public UInt32 FileSize { get; set; }
+        public UInt32 OriginalOffset { get; private set; }
+        public UInt32 Offset { get; set; }
+
+        public UInt32 IndexEntrySize {
+            get {
+                return (uint)(DATA_LENGTH_STATIC + FilePath.Length);
+            }
+        }
     }
 }
