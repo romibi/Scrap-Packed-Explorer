@@ -1,4 +1,49 @@
-﻿// OPTIONS add
+﻿// Quick and dirty notes ... no real reason why i used /* */ and //
+
+/*
+Reference File list
+
+TestReference/
+	TestAdd/
+		addFileNew.packed 													(actual: packedFile.packed)
+		addFileExistingToRoot.packed 										(actual: packedFile.packed)
+		addFileExisting.packed												(actual: packedFile.packed)
+		addFileReplace.packed												(actual: packedFile.packed)
+		addFileDifferentOutput.packed = addFileExisting.packed 				(actual: newPackedFile.packed)
+
+		addFileKeepBackup.packed = addFileExisting.packed 					(actual: packedFile.packed)
+		addFileKeepBackup.packed.bak = randomFile							(actual: packedFile.packed.bak)
+		addFileKeepBackup.packed.bak1 = addFileReplace.packed 				(actual: packedFile.packed.bak1)
+
+		addFileKeepBackupOvewriteOld.packed = addFileReplace.packed 		(actual: packedFile.packed)
+		addFileKeepBackupOvewriteOld.packed.bak = addFileExisting.packed 	(actual: packedFile.packed.bak)
+
+		addFileDoNotKeepAnyBackup.packed 									(actual: packedFile.packed)
+		addFileDoNotKeepAnyBackup.packed.bak = randomFile					(actual: packedFile.packed.bak)
+
+		addFolderNew.packed 												(actual: packedFile.packed)
+		addFolderExistingToRoot.packed 										(actual: packedFile.packed)
+		addFolderExistingToSubfolder.packed 								(actual: packedFile.packed)
+		addFolderReplaceSome.packed 										(actual: packedFile.packed)
+	TestRemove/
+		removedFile.packed 													(actual: packedFile.packed)
+		removedFolder.packed 												(actual: packedFile.packed)
+	TestRename/
+		renameFile.packed 												    (actual: packedFile.packed)
+		renameFolder.packed 												(actual: packedFile.packed)
+		renameRoot.packed 												    (actual: packedFile.packed)
+	TestExtract/
+		ExtractFile/file.txt
+		ExtractFolder/someFolder/
+			file1.txt
+			file2.txt
+		ExtractAll/
+			same as example.packed content
+
+*/
+
+// ===========
+// OPTIONS add
 // ===========
 // "packedFile" Required       "p"
 // "sourcePath" Required       "s"
@@ -16,15 +61,17 @@ add --packedFile packedFile.packed --sourcePath 'examplefile1.txt'
 // add file existing
 add --packedFile packedFile.packed --sourcePath 'examplefile1.txt' --packedPath 'folder/file.txt'
 // add file replace
-add --packedFile packedFile.packed --sourcePath 'examplefile2.txt' --packedPath 'folder/file.txt'
+add --packedFile packedFile.packed --sourcePath 'examplefile3.txt' --packedPath 'folder/file.txt'
 // add file different output
-add --packedFile packedFile.packed --sourcePath 'examplefile3.txt' --packedPath 'folder/file.txt' --outputPackedFile 'newPackedFile.packed'
+add --packedFile packedFile.packed --sourcePath 'examplefile1.txt' --packedPath 'folder/file.txt' --outputPackedFile 'newPackedFile.packed'
 // add file keep backup
-add --packedFile packedFile.packed --sourcePath 'examplefile3.txt' --packedPath 'folder/file.txt' --keepBackup
+// (create dummy packedFile.packed.bak before call, expect to be unchanged)
+add --packedFile packedFile.packed --sourcePath 'examplefile1.txt' --packedPath 'folder/file.txt' --keepBackup
 // add file keep backup but overwrite old backup
-add --packedFile packedFile.packed --sourcePath 'examplefile1.txt' --packedPath 'folder/file.txt' --keepBackup --overwriteOldBackup
+add --packedFile packedFile.packed --sourcePath 'examplefile3.txt' --packedPath 'folder/file.txt' --keepBackup --overwriteOldBackup
 // add file keep do not keep backup and old backup
-add --packedFile packedFile.packed --sourcePath 'examplefile2.txt' --packedPath 'folder/file.txt' --overwriteOldBackup
+// (create dummy packedFile.packed.bak before call, expect to be unchanged)
+add --packedFile packedFile.packed --sourcePath 'examplefile2.png' --packedPath 'folder/file.png' --overwriteOldBackup
 
 // add folder new
 add --packedFile packedFile.packed --sourcePath 'exampleFolder1/'
@@ -34,14 +81,8 @@ add --packedFile packedFile.packed --sourcePath 'exampleFolder2/'
 add --packedFile packedFile.packed --sourcePath 'exampleFolder1/' --packedPath 'subfolder/'
 // add folder replace some
 add --packedFile packedFile.packed --sourcePath 'exampleFolder2/' --packedPath 'subfolder/'
-// add folder different output
-add --packedFile packedFile.packed --sourcePath 'exampleFolder3/' --packedPath 'subfolder/' --outputPackedFile 'newPackedFile.packed'
-// add folder keep backup
-add --packedFile packedFile.packed --sourcePath 'exampleFolder3/' --packedPath 'subfolder/' --keepBackup
-// add file keep backup but overwrite old backup
-add --packedFile packedFile.packed --sourcePath 'exampleFolder1/' --packedPath 'subfolder/' --keepBackup --overwriteOldBackup
-// add file keep do not keep backup and old backup
-add --packedFile packedFile.packed --sourcePath 'exampleFolder2/' --packedPath 'subfolder/' --overwriteOldBackup
+
+// Note: outputPackedFile, keepBackup & overwriteOldBackup tested via add file
 
 // failed calls
 
@@ -81,7 +122,7 @@ add --packedFile packedFile.packed --sourcePath 'exampleFolder_readprotected/' -
 
 // remove file
 remove --packedFile packedFile.packed --packedPath 'file1.txt'
-// remove folder
+// remove folder (reset)
 remove --packedFile packedFile.packed --packedPath 'folder1/'
 
 // failed calls
