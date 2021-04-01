@@ -38,14 +38,16 @@ namespace ch.romibi.Scrap.Packed.PackerLib.DataTypes
     {
         private const UInt32 DATA_LENGTH_STATIC = 12; // 4 bytes each: path length, file size, offset
 
-        public PackedFileIndexData(string p_FilePath, UInt32 p_FileSize, UInt32 p_Offset)
+        public PackedFileIndexData(string p_FilePath, UInt32 p_FileSize, UInt32 p_Offset) : this("", p_FilePath, p_FileSize, p_Offset) { }
+
+        public PackedFileIndexData(string p_ExternalFilePath, string p_FilePath, UInt32 p_FileSize, UInt32 p_Offset = 0)
         {
             FilePath = p_FilePath;
             OriginalFilePath = p_FilePath;
             FileSize = p_FileSize;
             OriginalOffset = p_Offset;
             Offset = p_Offset;
-            NewFileContent = false;
+            ExternalFilePath = p_ExternalFilePath;
         }
 
         public string FilePath { get; set; }
@@ -54,7 +56,11 @@ namespace ch.romibi.Scrap.Packed.PackerLib.DataTypes
         public UInt32 OriginalOffset { get; private set; }
         public UInt32 Offset { get; set; }
 
-        public bool NewFileContent { get; private set; }
+        public bool UseExternalData { get {
+                return ExternalFilePath.Length != 0;
+        } }
+
+        public string ExternalFilePath { get; set; }
 
         public UInt32 IndexEntrySize {
             get {

@@ -15,12 +15,12 @@ There is already a CLI implementation to modify packed files using Python (3.5 ?
 		- [ ] filter/search file or folder
 		- [ ] show additional info (properly)
 		- [ ] tree structure
-	- [ ] add
-		- [ ] file to new
-		- [ ] file to existing
-		- [ ] replace file in existing
-		- [ ] folder to new
-		- [ ] folder to existing
+	- [x] add
+		- [x] file to new
+		- [x] file to existing
+		- [x] replace file in existing
+		- [x] folder to new
+		- [x] folder to existing
 	- [ ] remove
 		- [ ] file
 		- [ ] folder

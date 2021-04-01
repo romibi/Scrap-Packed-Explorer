@@ -21,9 +21,9 @@ namespace ch.romibi.Scrap.Packed.Explorer
 
         private int RunAdd(AddOptions options)
         {
-            Console.WriteLine("test add");
-            // var packer = new ScrapPackedFile(options.packedFile);
-            // Todo: implement RunAdd
+            var packedFile = new ScrapPackedFile(options.packedFile);
+            packedFile.Add(options.sourcePath, options.packedPath);
+            packedFile.SaveToFile(options.outputPackedFile);
             return 0;
         }
 
@@ -38,7 +38,6 @@ namespace ch.romibi.Scrap.Packed.Explorer
         {
             var packedFile = new ScrapPackedFile(options.packedFile);
             packedFile.Rename(options.oldPackedPath, options.newPackedPath);
-            // Todo: save to self?
             packedFile.SaveToFile(options.outputPackedFile);
             return 0;
         }
