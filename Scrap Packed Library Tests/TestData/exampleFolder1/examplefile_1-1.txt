@@ -1,0 +1,5 @@
+This file is in exampleFolder1 and called examplefile_1-1...
+This also is just some example file to put into the archive. Here as well the file content is not really relevant.
+I can just write some stuff here and it doesn't really matter what i write here.
+Now something I want to achieve here as well, is to get the file bigger than 255 bytes.
+Which now should be the case!

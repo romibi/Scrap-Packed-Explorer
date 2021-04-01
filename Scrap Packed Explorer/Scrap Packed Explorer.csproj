@@ -6,6 +6,7 @@
     <RootNamespace>ch.romibi.Scrap.Packed.Explorer</RootNamespace>
     <UseWPF>true</UseWPF>
     <StartupObject>ch.romibi.Scrap.Packed.Explorer.MainApp</StartupObject>
+    <AssemblyName>ScrapPackedExplorer</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

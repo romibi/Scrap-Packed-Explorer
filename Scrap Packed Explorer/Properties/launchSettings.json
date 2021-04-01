@@ -5,7 +5,7 @@
     },
     "Scrap Packed Explorer CLI": {
       "commandName": "Project",
-      "commandLineArgs": "rename --packedFile \"../../../../Scrap Packed Library Tests/TestData/file1-2.packed\" --outputPackedFile \"file1-2_renamed.packed\" --oldPackedPath \"file1.txt\" --newPackedPath \"file1_renamed.txt\""
+      "commandLineArgs": "--help"
     }
   }
 }

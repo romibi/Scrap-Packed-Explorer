@@ -1,0 +1,165 @@
+﻿// OPTIONS add
+// ===========
+// "packedFile" Required       "p"
+// "sourcePath" Required       "s"
+// "packedPath" Required       "d"         // change to not required, default '', results in beeing added to root
+// "outputPackedFile" ""       "o"
+// "keepBackup" true           "k"         // change default to false
+// "overwriteOldBackup" false              // add param
+
+// TESTS add
+
+// add file new
+add --packedFile packedFile.packed --sourcePath 'examplefile1.txt' --packedPath 'file.txt'
+// add file existing to root
+add --packedFile packedFile.packed --sourcePath 'examplefile1.txt'
+// add file existing
+add --packedFile packedFile.packed --sourcePath 'examplefile1.txt' --packedPath 'folder/file.txt'
+// add file replace
+add --packedFile packedFile.packed --sourcePath 'examplefile2.txt' --packedPath 'folder/file.txt'
+// add file different output
+add --packedFile packedFile.packed --sourcePath 'examplefile3.txt' --packedPath 'folder/file.txt' --outputPackedFile 'newPackedFile.packed'
+// add file keep backup
+add --packedFile packedFile.packed --sourcePath 'examplefile3.txt' --packedPath 'folder/file.txt' --keepBackup
+// add file keep backup but overwrite old backup
+add --packedFile packedFile.packed --sourcePath 'examplefile1.txt' --packedPath 'folder/file.txt' --keepBackup --overwriteOldBackup
+// add file keep do not keep backup and old backup
+add --packedFile packedFile.packed --sourcePath 'examplefile2.txt' --packedPath 'folder/file.txt' --overwriteOldBackup
+
+// add folder new
+add --packedFile packedFile.packed --sourcePath 'exampleFolder1/'
+// add folder existing root
+add --packedFile packedFile.packed --sourcePath 'exampleFolder2/'
+// add folder existing subfolder
+add --packedFile packedFile.packed --sourcePath 'exampleFolder1/' --packedPath 'subfolder/'
+// add folder replace some
+add --packedFile packedFile.packed --sourcePath 'exampleFolder2/' --packedPath 'subfolder/'
+// add folder different output
+add --packedFile packedFile.packed --sourcePath 'exampleFolder3/' --packedPath 'subfolder/' --outputPackedFile 'newPackedFile.packed'
+// add folder keep backup
+add --packedFile packedFile.packed --sourcePath 'exampleFolder3/' --packedPath 'subfolder/' --keepBackup
+// add file keep backup but overwrite old backup
+add --packedFile packedFile.packed --sourcePath 'exampleFolder1/' --packedPath 'subfolder/' --keepBackup --overwriteOldBackup
+// add file keep do not keep backup and old backup
+add --packedFile packedFile.packed --sourcePath 'exampleFolder2/' --packedPath 'subfolder/' --overwriteOldBackup
+
+// failed calls
+
+// add file new, not writable
+// open lock packedFile.packed from test
+add --packedFile packedFile.packed --sourcePath 'examplefile1.txt' --packedPath 'file.txt'
+// add file to existing, packed not readable
+// create/use invalid packed from test
+// different way to have it not readable?
+add --packedFile packedFile.packed --sourcePath 'examplefile1.txt' --packedPath 'folder/file.txt'
+// add file to existing, backup failed
+// have a lock on existing .bak
+add --packedFile packedFile.packed --sourcePath 'examplefile1.txt' --packedPath 'folder/file.txt'
+// todo more tests?
+
+// add file, file not found
+add --packedFile packedFile.packed --sourcePath 'examplefile_missing.txt' --packedPath 'file.txt'
+// add file, file not readable
+// todo test, idk how
+add --packedFile packedFile.packed --sourcePath 'examplefile_readprotected.txt' --packedPath 'file.txt'
+// add folder, not found
+add --packedFile packedFile.packed --sourcePath 'exampleFolder_missing/' --packedPath 'subfolder/'
+// add folder, some files not readable
+// todo test, idk how
+add --packedFile packedFile.packed --sourcePath 'exampleFolder_readprotected/' --packedPath 'subfolder/'
+
+// ==============
+// OPTIONS remove
+// ==============
+// "packedFile" Required       "p"
+// "packedPath" Required       "d"
+// "outputPackedFile" ""       "o"
+// "keepBackup" true           "k"         // change default to false
+// "overwriteOldBackup" false              // add param
+
+// TESTS remove
+
+// remove file
+remove --packedFile packedFile.packed --packedPath 'file1.txt'
+// remove folder
+remove --packedFile packedFile.packed --packedPath 'folder1/'
+
+// failed calls
+// remove file does not exist
+remove --packedFile packedFile.packed --packedPath 'file_missing.txt'
+// remove folder
+remove --packedFile packedFile.packed --packedPath 'folder_missing/'
+
+// Note: outputPackedFile, keepBackup & overwriteOldBackup tested via add
+
+// Note: remove root does not work and will not be made to work, just create a new packed
+// Todo: Check correctness of statement above
+
+// ==============
+// OPTIONS rename
+// ==============
+// "packedFile" Required       "p"
+// "oldPackedPath" Required    "s"         // change to not required, default '', results in appending newPackedPath to front
+// "newPackedPath" Required    "d"
+// "outputPackedFile" ""       "o"
+// "keepBackup" true           "k"         // change default to false
+// "overwriteOldBackup" false              // add param
+
+// TESTS rename
+
+// rename file
+rename --packedFile packedFile.packed --oldPackedPath 'file1.txt' --newPackedPath 'file_renamed.txt'
+// rename folder
+rename --packedFile packedFile.packed --oldPackedPath 'folder1/' --newPackedPath 'directory/'
+// rename root (move all in subfolder)
+rename --packedFile packedFile.packed --newPackedPath 'directory/'
+
+// failed calls
+
+// rename file does not exist
+rename --packedFile packedFile.packed --oldPackedPath 'file_missing.txt' --newPackedPath 'file_renamed.txt'
+// rename folder does not exist
+rename --packedFile packedFile.packed --oldPackedPath 'folder_missing/' --newPackedPath 'directory/'
+
+// Note: outputPackedFile, keepBackup & overwriteOldBackup tested via add
+
+// ===============
+// OPTIONS extract
+// ===============
+// "packedFile" Required       "p"
+// "packedPath" Required       "s"         // change to not required, default '', results in extract all
+// "destinationPath" Required  "d"
+
+// extract file
+extract --packedFile packedFile.packed --packedPath 'file.txt' --destinationPath 'file.txt'
+// extract folder
+extract --packedFile packedFile.packed --packedPath 'folder1/' --destinationPath 'someFolder/'
+// extract root folder
+extract --packedFile packedFile.packed --destinationPath 'someFolder/'
+
+// failed calls
+// Todo: think about failed extract calls
+
+// ============
+// OPTIONS list
+// ============
+// "packedFile" Required       "p"
+// "outputStyle" "list"        "l"
+// "searchString" ""           "q"
+// "regex" false               "r"        // add option
+
+// list all files
+list
+// list all .txt files
+list --searchString '.txt'
+// list all subfolder/*.txt
+list --searchString 'subfolder/*.txt'
+// list all subfolder/.*\.txt
+list --searchString 'subfolder/.*\.txt' --regex
+// list as tree
+list --outputStyle tree
+// list filenames only of subfolder
+list --outputStyle names --seachString 'subfolder/'
+
+// failed calls
+// Todo: think about failed list calls
