@@ -3,10 +3,10 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace ch.romibi.Scrap.Packed.PackerLib.Tests
 {
     [TestClass]
-    public class TestScrapPacker
+    public class TestCliApp
     {
         [TestMethod]
-        public void TestMethod1()
+        public void TestRun()
         {
             Assert.Fail("no tests implemented");
         }

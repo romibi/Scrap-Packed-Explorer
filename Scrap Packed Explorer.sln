@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scrap Packed Explorer", "Sc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scrap Packed Library", "Scrap Packed Library\Scrap Packed Library.csproj", "{04D08A84-E84D-4D64-BED9-BDAF9E1CB55A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scrap Packed Library Tests", "Scrap Packed Library Tests\Scrap Packed Library Tests.csproj", "{382A7E0B-1ADC-40CF-922F-C217206EA4FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scrap Packed Tests", "Scrap Packed Tests\Scrap Packed Tests.csproj", "{382A7E0B-1ADC-40CF-922F-C217206EA4FF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
