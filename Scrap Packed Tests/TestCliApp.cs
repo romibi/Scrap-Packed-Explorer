@@ -283,7 +283,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
         public void TestRunExtract()
         {
             CheckRunCompareFile(new[] { "extract", "--packedFile", @"TestData\example.packed",
-                "--packedPath", "file.txt",
+                "--packedPath", "file1.txt",
                 "--destinationPath", @"TestResults\TestExtract\file.txt"},
                 @"TestData\TestReferenceFiles\TestExtract\ExtractFile\file.txt",
                 @"TestResults\TestExtract\file.txt",

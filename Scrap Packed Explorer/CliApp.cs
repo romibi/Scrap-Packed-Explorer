@@ -45,8 +45,8 @@ namespace ch.romibi.Scrap.Packed.Explorer
 
         private int RunExtract(ExtractOptions options)
         {
-            Console.WriteLine("test extract");
-            // Todo: implement RunExtract
+            var packedFile = new ScrapPackedFile(options.packedFile);
+            packedFile.Extract(options.packedPath, options.destinationPath);
             return 0;
         }
 

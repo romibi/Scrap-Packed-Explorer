@@ -55,6 +55,8 @@ namespace ch.romibi.Scrap.Packed.Explorer
 
         [Option('d', "destinationPath", Required = true, HelpText = "The path to extract the files from the archive to")]
         public string destinationPath { get; set; }
+
+        // todo add overwrite options
     }
 
     [Verb("list", HelpText = "list or search files and folders in the archive")]

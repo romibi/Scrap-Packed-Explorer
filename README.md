@@ -24,9 +24,9 @@ There is already a CLI implementation to modify packed files using Python (3.5 ?
 	- [x] remove
 		- [x] file
 		- [x] folder
-	- [ ] extract
-		- [ ] file
-		- [ ] folder
+	- [x] extract
+		- [x] file
+		- [x] folder
 	- [x] rename
 		- [x] file
 		- [x] folder

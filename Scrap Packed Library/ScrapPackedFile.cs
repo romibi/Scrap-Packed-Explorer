@@ -197,6 +197,74 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             }
         }
 
+        public void Extract(string p_packedPath, string p_destinationPath)
+        {
+            if (p_packedPath.EndsWith("/") || p_packedPath.Length==0)
+                ExtractDirectory(p_packedPath, p_destinationPath);
+            else
+                ExtractFile(p_packedPath, p_destinationPath);
+        }
+
+        private void ExtractDirectory(string p_packedPath, string p_destinationPath)
+        {
+            var destinationPath = p_destinationPath.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
+            var fsPacked = new FileStream(fileName, FileMode.Open);
+            try
+            {
+                foreach (var file in metaData.fileList)
+                {
+                    if (file.FilePath.StartsWith(p_packedPath))
+                    {
+                        ExtractFile(file.FilePath, destinationPath + file.FilePath.Substring(p_packedPath.Length), fsPacked);
+                    }
+                }
+            }
+            finally
+            {
+                fsPacked.Close();
+            }
+        }
+
+        private void ExtractFile(string p_packedPath, string p_destinationPath, FileStream p_PackedFileStream = null)
+        {
+            if (!metaData.fileByPath.ContainsKey(p_packedPath))
+                return; // todo raise or return error;
+
+            var fileMetaData = metaData.fileByPath[p_packedPath];
+
+            if (File.Exists(p_destinationPath))
+                File.Delete(p_destinationPath);
+
+            Directory.CreateDirectory(Path.GetDirectoryName(p_destinationPath));
+
+            var fsPacked = p_PackedFileStream;
+            if(fsPacked==null)
+                fsPacked = new FileStream(fileName, FileMode.Open);
+            try
+            {
+                var fsExtractFile = new FileStream(p_destinationPath, FileMode.Create);
+                try
+                {
+                    byte[] readBytes = new byte[fileMetaData.FileSize];
+
+                    fsPacked.Seek(fileMetaData.OriginalOffset, SeekOrigin.Begin);
+                    fsPacked.Read(readBytes, 0, (int)fileMetaData.FileSize);
+                    
+                    fsExtractFile.Write(readBytes);
+                }
+                finally
+                {
+                    fsExtractFile.Close();
+                }
+            }
+            finally
+            {
+                if (p_PackedFileStream == null)
+                    fsPacked.Close();
+            }
+
+
+        }
 
         public void SaveToFile(string p_newFileName)
         {
