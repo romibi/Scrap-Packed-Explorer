@@ -21,9 +21,9 @@ There is already a CLI implementation to modify packed files using Python (3.5 ?
 		- [x] replace file in existing
 		- [x] folder to new
 		- [x] folder to existing
-	- [ ] remove
-		- [ ] file
-		- [ ] folder
+	- [x] remove
+		- [x] file
+		- [x] folder
 	- [ ] extract
 		- [ ] file
 		- [ ] folder

@@ -29,8 +29,9 @@ namespace ch.romibi.Scrap.Packed.Explorer
 
         private int RunRemove(RemoveOptions options)
         {
-            Console.WriteLine("test remove");
-            // Todo: implement RunRemove
+            var packedFile = new ScrapPackedFile(options.packedFile);
+            packedFile.Remove(options.packedPath);
+            packedFile.SaveToFile(options.outputPackedFile);
             return 0;
         }
 

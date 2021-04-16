@@ -1,4 +1,4 @@
-using ch.romibi.Scrap.Packed.PackerLib.DataTypes;
+﻿using ch.romibi.Scrap.Packed.PackerLib.DataTypes;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -169,6 +169,34 @@ namespace ch.romibi.Scrap.Packed.PackerLib
                 }
             }
         }
+
+        public void Remove(string p_Name)
+        {
+            if (p_Name.EndsWith("/"))
+                RemoveDirectory(p_Name);
+            else
+                RemoveFile(p_Name);
+        }
+
+        private void RemoveFile(string p_Name)
+        {
+            if (!metaData.fileByPath.ContainsKey(p_Name))
+                return; // todo raise or return error
+            var oldFile = metaData.fileByPath[p_Name];
+            metaData.fileList.Remove(oldFile);
+            metaData.fileByPath.Remove(p_Name);
+        }
+
+        private void RemoveDirectory(string p_Name)
+        {
+            var fileList = metaData.fileList.ToArray();
+            foreach (var file in fileList)
+            {
+                if (file.FilePath.StartsWith(p_Name))
+                    RemoveFile(file.FilePath);
+            }
+        }
+
 
         public void SaveToFile(string p_newFileName)
         {
