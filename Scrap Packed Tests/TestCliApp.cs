@@ -253,7 +253,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
 
             File.Copy(@"TestData\example.packed", @"TestResults\TestRename\packedFile.packed", true);
             CheckRunCompareFile(new[] { "rename", "--packedFile" , @"TestResults\TestRename\packedFile.packed",
-                "--newPackedPath", "directory/"},
+                "--newPackedPath", "sub/"},
                 @"TestData\TestReferenceFiles\TestRename\renameRoot.packed",
                 @"TestResults\TestRename\packedFile.packed",
                 "rename root");

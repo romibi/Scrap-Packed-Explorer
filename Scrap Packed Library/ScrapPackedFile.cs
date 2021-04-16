@@ -1,4 +1,4 @@
-﻿using ch.romibi.Scrap.Packed.PackerLib.DataTypes;
+using ch.romibi.Scrap.Packed.PackerLib.DataTypes;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -132,21 +132,21 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             if (newFile.Length > UInt32.MaxValue)
                 return; // todo raise or log error
 
-            if (metaData.fileByPath.ContainsKey(p_packedPath))
-            {
-                var oldFile = metaData.fileByPath[p_packedPath];
-                metaData.fileList.Remove(oldFile);
-                metaData.fileByPath.Remove(p_packedPath);
-            }
+            var packedPath = p_packedPath;
+            if (packedPath.Length == 0)
+                packedPath = Path.GetFileName(p_externalPath);
 
-            var newFileIndexData = new PackedFileIndexData(p_externalPath, p_packedPath, (UInt32) newFile.Length);
+            if (metaData.fileByPath.ContainsKey(packedPath))
+                RemoveFile(packedPath);
+
+            var newFileIndexData = new PackedFileIndexData(p_externalPath, packedPath, (UInt32) newFile.Length);
             metaData.fileList.Add(newFileIndexData);
-            metaData.fileByPath.Add(p_packedPath, newFileIndexData);
+            metaData.fileByPath.Add(packedPath, newFileIndexData);
         }
 
         public void Rename(string p_oldName, string p_newName)
         {
-            if (p_oldName.EndsWith("/"))
+            if (p_oldName.EndsWith("/") || p_oldName.Length == 0)
                 RenameDirectory(p_oldName, p_newName);
             else
                 RenameFile(p_oldName, p_newName);
