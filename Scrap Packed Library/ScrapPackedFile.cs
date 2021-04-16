@@ -186,9 +186,9 @@ namespace ch.romibi.Scrap.Packed.PackerLib
 
             if (File.Exists(newFileName))
                 File.Delete(newFileName);
-            
-            // todo: make backup function better
 
+            // todo: make backup function better
+            Directory.CreateDirectory(Path.GetDirectoryName(newFileName));
             var fsPackedNew = new FileStream(newFileName, FileMode.Create);
             try
             {

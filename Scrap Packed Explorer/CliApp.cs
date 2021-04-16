@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace ch.romibi.Scrap.Packed.Explorer
 {
-    class CliApp
+    public class CliApp
     {
         public int Run(string[] args)
         {
