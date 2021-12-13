@@ -17,25 +17,11 @@ namespace ch.romibi.Scrap.Packed.Explorer
             }
             else
             {
-                HideConsoleWindow();
                 var guiApp = new GuiApp();
                 guiApp.InitializeComponent();
                 guiApp.Run();
                 return 0;
             }
         }
-
-        private static void HideConsoleWindow()
-        {
-            var handle = GetConsoleWindow();
-
-            ShowWindow(handle, 0);
-        }
-
-        [DllImport("kernel32.dll")]
-        static extern IntPtr GetConsoleWindow();
-
-        [DllImport("user32.dll")]
-        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
     }
 }

@@ -7,6 +7,15 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-
+        <DockPanel HorizontalAlignment="Center" Height="78" LastChildFill="False" VerticalAlignment="Top" Width="800">
+            <Button Name="OpenButton" Content="Open" Width="100" Click="OpenButton_Click"/>
+        </DockPanel>
+        <TreeView Margin="0,78,0,0" Name="FileTree">
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate DataType="{x:Type local:TreeEntry}" ItemsSource="{Binding Items}">
+                    <TextBlock Text="{Binding Name}" />
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
     </Grid>
 </Window>
