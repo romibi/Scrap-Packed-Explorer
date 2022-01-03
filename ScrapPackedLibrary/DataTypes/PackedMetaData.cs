@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ch.romibi.Scrap.Packed.PackerLib.DataTypes
 {
-    class PackedMetaData
+    public class PackedMetaData
     {
         private const UInt32 DATA_LENGTH_STATIC = 12; // 4 bytes each: "PFBK", version (all 0s), number of files
 
@@ -34,7 +34,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.DataTypes
         }
     }
 
-    class PackedFileIndexData
+    public class PackedFileIndexData
     {
         private const UInt32 DATA_LENGTH_STATIC = 12; // 4 bytes each: path length, file size, offset
 

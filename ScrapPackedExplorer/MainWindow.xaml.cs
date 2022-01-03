@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ch.romibi.Scrap.Packed.PackerLib.DataTypes;
 
 namespace ch.romibi.Scrap.Packed.Explorer
 {
@@ -33,13 +34,41 @@ namespace ch.romibi.Scrap.Packed.Explorer
         private void RefreshTreeView()
         {
 
-            TreeEntry root = new TreeEntry() { Name = loadedPackedFile.fileName };
+            TreeEntry root = new TreeEntry(null) { Name = loadedPackedFile.fileName };
 
-            foreach (string file in loadedPackedFile.GetFileNames()) {
-                root.AddFilename(file);
+            foreach (PackedFileIndexData file in loadedPackedFile.GetFileIndexDataList())
+            {
+                root.AddFileData(file);
+            }
+            root.Sort();
+            FileTree.Items.Add(root);
+
+            TreeContent.Items.Clear();
+            //TreeContent.Items.Add(new TreeEntry() { Name = ".." });
+            foreach (var item in root.Items) {
+                TreeContent.Items.Add(item);
             }
 
-            FileTree.Items.Add(root);
+        }
+
+        private void TreeContent_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var clickedItem = ((FrameworkElement)e.OriginalSource).DataContext as TreeEntry;
+            if (clickedItem != null)
+            {
+                if (!clickedItem.IsDirectory)
+                    return;
+                TreeContent.Items.Clear();
+                if(!(clickedItem.Parent is null))
+                {
+                    var navigateUpItem = new TreeEntry(clickedItem.Parent.Parent) { Name = "..", Items = clickedItem.Parent.Items };
+                    TreeContent.Items.Add(navigateUpItem);
+                }
+                foreach(var item in clickedItem.Items)
+                {
+                    TreeContent.Items.Add(item);
+                }
+            }
         }
 
 
@@ -55,36 +84,98 @@ namespace ch.romibi.Scrap.Packed.Explorer
 
     }
 
-    public class TreeEntry
+    public class TreeEntry : IComparable
     {
-        public TreeEntry()
+        public TreeEntry(TreeEntry p_Parent)
         {
-            this.Items = new ObservableCollection<TreeEntry>();
+            Items = new ObservableCollection<TreeEntry>();
+            IndexData = null;
+            Parent = p_Parent;
         }
 
         public string Name { get; set; }
 
-        public void AddFilename(string p_FileName)
+        public TreeEntry Parent { get; set; }
+
+        public PackedFileIndexData IndexData { get; set; }
+        public bool IsFile {
+            get {
+                return !IsDirectory;
+            }
+        }
+
+        public bool IsDirectory {
+            get {
+                return IndexData is null; 
+            }
+        }
+
+        public void AddFileData(PackedFileIndexData p_File, string p_SubdirFilename = "")
         {
-            if (p_FileName.Contains("/"))
+            string fileName;
+            if (p_SubdirFilename.Length == 0)
             {
-                var nextDir = p_FileName.Split("/")[0];
+                fileName = p_File.FilePath;
+            }
+            else
+            {
+                fileName = p_SubdirFilename;
+            }
+
+            if (fileName.Contains("/"))
+            {
+                var nextDir = fileName.Split("/")[0];
                 TreeEntry subDir = null;
-                foreach(TreeEntry entry in Items)
+                foreach (TreeEntry entry in Items)
                 {
-                    if (entry.Name.Equals(nextDir)) {
+                    if (entry.Name.Equals(nextDir))
+                    {
                         subDir = entry;
                         break;
                     }
                 }
-                if (subDir == null) {
-                    subDir = new TreeEntry() { Name = nextDir };
+                if (subDir == null)
+                {
+                    subDir = new TreeEntry(this) { Name = nextDir };
                     Items.Add(subDir);
                 }
-                subDir.AddFilename(p_FileName.Substring(nextDir.Length + 1));
-            } else
+                subDir.AddFileData(p_File, fileName.Substring(nextDir.Length + 1));
+            }
+            else
             {
-                Items.Add(new TreeEntry() { Name = p_FileName });
+                Items.Add(new TreeEntry(this) { Name = fileName, IndexData = p_File });
+            }
+        }
+
+        public int CompareTo(object o)
+        {
+            TreeEntry a = this;
+            TreeEntry b = (TreeEntry)o;
+            if (a.IsDirectory == b.IsDirectory)
+            {
+                return a.Name.CompareTo(b.Name);
+            }
+            else
+            {
+                if (a.IsDirectory)
+                    return -1;
+                else
+                    return 1;
+            }
+
+        }
+
+        public void Sort()
+        {
+            var sorted = Items.OrderBy(x => x).ToList();
+            
+            for (int i = 0; i < sorted.Count(); i++)
+                Items.Move(Items.IndexOf(sorted[i]), i);
+
+            foreach (var item in Items) {
+                if (item.IsDirectory) {
+                    item.Sort();
+                }
             }
         }
 
