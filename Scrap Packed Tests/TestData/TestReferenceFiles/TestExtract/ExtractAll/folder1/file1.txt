@@ -1,7 +1,0 @@
-Begin of 3rd file in the archive.
-Its offset already needs 2 bytes because the first 2 files are bigger than 255 bytes together.
-It is inside a folder called folder1 and called file1.
-This is a good test to figure out if the offset value in the index is read correctly.
-Even this file alone is bigger than 255 bytes.
-Which also enables to test if the sizes in the index is read correctly.
-The content is not really relevant. So here we have the END

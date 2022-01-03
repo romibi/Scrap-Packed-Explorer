@@ -1,2 +1,0 @@
-This is just some example file.
-The file content isn't really relevant.

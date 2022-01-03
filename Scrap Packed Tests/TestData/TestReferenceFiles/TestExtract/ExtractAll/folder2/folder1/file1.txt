@@ -1,3 +1,0 @@
-Begin. This is the 7th file in the archive.
-Here we have a file in folder2 in subfolder folder1 called file1.txt
-The reason for this path is to ensure that if we rename 'folder1/' to something that other folders like the file this one is in, don not get renamed as well. The END

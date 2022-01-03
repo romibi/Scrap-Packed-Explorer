@@ -1,0 +1,8 @@
+Ok! This file is in exampleFolder3 and called examplefile_1.txt ...
+This is just some example file.
+But i want to make this file even bigger than exampleFolder2/examplefile_1.txt ...
+The reason is similar to what we had for the other file.
+Because it might make sense if we replace a file with a bigger one to test that.
+If we add exampleFolder1 first then exampleFolder2 that one will replace the one from exampleFolder1.
+And now if we then add exampleFolder3 this one will replace the one from exampleFolder2.
+The file content isn't really relevant.

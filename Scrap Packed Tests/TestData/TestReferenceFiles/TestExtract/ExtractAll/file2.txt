@@ -1,4 +1,0 @@
-Begin of the second file in the example packed archive.
-Again the content is not relevant.
-For easier anayze all textfiles start with B e g i n and e n d with ...
-END

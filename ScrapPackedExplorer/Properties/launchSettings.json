@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "Scrap Packed Explorer GUI": {
+      "commandName": "Project"
+    },
+    "Scrap Packed Explorer CLI": {
+      "commandName": "Project",
+      "commandLineArgs": "--help"
+    }
+  }
+}

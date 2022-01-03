@@ -1,3 +1,0 @@
-Now this file is in exampleFolder2 and called examplefile_2-2...
-This is just some example file.
-The file content isn't really relevant.

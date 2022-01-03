@@ -1,0 +1,4 @@
+Begin. This is the 4th file in the archive.
+It would have made sense to have folder1/file2.jpg as the 4th file.
+But the order doesn't really matter which this shows.
+That file is the next one … so after this there will be PNG data ... The END
