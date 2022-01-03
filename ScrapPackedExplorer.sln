@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScrapPackedLibrary", "Scrap
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScrapPackedTests", "ScrapPackedTests\ScrapPackedTests.csproj", "{382A7E0B-1ADC-40CF-922F-C217206EA4FF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScrapPackedExplorerCli", "ScrapPackedExplorerCli\ScrapPackedExplorerCli.csproj", "{06DA996D-DC2F-4D2C-B48E-42DCB952D10E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{382A7E0B-1ADC-40CF-922F-C217206EA4FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{382A7E0B-1ADC-40CF-922F-C217206EA4FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{382A7E0B-1ADC-40CF-922F-C217206EA4FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06DA996D-DC2F-4D2C-B48E-42DCB952D10E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06DA996D-DC2F-4D2C-B48E-42DCB952D10E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06DA996D-DC2F-4D2C-B48E-42DCB952D10E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06DA996D-DC2F-4D2C-B48E-42DCB952D10E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

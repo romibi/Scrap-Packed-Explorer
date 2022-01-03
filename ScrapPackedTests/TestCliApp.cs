@@ -1,4 +1,5 @@
 ﻿using ch.romibi.Scrap.Packed.Explorer;
+using ch.romibi.Scrap.Packed.Explorer.Cli;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.IO;

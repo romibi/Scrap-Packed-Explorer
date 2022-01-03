@@ -10,18 +10,10 @@ namespace ch.romibi.Scrap.Packed.Explorer
         [STAThread]
         public static int Main(string[] args)
         {
-            if (args != null && args.Length > 0)
-            {
-                var cliApp = new CliApp();
-                return cliApp.Run(args);
-            }
-            else
-            {
-                var guiApp = new GuiApp();
-                guiApp.InitializeComponent();
-                guiApp.Run();
-                return 0;
-            }
+            var guiApp = new GuiApp();
+            guiApp.InitializeComponent();
+            guiApp.Run();
+            return 0;
         }
     }
 }

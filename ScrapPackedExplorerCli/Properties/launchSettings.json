@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ScrapPackedExplorerCli": {
+      "commandName": "Project",
+      "commandLineArgs": "--help"
+    }
+  }
+}

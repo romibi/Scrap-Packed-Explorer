@@ -4,6 +4,10 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>ch.romibi.Scrap.Packed.PackerLib</RootNamespace>
     <PackageId>ScrapPackedLibrary</PackageId>
+    <Version>0.0.2</Version>
+    <Authors>romibi</Authors>
+    <Company />
+    <Product>Scrap Packed Explorer</Product>
   </PropertyGroup>
 
 </Project>

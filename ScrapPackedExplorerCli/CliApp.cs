@@ -3,7 +3,7 @@ using CommandLine;
 using System;
 using System.Collections.Generic;
 
-namespace ch.romibi.Scrap.Packed.Explorer
+namespace ch.romibi.Scrap.Packed.Explorer.Cli
 {
     public class CliApp
     {

@@ -1,6 +1,6 @@
 ﻿using CommandLine;
 
-namespace ch.romibi.Scrap.Packed.Explorer
+namespace ch.romibi.Scrap.Packed.Explorer.Cli
 {
     abstract class BaseOptions
     {

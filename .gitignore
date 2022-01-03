@@ -132,7 +132,8 @@ DocProject/Help/Html2
 DocProject/Help/html
 
 # Click-Once directory
-publish/
+[Pp]ublish/
+[Pp]ublish (32bit)/
 
 # Publish Web Output
 *.[Pp]ublish.xml
@@ -140,6 +141,7 @@ publish/
 # TODO: Comment the next line if you want to checkin your web deploy settings 
 # but database connection strings (with potential passwords) will be unencrypted
 *.pubxml
+!ScrapPackedExplorer*.exe*.pubxml
 *.publishproj
 
 # NuGet Packages

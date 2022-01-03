@@ -1,22 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RootNamespace>ch.romibi.Scrap.Packed.Explorer</RootNamespace>
+    <RootNamespace>ch.romibi.Scrap.Packed.Explorer.Cli</RootNamespace>
     <UseWPF>true</UseWPF>
-    <StartupObject>ch.romibi.Scrap.Packed.Explorer.MainApp</StartupObject>
-    <AssemblyName>ScrapPackedExplorer</AssemblyName>
+    <AssemblyName>ScrapPackedExplorerCli</AssemblyName>
     <Version>0.0.3</Version>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Page Remove="GuiApp.xaml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ApplicationDefinition Include="GuiApp.xaml" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.8.0" />
