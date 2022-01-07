@@ -61,7 +61,7 @@
                 <ColumnDefinition Width="5"/>
                 <ColumnDefinition Width="0*" MinWidth="100"/>
             </Grid.ColumnDefinitions>
-            <TreeView Name="FileTree">
+            <TreeView Name="FileTree" SelectedItemChanged="FileTree_SelectedItemChanged">
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate DataType="{x:Type local:TreeEntry}" ItemsSource="{Binding Items}">
                         <TextBlock Text="{Binding Name}" />
@@ -69,7 +69,7 @@
                 </TreeView.ItemTemplate>
             </TreeView>
             <GridSplitter Grid.Column="1" Width="5"/>
-            <ListView Grid.Column="2"  Name="TreeContent" ItemsSource="{Binding Items}" MouseDoubleClick="TreeContent_MouseDoubleClick">
+            <ListView Grid.Column="2"  Name="TreeContent" ItemsSource="{Binding Items}" MouseDoubleClick="TreeContent_MouseDoubleClick" SelectionChanged="TreeContent_SelectionChanged">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Name" Width="100"/>

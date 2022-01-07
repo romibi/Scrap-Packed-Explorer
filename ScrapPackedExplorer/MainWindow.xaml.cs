@@ -25,6 +25,9 @@ namespace ch.romibi.Scrap.Packed.Explorer
     public partial class MainWindow : Window
     {
         ScrapPackedFile loadedPackedFile;
+        private bool _FileTreeSelectionUpdating = false;
+
+        protected readonly string NAVIGATE_UP_NAME = "..";
 
         public MainWindow()
         {
@@ -41,11 +44,12 @@ namespace ch.romibi.Scrap.Packed.Explorer
                 root.AddFileData(file);
             }
             root.Sort();
+            FileTree.Items.Clear();
             FileTree.Items.Add(root);
 
             TreeContent.Items.Clear();
-            //TreeContent.Items.Add(new TreeEntry() { Name = ".." });
-            foreach (var item in root.Items) {
+            foreach (var item in root.Items)
+            {
                 TreeContent.Items.Add(item);
             }
 
@@ -54,23 +58,119 @@ namespace ch.romibi.Scrap.Packed.Explorer
         private void TreeContent_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             var clickedItem = ((FrameworkElement)e.OriginalSource).DataContext as TreeEntry;
-            if (clickedItem != null)
+            TreeContent_LoadTreeEntry(clickedItem);
+            clickedItem.GetContainerFromTree(FileTree).IsExpanded = true;
+        }
+
+        private void FileTree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            var selectedEntry = e.NewValue as TreeEntry;
+
+            if (selectedEntry is null) return;
+            if (_FileTreeSelectionUpdating) return;
+
+            if (selectedEntry.IsDirectory)
             {
-                if (!clickedItem.IsDirectory)
+                TreeContent_LoadTreeEntry(selectedEntry);
+            }
+            else
+            {
+                TreeContent_LoadTreeEntry(selectedEntry.Parent);
+            }
+        }
+
+        private void TreeContent_LoadTreeEntry(TreeEntry loaditem)
+        {
+            if (loaditem != null)
+            {
+                if (!loaditem.IsDirectory)
                     return;
                 TreeContent.Items.Clear();
-                if(!(clickedItem.Parent is null))
+                if (!(loaditem.Parent is null))
                 {
-                    var navigateUpItem = new TreeEntry(clickedItem.Parent.Parent) { Name = "..", Items = clickedItem.Parent.Items };
+                    var navigateUpItem = new TreeEntryAlias(loaditem.Parent) { Name = NAVIGATE_UP_NAME };
                     TreeContent.Items.Add(navigateUpItem);
                 }
-                foreach(var item in clickedItem.Items)
+                foreach (var item in loaditem.Items)
                 {
                     TreeContent.Items.Add(item);
                 }
             }
         }
 
+        private void TreeContent_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Count == 0) return;
+
+            TreeEntry selectedItem = e.AddedItems[0] as TreeEntry;
+
+            var doExpandSelection = false;
+            List<TreeEntry> itemPath;
+            // Todo: does this go nicer?
+            if (selectedItem is TreeEntryAlias /* && selectedItem.Name.Equals(NAVIGATE_UP_NAME) */)
+            {
+                itemPath = (selectedItem as TreeEntryAlias).ReferencedEntry.GetItemPath();
+                doExpandSelection = true;
+            }
+            else
+            {
+                itemPath = selectedItem.GetItemPath();
+            }
+
+            // Update Tree Selection
+            _FileTreeSelectionUpdating = true;
+            try
+            {
+                ItemsControl currentLevel = FileTree as ItemsControl;
+                // foreach folder (pathLevel) expand the correct subfolder
+                foreach (TreeEntry pathLevel in itemPath)
+                {
+                    TreeViewItem nextLevel = null;
+                    bool doUpdateLayout = false;
+                    // Check each subfolder if it is the wanted one and expand/collapse accordingly
+                    foreach (TreeEntry treeItem in currentLevel.Items)
+                    {
+                        TreeViewItem treeItemControl = currentLevel.ItemContainerGenerator.ContainerFromItem(treeItem) as TreeViewItem;
+                        if (treeItemControl is null) break;
+
+                        var isNextPathLevel = treeItem.Equals(pathLevel);
+                        // update IsExpanded and note if we need to update currentLevel layout
+                        if (!doUpdateLayout && treeItemControl.IsExpanded != isNextPathLevel) doUpdateLayout = true;
+                        treeItemControl.IsExpanded = isNextPathLevel;
+                        if (isNextPathLevel) nextLevel = treeItemControl;
+                    }
+                    if (doUpdateLayout) currentLevel.UpdateLayout();
+
+                    if (nextLevel is null) break;
+
+                    currentLevel = nextLevel;
+                }
+                TreeContent_SelectTreeViewItem(currentLevel as TreeViewItem, doExpandSelection);
+            }
+            finally
+            {
+                _FileTreeSelectionUpdating = false;
+            }
+        }
+
+        private void TreeContent_SelectTreeViewItem(TreeViewItem p_SelectedTreeItem, bool p_DoExpandSelection)
+        {
+            p_SelectedTreeItem.IsSelected = true;
+            if (p_SelectedTreeItem.Items.Count != 0)
+            {
+                p_SelectedTreeItem.IsExpanded = p_DoExpandSelection;
+                p_SelectedTreeItem.UpdateLayout();
+                if (p_DoExpandSelection)
+                {
+                    foreach (var item in p_SelectedTreeItem.Items)
+                    {
+                        TreeViewItem itemControl = p_SelectedTreeItem.ItemContainerGenerator.ContainerFromItem(item) as TreeViewItem;
+                        itemControl.IsExpanded = false;
+                    }
+                }
+            }
+            p_SelectedTreeItem.BringIntoView();
+        }
 
         private void OpenButton_Click(object sender, RoutedEventArgs e)
         {
@@ -112,6 +212,18 @@ namespace ch.romibi.Scrap.Packed.Explorer
         }
     }
 
+    public class TreeEntryAlias : TreeEntry
+    {
+        public TreeEntryAlias(TreeEntry p_Reference) : base(p_Reference.Parent)
+        {
+            ReferencedEntry = p_Reference;
+            IndexData = p_Reference.IndexData;
+            Items = p_Reference.Items;
+        }
+
+        public TreeEntry ReferencedEntry { get; set; }
+    }
+
     public class TreeEntry : IComparable
     {
         public TreeEntry(TreeEntry p_Parent)
@@ -134,7 +246,7 @@ namespace ch.romibi.Scrap.Packed.Explorer
 
         public bool IsDirectory {
             get {
-                return IndexData is null; 
+                return IndexData is null;
             }
         }
 
@@ -175,6 +287,41 @@ namespace ch.romibi.Scrap.Packed.Explorer
             }
         }
 
+        public List<TreeEntry> GetItemPath()
+        {
+            // get a list of TreeItems from parent to selection
+            // Todo: move logic inside TreeEntry and cache
+            List<TreeEntry> itemPath = new List<TreeEntry>();
+
+            var currentItem = this;
+            itemPath.Add(currentItem);
+            while (!(currentItem.Parent is null))
+            {
+                currentItem = currentItem.Parent;
+                itemPath.Insert(0, currentItem);
+            }
+
+            return itemPath;
+        }
+
+        public TreeViewItem GetContainerFromTree(TreeView p_TreeRoot)
+        {
+            var itemPath = GetItemPath();
+            ItemsControl containerLevel = p_TreeRoot as ItemsControl;
+            foreach (var pathLevel in itemPath)
+            {
+                foreach (var containerItem in containerLevel.Items)
+                {
+                    if (containerItem.Equals(pathLevel))
+                    {
+                        containerLevel = containerLevel.ItemContainerGenerator.ContainerFromItem(containerItem) as ItemsControl;
+                        break;
+                    }
+                }
+            }
+            return containerLevel as TreeViewItem;
+        }
+
         public int CompareTo(object o)
         {
             TreeEntry a = this;
@@ -196,12 +343,14 @@ namespace ch.romibi.Scrap.Packed.Explorer
         public void Sort()
         {
             var sorted = Items.OrderBy(x => x).ToList();
-            
+
             for (int i = 0; i < sorted.Count(); i++)
                 Items.Move(Items.IndexOf(sorted[i]), i);
 
-            foreach (var item in Items) {
-                if (item.IsDirectory) {
+            foreach (var item in Items)
+            {
+                if (item.IsDirectory)
+                {
                     item.Sort();
                 }
             }
