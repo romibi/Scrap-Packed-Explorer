@@ -9,33 +9,10 @@ There is already a CLI implementation to modify packed files using Python (3.5 ?
 ## Todo (not strictly ordered by priority)
 - [x] Create Project structure
 - Command Line Interface
-	- [x] define cli arguments
-	- [ ] list files/folders
-		- [X] basic list
-		- [ ] filter/search file or folder
-		- [ ] show additional info (properly)
-		- [ ] tree structure
-	- [x] add
-		- [x] file to new
-		- [x] file to existing
-		- [x] replace file in existing
-		- [x] folder to new
-		- [x] folder to existing
-	- [x] remove
-		- [x] file
-		- [x] folder
-	- [x] extract
-		- [x] file
-		- [x] folder
-	- [x] rename
-		- [x] file
-		- [x] folder
-	- [ ] search content (maybe)
-	- [ ] copy file between packed (maybe)
-	- [ ] copy folder between packed (maybe)
-- Graphical User Interface
-	- [ ] directory tree
-	- [ ] folder content view
+	- [x] mostly done, see issue [#1](/../../issues/1)
+- Graphical User Interface _(see also issue [#2](/../../issues/2))_
+	- [x] directory tree
+	- [x] folder content view
 	- [ ] add file/folder
 	- [ ] replace warning
 	- [ ] remove file/folder
@@ -45,9 +22,11 @@ There is already a CLI implementation to modify packed files using Python (3.5 ?
 	- [ ] search content (maybe)
 	- [ ] drag & drop
 	- [ ] drag & drop between 2 packed (maybe)
-	- [ ] preview (maybe)
-- Misc
-	- [ ] "open with" functionality
-	- [ ] single portable exe
 	- [ ] icon
 	- [ ] nice loading animation
+	- [ ] direct vs prepare modes
+    	_Re-create archive on each change or prepare changes and then save_
+	- [ ] "modding" mode (maybe)
+    	_Have huge gaps between files edited to not move around bits much inside archive while constantly editing_
+	- [ ] file preview (maybe)
+- Misc: see [other issues](/../../issues/)
