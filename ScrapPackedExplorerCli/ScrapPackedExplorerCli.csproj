@@ -10,11 +10,39 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\ScrapPackedExplorer\GuiApp.xaml.cs" Link="Gui\GuiApp.xaml.cs" />
+    <Compile Include="..\ScrapPackedExplorer\MainWindow.xaml.cs" Link="Gui\MainWindow.xaml.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="..\ScrapPackedExplorer\Icons\MissingIcon.png" Link="Icons\MissingIcon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.8.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ScrapPackedExplorer\ScrapPackedExplorer.csproj" />
     <ProjectReference Include="..\ScrapPackedLibrary\ScrapPackedLibrary.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Gui\" />
+    <Folder Include="Icons\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\ScrapPackedExplorer\Icons\MissingIcon.svg" Link="Icons\MissingIcon.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Include="..\ScrapPackedExplorer\GuiApp.xaml" Link="Gui\GuiApp.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="..\ScrapPackedExplorer\MainWindow.xaml" Link="Gui\MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
 </Project>

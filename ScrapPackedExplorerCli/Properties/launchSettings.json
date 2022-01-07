@@ -3,6 +3,9 @@
     "ScrapPackedExplorerCli": {
       "commandName": "Project",
       "commandLineArgs": "--help"
+    },
+    "ScrapPackedExplorerCliAsGUI": {
+      "commandName": "Project"
     }
   }
 }
