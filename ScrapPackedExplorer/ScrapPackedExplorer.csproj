@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -7,7 +7,9 @@
     <UseWPF>true</UseWPF>
     <StartupObject>ch.romibi.Scrap.Packed.Explorer.MainApp</StartupObject>
     <AssemblyName>ScrapPackedExplorer</AssemblyName>
-    <Version>0.0.3</Version>
+    <Authors>romibi</Authors>
+    <Company/>
+    <Product>Scrap Packed Explorer</Product>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,6 +22,10 @@
 
   <ItemGroup>
     <ApplicationDefinition Include="GuiApp.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\GlobalAssemblyInfo.cs" Link="GlobalAssemblyInfo.cs" />
   </ItemGroup>
 
   <ItemGroup>

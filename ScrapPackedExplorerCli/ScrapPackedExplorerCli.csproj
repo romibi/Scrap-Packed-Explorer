@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -6,10 +6,13 @@
     <RootNamespace>ch.romibi.Scrap.Packed.Explorer.Cli</RootNamespace>
     <UseWPF>true</UseWPF>
     <AssemblyName>ScrapPackedExplorerCli</AssemblyName>
-    <Version>0.0.3</Version>
+    <Authors>romibi</Authors>
+    <Company/>
+    <Product>Scrap Packed Explorer</Product>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\GlobalAssemblyInfo.cs" Link="GlobalAssemblyInfo.cs" />
     <Compile Include="..\ScrapPackedExplorer\GuiApp.xaml.cs" Link="Gui\GuiApp.xaml.cs" />
     <Compile Include="..\ScrapPackedExplorer\MainWindow.xaml.cs" Link="Gui\MainWindow.xaml.cs" />
   </ItemGroup>
@@ -23,7 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ScrapPackedExplorer\ScrapPackedExplorer.csproj" />
     <ProjectReference Include="..\ScrapPackedLibrary\ScrapPackedLibrary.csproj" />
   </ItemGroup>
 
