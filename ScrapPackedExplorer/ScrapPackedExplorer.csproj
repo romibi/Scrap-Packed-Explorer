@@ -11,6 +11,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Icons\MissingIcon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Page Remove="GuiApp.xaml" />
   </ItemGroup>
 
@@ -24,6 +28,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ScrapPackedLibrary\ScrapPackedLibrary.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Icons\MissingIcon.png" />
   </ItemGroup>
 
 </Project>

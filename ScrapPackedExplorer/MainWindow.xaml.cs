@@ -82,6 +82,34 @@ namespace ch.romibi.Scrap.Packed.Explorer
             }
         }
 
+        private void ExtractToButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void AddButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void CreateButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void SearchButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 
     public class TreeEntry : IComparable

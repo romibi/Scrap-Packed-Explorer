@@ -7,23 +7,77 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <DockPanel HorizontalAlignment="Center" Height="78" LastChildFill="False" VerticalAlignment="Top" Width="800">
-            <Button Name="OpenButton" Content="Open" Width="100" Click="OpenButton_Click"/>
+        <DockPanel HorizontalAlignment="Left" Height="78" LastChildFill="False" VerticalAlignment="Top">
+            <Button Name="CreateButton" Width="100" Click="CreateButton_Click" IsEnabled="False">
+                <StackPanel>
+                    <Image Source="/Icons/MissingIcon.png" Height="50" />
+                    <TextBlock Text="Create"/>
+                </StackPanel>
+            </Button>
+            <Button Name="OpenButton" Width="100" Click="OpenButton_Click">
+                <StackPanel>
+                    <Image Source="/Icons/MissingIcon.png" Height="50" />
+                    <TextBlock Text="Open"/>
+                </StackPanel>
+            </Button>
+            <Button Name="SaveButton" Width="100" Click="SaveButton_Click" IsEnabled="False">
+                <StackPanel>
+                    <Image Source="/Icons/MissingIcon.png" Height="50" />
+                    <TextBlock Text="Save"/>
+                </StackPanel>
+            </Button>
+            <Separator Width="5"></Separator>
+            <Button Name="AddButton" Width="100" Click="AddButton_Click" IsEnabled="False">
+                <StackPanel>
+                    <Image Source="/Icons/MissingIcon.png" Height="50" />
+                    <TextBlock Text="Add"/>
+                </StackPanel>
+            </Button>
+            <Button Name="ExtractToButton" Width="100" Click="ExtractToButton_Click" IsEnabled="False">
+                <StackPanel>
+                    <Image Source="/Icons/MissingIcon.png" Height="50" />
+                    <TextBlock Text="Extract to"/>
+                </StackPanel>
+            </Button>
+            <Button Name="DeleteButton" Width="100" Click="DeleteButton_Click" IsEnabled="False">
+                <StackPanel>
+                    <Image Source="/Icons/MissingIcon.png" Height="50" />
+                    <TextBlock Text="Delete"/>
+                </StackPanel>
+            </Button>
+            <Separator Width="5"></Separator>
+            <Button Name="SearchButton" Width="100" Click="SearchButton_Click" IsEnabled="False">
+                <StackPanel>
+                    <Image Source="/Icons/MissingIcon.png" Height="50" />
+                    <TextBlock Text="Search"/>
+                </StackPanel>
+            </Button>
         </DockPanel>
-        <TreeView Margin="0,78,400,0" Name="FileTree">
-            <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate DataType="{x:Type local:TreeEntry}" ItemsSource="{Binding Items}">
-                    <TextBlock Text="{Binding Name}" />
-                </HierarchicalDataTemplate>
-            </TreeView.ItemTemplate>
-        </TreeView>
-
-        <ListView Margin="400,78,0,0" Name="TreeContent" ItemsSource="{Binding Items}" MouseDoubleClick="TreeContent_MouseDoubleClick">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Name" Width="100"/>
-                </GridView>
-            </ListView.View>
-        </ListView>
+        <Grid Margin="0,78,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="0*" MinWidth="100"/>
+            </Grid.ColumnDefinitions>
+            <TreeView Name="FileTree">
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate DataType="{x:Type local:TreeEntry}" ItemsSource="{Binding Items}">
+                        <TextBlock Text="{Binding Name}" />
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>
+            </TreeView>
+            <GridSplitter Grid.Column="1" Width="5"/>
+            <ListView Grid.Column="2"  Name="TreeContent" ItemsSource="{Binding Items}" MouseDoubleClick="TreeContent_MouseDoubleClick">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Name" Width="100"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            <GridSplitter Grid.Column="3" Width="5"/>
+            <TextBlock Grid.Column="4" Text="Here File information will be displayed" TextWrapping="Wrap"></TextBlock>
+        </Grid>
     </Grid>
 </Window>
