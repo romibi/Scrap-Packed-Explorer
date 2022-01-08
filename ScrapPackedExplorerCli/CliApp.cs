@@ -2,6 +2,7 @@
 using CommandLine;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace ch.romibi.Scrap.Packed.Explorer.Cli
 {
@@ -25,8 +26,20 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
             string sourcePath       = options.sourcePath;
             string outputPackedFile = options.outputPackedFile;
 
+            if (!File.Exists(pakedFilePath))
+            {
+                Console.Error.WriteLine("Error: file \"{0}\" is not exists", pakedFilePath);
+                Environment.Exit(1);
+            }
+            if (!File.Exists(sourcePath))
+            {
+                Console.Error.WriteLine("Error: file \"{0}\" is not exists", sourcePath);
+                Environment.Exit(1);
+            }
+
             var packedFile = new ScrapPackedFile(pakedFilePath);
             packedFile.Add(sourcePath, pakedFilePath);
+
             if (!packedFile.SaveToFile(outputPackedFile))
             {
                 // todo: make tests of this 
@@ -38,17 +51,38 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
 
         private int RunRemove(RemoveOptions options)
         {
-            var packedFile = new ScrapPackedFile(options.packedFile);
-            packedFile.Remove(options.packedPath);
-            packedFile.SaveToFile(options.outputPackedFile);
+            string pakedFilePath    = options.packedFile;
+            string packedPath       = options.packedPath;
+            string outputPackedFile = options.outputPackedFile;
+
+            var packedFile = new ScrapPackedFile(pakedFilePath);
+            packedFile.Remove(packedPath);
+
+            if (!packedFile.SaveToFile(outputPackedFile))
+            {
+                // todo: make tests of this 
+                Console.Error.WriteLine("Error: unable to save \"{0}\". Check if you provided valid -o argument", outputPackedFile);
+                Environment.Exit(1);
+            }
             return 0;
         }
 
         private int RunRename(RenameOptions options)
         {
-            var packedFile = new ScrapPackedFile(options.packedFile);
-            packedFile.Rename(options.oldPackedPath, options.newPackedPath);
-            packedFile.SaveToFile(options.outputPackedFile);
+            string pakedFilePath    = options.packedFile;
+            string oldPackedPath    = options.oldPackedPath;
+            string newPackedPath    = options.newPackedPath;
+            string outputPackedFile = options.outputPackedFile;
+
+            var packedFile = new ScrapPackedFile(pakedFilePath);
+            packedFile.Rename(oldPackedPath, newPackedPath);
+
+            if (!packedFile.SaveToFile(outputPackedFile))
+            {
+                // todo: make tests of this 
+                Console.Error.WriteLine("Error: unable to save \"{0}\". Check if you provided valid -o argument", outputPackedFile);
+                Environment.Exit(1);
+            }
             return 0;
         }
 
