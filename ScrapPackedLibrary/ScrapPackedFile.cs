@@ -104,7 +104,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             return metaData.fileList;
         }
 
-        public void Add(string p_externalPath, string p_packedPath)
+        public void Add(string p_externalPath, string p_packedPath) 
         {
             FileAttributes fileAttributes = File.GetAttributes(p_externalPath);
             if (fileAttributes.HasFlag(FileAttributes.Directory))
@@ -271,7 +271,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
 
         }
 
-        public void SaveToFile(string p_newFileName)
+        public bool SaveToFile(string p_newFileName)
         {
             metaData.RecalcFileOffsets();
 
@@ -291,8 +291,10 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             // todo: make backup function better
 
             string dirName = Path.GetDirectoryName(newFileName);
-            if (dirName != "") 
+            if (dirName != null && dirName != "") 
                 Directory.CreateDirectory(dirName);
+            else
+                return false;
 
             var fsPackedNew = new FileStream(newFileName, FileMode.Create);
             try
@@ -316,6 +318,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             {
                 fsPackedNew.Close();
             }
+            return true;
         }
 
         private void WriteFileMetaData(FileStream p_fsPackedNew)
