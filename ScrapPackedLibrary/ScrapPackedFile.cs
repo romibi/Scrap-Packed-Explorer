@@ -276,14 +276,16 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             metaData.RecalcFileOffsets();
 
             var newFileName = fileName;
+            var oldFileName = fileName;
+
             if (p_newFileName.Length > 0)
                 newFileName = p_newFileName;
             else
             {
                 if (File.Exists(fileName))
-                    File.Move(fileName, fileName + ".bak",true);
+                    File.Move(fileName, fileName + ".bak", true);
                 fileName = fileName + ".bak";
-            }   
+            }
 
             if (File.Exists(newFileName))
                 File.Delete(newFileName);
@@ -291,10 +293,34 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             // todo: make backup function better
 
             string dirName = Path.GetDirectoryName(newFileName);
-            if (dirName != null && dirName != "") 
-                Directory.CreateDirectory(dirName);
-            else
+            
+            if (dirName == null)
+            {
+                // restore backup
+                if (File.Exists(fileName))
+                    File.Move(fileName, oldFileName, true);
+                fileName = oldFileName;
+
                 return false;
+            }
+            else if (dirName != "") // if dirName is not same dir as working dir. 
+            { 
+                try
+                {
+                    // todo: when input "-o <folder_name>/<file_name>" while file (NOT DIR!)
+                    // with name <folder_name> already existing couse excteption. 
+                    Directory.CreateDirectory(dirName);
+                }
+                catch
+                {
+                    // restore backup
+                    if (File.Exists(fileName))
+                        File.Move(fileName, oldFileName, true);
+                    fileName = oldFileName;
+
+                    return false;
+                }
+            }
 
             var fsPackedNew = new FileStream(newFileName, FileMode.Create);
             try
@@ -314,10 +340,15 @@ namespace ch.romibi.Scrap.Packed.PackerLib
                 WriteFileMetaData(fsPackedNew);
                 WriteFileData(fsPackedNew);
             }
+            catch
+            {
+                return false;
+            }
             finally
             {
                 fsPackedNew.Close();
             }
+
             return true;
         }
 
