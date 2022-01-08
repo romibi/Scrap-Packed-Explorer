@@ -104,16 +104,16 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             return metaData.fileList;
         }
 
-        public void Add(string p_externalPath, string p_packedPath) 
+        public bool Add(string p_externalPath, string p_packedPath) 
         {
             FileAttributes fileAttributes = File.GetAttributes(p_externalPath);
             if (fileAttributes.HasFlag(FileAttributes.Directory))
-                AddDirectory(p_externalPath, p_packedPath);
+                return AddDirectory(p_externalPath, p_packedPath);
             else
-                AddFile(p_externalPath, p_packedPath);
+                return AddFile(p_externalPath, p_packedPath);
         }
 
-        private void AddDirectory(string p_externalPath, string p_packedPath)
+        private bool AddDirectory(string p_externalPath, string p_packedPath)
         {
             var externalPath = p_externalPath.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
             var packedPath = p_packedPath.TrimEnd('/') + "/";
@@ -123,94 +123,122 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             foreach (string file in Directory.EnumerateFiles(externalPath, "*", SearchOption.AllDirectories))
             {
                 var packedFilePath = packedPath + file.Substring(externalPath.Length);
-                AddFile(file, packedFilePath);
+                if (!AddFile(file, packedFilePath))
+                {
+                    return false;
+                }
             }
+
+            return true;
         }
 
-        private void AddFile(string p_externalPath, string p_packedPath)
+        private bool AddFile(string p_externalPath, string p_packedPath)
         {
             if (!File.Exists(p_externalPath))
-                return; // todo raise or log error
+                return false; 
 
             var newFile = new FileInfo(p_externalPath);
 
             if (newFile.Length > UInt32.MaxValue)
-                return; // todo raise or log error
+                return false; 
 
             var packedPath = p_packedPath;
             if (packedPath.Length == 0)
                 packedPath = Path.GetFileName(p_externalPath);
 
             if (metaData.fileByPath.ContainsKey(packedPath))
-                RemoveFile(packedPath);
+                if (!RemoveFile(packedPath))
+                {
+                    return false;
+                }
 
             var newFileIndexData = new PackedFileIndexData(p_externalPath, packedPath, (UInt32) newFile.Length);
             metaData.fileList.Add(newFileIndexData);
             metaData.fileByPath.Add(packedPath, newFileIndexData);
+
+            return true;
         }
 
-        public void Rename(string p_oldName, string p_newName)
+        public bool Rename(string p_oldName, string p_newName)
         {
             if (p_oldName.EndsWith("/") || p_oldName.Length == 0)
-                RenameDirectory(p_oldName, p_newName);
+                return RenameDirectory(p_oldName, p_newName);
             else
-                RenameFile(p_oldName, p_newName);
+                return RenameFile(p_oldName, p_newName);
         }
 
-        private void RenameFile(string p_oldFileName, string p_newFileName)
+        private bool RenameFile(string p_oldFileName, string p_newFileName)
         {
+            if (!metaData.fileByPath.ContainsKey(p_oldFileName))
+                return false;
+
             var fileMetaData = metaData.fileByPath[p_oldFileName];
             fileMetaData.FilePath = p_newFileName;
             metaData.fileByPath.Remove(p_oldFileName);
             metaData.fileByPath.Add(p_newFileName, fileMetaData);
+
+            return true;
         }
 
-        private void RenameDirectory(string p_oldPath, string p_newPath)
+        private bool RenameDirectory(string p_oldPath, string p_newPath)
         {
+            if (p_oldPath == "/") 
+                p_oldPath = "";
+
             foreach (var file in metaData.fileList)
             {
                 if (file.FilePath.StartsWith(p_oldPath)) {
-                    RenameFile(file.FilePath, p_newPath + file.FilePath.Substring(p_oldPath.Length));
+                    if (!RenameFile(file.FilePath, p_newPath + file.FilePath.Substring(p_oldPath.Length)))
+                    {
+                        return false;
+                    }
                 }
             }
+
+            return true;
         }
 
-        public void Remove(string p_Name)
+        public bool Remove(string p_Name)
         {
             if (p_Name.EndsWith("/"))
-                RemoveDirectory(p_Name);
+                return RemoveDirectory(p_Name);
             else
-                RemoveFile(p_Name);
+                return RemoveFile(p_Name);
         }
 
-        private void RemoveFile(string p_Name)
+        private bool RemoveFile(string p_Name)
         {
             if (!metaData.fileByPath.ContainsKey(p_Name))
-                return; // todo raise or return error
+                return false; 
             var oldFile = metaData.fileByPath[p_Name];
             metaData.fileList.Remove(oldFile);
             metaData.fileByPath.Remove(p_Name);
+
+            return true;
         }
 
-        private void RemoveDirectory(string p_Name)
+        private bool RemoveDirectory(string p_Name)
         {
             var fileList = metaData.fileList.ToArray();
             foreach (var file in fileList)
             {
                 if (file.FilePath.StartsWith(p_Name))
-                    RemoveFile(file.FilePath);
+                    if (!RemoveFile(file.FilePath))
+                        return false;
             }
+
+            return true;
         }
 
-        public void Extract(string p_packedPath, string p_destinationPath)
+        public bool Extract(string p_packedPath, string p_destinationPath)
         {
             if (p_packedPath.EndsWith("/") || p_packedPath.Length==0)
-                ExtractDirectory(p_packedPath, p_destinationPath);
+                return ExtractDirectory(p_packedPath, p_destinationPath);
             else
-                ExtractFile(p_packedPath, p_destinationPath);
+                return ExtractFile(p_packedPath, p_destinationPath);
         }
 
-        private void ExtractDirectory(string p_packedPath, string p_destinationPath)
+        private bool ExtractDirectory(string p_packedPath, string p_destinationPath)
         {
             var destinationPath = p_destinationPath.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
             var fsPacked = new FileStream(fileName, FileMode.Open);
@@ -220,7 +248,10 @@ namespace ch.romibi.Scrap.Packed.PackerLib
                 {
                     if (file.FilePath.StartsWith(p_packedPath))
                     {
-                        ExtractFile(file.FilePath, destinationPath + file.FilePath.Substring(p_packedPath.Length), fsPacked);
+                        if (!ExtractFile(file.FilePath, destinationPath + file.FilePath.Substring(p_packedPath.Length), fsPacked))
+                        {
+                            return false;
+                        }
                     }
                 }
             }
@@ -228,12 +259,14 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             {
                 fsPacked.Close();
             }
+
+            return true;
         }
 
-        private void ExtractFile(string p_packedPath, string p_destinationPath, FileStream p_PackedFileStream = null)
+        private bool ExtractFile(string p_packedPath, string p_destinationPath, FileStream p_PackedFileStream = null)
         {
             if (!metaData.fileByPath.ContainsKey(p_packedPath))
-                return; // todo raise or return error;
+                return false;
 
             var fileMetaData = metaData.fileByPath[p_packedPath];
 
@@ -268,7 +301,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
                     fsPacked.Close();
             }
 
-
+            return true;
         }
 
         public bool SaveToFile(string p_newFileName)
