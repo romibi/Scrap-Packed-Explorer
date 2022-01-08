@@ -3,7 +3,7 @@
     "ScrapPackedExplorerCli": {
       "commandName": "Project",
       //"commandLineArgs": "--help"
-      "commandLineArgs": "add -p empty.packed -s examplefile1.txt -o /"
+      "commandLineArgs": "add -p empty.packed -s examplefile1.txt"
     },
     "ScrapPackedExplorerCliAsGUI": {
       "commandName": "Project"
