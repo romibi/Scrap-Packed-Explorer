@@ -2,7 +2,8 @@
   "profiles": {
     "ScrapPackedExplorerCli": {
       "commandName": "Project",
-      "commandLineArgs": "--help"
+      //"commandLineArgs": "--help"
+      "commandLineArgs": "add -p empty.packed -s examplefile1.txt -o /"
     },
     "ScrapPackedExplorerCliAsGUI": {
       "commandName": "Project"
