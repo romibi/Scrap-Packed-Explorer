@@ -24,26 +24,31 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
         {
             string pakedFilePath    = options.packedFile;
             string sourcePath       = options.sourcePath;
+            string packedPath       = options.packedPath;
             string outputPackedFile = options.outputPackedFile;
 
             if (!File.Exists(pakedFilePath))
             {
-                Console.Error.WriteLine("Error: file \"{0}\" is not exists", pakedFilePath);
+                Console.Error.WriteLine("Error: file \"{0}\" is not exists.", pakedFilePath);
                 Environment.Exit(1);
             }
             if (!File.Exists(sourcePath))
             {
-                Console.Error.WriteLine("Error: file \"{0}\" is not exists", sourcePath);
+                Console.Error.WriteLine("Error: file \"{0}\" is not exists.", sourcePath);
                 Environment.Exit(1);
             }
 
             var packedFile = new ScrapPackedFile(pakedFilePath);
-            packedFile.Add(sourcePath, pakedFilePath);
+            if (!packedFile.Add(sourcePath, packedPath))
+            {
+                Console.Error.WriteLine("Error: unable to add \"{0}\" to \"{1}\" because input file is too large or it is not exist.", sourcePath, outputPackedFile);
+                Environment.Exit(1);
+            }
 
             if (!packedFile.SaveToFile(outputPackedFile))
             {
                 // todo: make tests of this 
-                Console.Error.WriteLine("Error: unable to save \"{0}\". Check if you provided valid -o argument", outputPackedFile);
+                Console.Error.WriteLine("Error: unable to save \"{0}\". Check if you provided valid -o argument.", outputPackedFile);
                 Environment.Exit(1);
             }
             return 0;
@@ -55,13 +60,23 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
             string packedPath       = options.packedPath;
             string outputPackedFile = options.outputPackedFile;
 
+            if (!File.Exists(pakedFilePath))
+            {
+                Console.Error.WriteLine("Error: file \"{0}\" is not exists.", pakedFilePath);
+                Environment.Exit(1);
+            }
+
             var packedFile = new ScrapPackedFile(pakedFilePath);
-            packedFile.Remove(packedPath);
+            if (!packedFile.Remove(packedPath))
+            {
+                Console.Error.WriteLine("Error: unable to delete \"{0}\": this file is not exists in \"{1}\".", packedPath, pakedFilePath);
+                Environment.Exit(1);
+            }
 
             if (!packedFile.SaveToFile(outputPackedFile))
             {
                 // todo: make tests of this 
-                Console.Error.WriteLine("Error: unable to save \"{0}\". Check if you provided valid -o argument", outputPackedFile);
+                Console.Error.WriteLine("Error: unable to save \"{0}\". Check if you provided valid -o argument.", outputPackedFile);
                 Environment.Exit(1);
             }
             return 0;
@@ -74,13 +89,33 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
             string newPackedPath    = options.newPackedPath;
             string outputPackedFile = options.outputPackedFile;
 
+            if (!File.Exists(pakedFilePath))
+            {
+                Console.Error.WriteLine("Error: file \"{0}\" is not exists.", pakedFilePath);
+                Environment.Exit(1);
+            }
+            if (oldPackedPath == "")
+            {
+                Console.Error.WriteLine("Error: \"-s\" must not be empty.");
+                Environment.Exit(1);
+            }
+            if (newPackedPath == "")
+            {
+                Console.Error.WriteLine("Error: \"-d\" must not be empty.");
+                Environment.Exit(1);
+            }
+
             var packedFile = new ScrapPackedFile(pakedFilePath);
-            packedFile.Rename(oldPackedPath, newPackedPath);
+            if (!packedFile.Rename(oldPackedPath, newPackedPath))
+            {
+                Console.Error.WriteLine("Error: unable to rename \"{0}\" to \"{1}\". \"{0}\" is not exsits in \"{2}\".", oldPackedPath, newPackedPath, pakedFilePath);
+                Environment.Exit(1);
+            }
 
             if (!packedFile.SaveToFile(outputPackedFile))
             {
                 // todo: make tests of this 
-                Console.Error.WriteLine("Error: unable to save \"{0}\". Check if you provided valid -o argument", outputPackedFile);
+                Console.Error.WriteLine("Error: unable to save \"{0}\". Check if you provided valid -o argument.", outputPackedFile);
                 Environment.Exit(1);
             }
             return 0;
@@ -88,20 +123,56 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
 
         private int RunExtract(ExtractOptions options)
         {
-            var packedFile = new ScrapPackedFile(options.packedFile);
-            packedFile.Extract(options.packedPath, options.destinationPath);
+            string pakedFilePath   = options.packedFile;
+            string packedPath      = options.packedPath;
+            string destinationPath = options.destinationPath;
+
+            if (!File.Exists(pakedFilePath))
+            {
+                Console.Error.WriteLine("Error: file \"{0}\" is not exists.", pakedFilePath);
+                Environment.Exit(1);
+            }
+
+            if (destinationPath == "")
+            {
+                Console.Error.WriteLine("Error: destination path must not be empty.");
+                Environment.Exit(1);
+            }
+
+            var packedFile = new ScrapPackedFile(pakedFilePath);
+            if (!packedFile.Extract(packedPath, destinationPath))
+            {
+                Console.Error.WriteLine("Error: unable to extract \"{0}\" from \"{1}\". \"{0}\" is not exsits in \"{1}\".", packedPath, pakedFilePath);
+                Environment.Exit(1);
+            }
             return 0;
         }
 
         private int RunList(ListOptions options)
         {
-            var packedFile = new ScrapPackedFile(options.packedFile);
+            string pakedFilePath = options.packedFile;
+
+            if (!File.Exists(pakedFilePath))
+            {
+                Console.Error.WriteLine("Error: file \"{0}\" is not exists.", pakedFilePath);
+                Environment.Exit(1);
+            }
+
+            var packedFile = new ScrapPackedFile(pakedFilePath);
             List<string> fileNames = packedFile.GetFileNames();
 
-            foreach (var fileName in fileNames)
+            if (fileNames.Count == 0)
             {
-                Console.WriteLine(fileName);
+                Console.WriteLine("\"{0}\" is empty.", pakedFilePath);
             }
+            else
+            {
+                foreach (var fileName in fileNames)
+                {
+                    Console.WriteLine(fileName);
+                }
+            }
+            
             // Todo: implement RunList output styles
             return 0;
         }
