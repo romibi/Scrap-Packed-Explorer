@@ -21,9 +21,18 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
 
         private int RunAdd(AddOptions options)
         {
-            var packedFile = new ScrapPackedFile(options.packedFile);
-            packedFile.Add(options.sourcePath, options.packedPath);
-            packedFile.SaveToFile(options.outputPackedFile);
+            string pakedFilePath    = options.packedFile;
+            string sourcePath       = options.sourcePath;
+            string outputPackedFile = options.outputPackedFile;
+
+            var packedFile = new ScrapPackedFile(pakedFilePath);
+            packedFile.Add(sourcePath, pakedFilePath);
+            if (!packedFile.SaveToFile(outputPackedFile))
+            {
+                // todo: make tests of this 
+                Console.Error.WriteLine("Error: unable to save \"{0}\". Check if you provided valid -o argument", outputPackedFile);
+                Environment.Exit(1);
+            }
             return 0;
         }
 
