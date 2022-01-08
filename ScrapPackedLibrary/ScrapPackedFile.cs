@@ -289,7 +289,11 @@ namespace ch.romibi.Scrap.Packed.PackerLib
                 File.Delete(newFileName);
 
             // todo: make backup function better
-            Directory.CreateDirectory(Path.GetDirectoryName(newFileName));
+
+            string dirName = Path.GetDirectoryName(newFileName);
+            if (dirName != "") 
+                Directory.CreateDirectory(dirName);
+
             var fsPackedNew = new FileStream(newFileName, FileMode.Create);
             try
             {
