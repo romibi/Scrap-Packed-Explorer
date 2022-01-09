@@ -22,148 +22,72 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
 
         private int RunAdd(AddOptions options)
         {
-            string pakedFilePath    = options.packedFile;
-            string sourcePath       = options.sourcePath;
-            string packedPath       = options.packedPath;
-            string outputPackedFile = options.outputPackedFile;
+            ScrapPackedFile packedFile;
+            try { packedFile = new ScrapPackedFile(options.packedFile); }
+            catch (Exception ex) { return Error(ex); }
 
-            if (!File.Exists(pakedFilePath))
-            {
-                Console.Error.WriteLine("Error: file \"{0}\" is not exists.", pakedFilePath);
-                Environment.Exit(1);
-            }
-            if (!File.Exists(sourcePath))
-            {
-                Console.Error.WriteLine("Error: file \"{0}\" is not exists.", sourcePath);
-                Environment.Exit(1);
-            }
+            try { packedFile.Add(options.sourcePath, options.packedPath); }
+            catch (Exception ex) { return Error(ex); }
 
-            var packedFile = new ScrapPackedFile(pakedFilePath);
-            if (!packedFile.Add(sourcePath, packedPath))
-            {
-                Console.Error.WriteLine("Error: unable to add \"{0}\" to \"{1}\" because input file is too large or it is not exist.", sourcePath, outputPackedFile);
-                Environment.Exit(1);
-            }
+            try { packedFile.SaveToFile(options.outputPackedFile); }
+            catch (Exception ex) { return Error(ex); }
 
-            if (!packedFile.SaveToFile(outputPackedFile))
-            {
-                // todo: make tests of this 
-                Console.Error.WriteLine("Error: unable to save \"{0}\". Check if you provided valid -o argument.", outputPackedFile);
-                Environment.Exit(1);
-            }
             return 0;
         }
 
         private int RunRemove(RemoveOptions options)
         {
-            string pakedFilePath    = options.packedFile;
-            string packedPath       = options.packedPath;
-            string outputPackedFile = options.outputPackedFile;
+            ScrapPackedFile packedFile;
+            try { packedFile = new ScrapPackedFile(options.packedFile); }
+            catch (Exception ex) { return Error(ex); }
 
-            if (!File.Exists(pakedFilePath))
-            {
-                Console.Error.WriteLine("Error: file \"{0}\" is not exists.", pakedFilePath);
-                Environment.Exit(1);
-            }
+            try { packedFile.Remove(options.packedPath); }
+            catch (Exception ex) { return Error(ex); }
 
-            var packedFile = new ScrapPackedFile(pakedFilePath);
-            if (!packedFile.Remove(packedPath))
-            {
-                Console.Error.WriteLine("Error: unable to delete \"{0}\": this file is not exists in \"{1}\".", packedPath, pakedFilePath);
-                Environment.Exit(1);
-            }
+            try { packedFile.SaveToFile(options.outputPackedFile); }
+            catch (Exception ex) { return Error(ex); }
 
-            if (!packedFile.SaveToFile(outputPackedFile))
-            {
-                // todo: make tests of this 
-                Console.Error.WriteLine("Error: unable to save \"{0}\". Check if you provided valid -o argument.", outputPackedFile);
-                Environment.Exit(1);
-            }
             return 0;
         }
 
         private int RunRename(RenameOptions options)
         {
-            string pakedFilePath    = options.packedFile;
-            string oldPackedPath    = options.oldPackedPath;
-            string newPackedPath    = options.newPackedPath;
-            string outputPackedFile = options.outputPackedFile;
+            ScrapPackedFile packedFile;
+            try { packedFile = new ScrapPackedFile(options.packedFile); }
+            catch (Exception ex) { return Error(ex); }
+                        
+            try { packedFile.Rename(options.oldPackedPath, options.newPackedPath); }
+            catch (Exception ex) { return Error(ex); }
 
-            if (!File.Exists(pakedFilePath))
-            {
-                Console.Error.WriteLine("Error: file \"{0}\" is not exists.", pakedFilePath);
-                Environment.Exit(1);
-            }
-            if (oldPackedPath == "")
-            {
-                Console.Error.WriteLine("Error: \"-s\" must not be empty.");
-                Environment.Exit(1);
-            }
-            if (newPackedPath == "")
-            {
-                Console.Error.WriteLine("Error: \"-d\" must not be empty.");
-                Environment.Exit(1);
-            }
+            try { packedFile.SaveToFile(options.outputPackedFile); }
+            catch (Exception ex) { return Error(ex); }
 
-            var packedFile = new ScrapPackedFile(pakedFilePath);
-            if (!packedFile.Rename(oldPackedPath, newPackedPath))
-            {
-                Console.Error.WriteLine("Error: unable to rename \"{0}\" to \"{1}\". \"{0}\" is not exsits in \"{2}\".", oldPackedPath, newPackedPath, pakedFilePath);
-                Environment.Exit(1);
-            }
-
-            if (!packedFile.SaveToFile(outputPackedFile))
-            {
-                // todo: make tests of this 
-                Console.Error.WriteLine("Error: unable to save \"{0}\". Check if you provided valid -o argument.", outputPackedFile);
-                Environment.Exit(1);
-            }
             return 0;
         }
 
         private int RunExtract(ExtractOptions options)
         {
-            string pakedFilePath   = options.packedFile;
-            string packedPath      = options.packedPath;
-            string destinationPath = options.destinationPath;
+            ScrapPackedFile packedFile;
+            try { packedFile = new ScrapPackedFile(options.packedFile); }
+            catch (Exception ex) { return Error(ex); }
 
-            if (!File.Exists(pakedFilePath))
-            {
-                Console.Error.WriteLine("Error: file \"{0}\" is not exists.", pakedFilePath);
-                Environment.Exit(1);
-            }
+            try { packedFile.Extract(options.packedPath, options.destinationPath); }
+            catch (Exception ex) { return Error(ex); }
 
-            if (destinationPath == "")
-            {
-                Console.Error.WriteLine("Error: destination path must not be empty.");
-                Environment.Exit(1);
-            }
-
-            var packedFile = new ScrapPackedFile(pakedFilePath);
-            if (!packedFile.Extract(packedPath, destinationPath))
-            {
-                Console.Error.WriteLine("Error: unable to extract \"{0}\" from \"{1}\". \"{0}\" is not exsits in \"{1}\".", packedPath, pakedFilePath);
-                Environment.Exit(1);
-            }
             return 0;
         }
 
         private int RunList(ListOptions options)
         {
-            string pakedFilePath = options.packedFile;
+            ScrapPackedFile packedFile;
+            try { packedFile = new ScrapPackedFile(options.packedFile); }
+            catch (Exception ex) { return Error(ex); }
 
-            if (!File.Exists(pakedFilePath))
-            {
-                Console.Error.WriteLine("Error: file \"{0}\" is not exists.", pakedFilePath);
-                Environment.Exit(1);
-            }
-
-            var packedFile = new ScrapPackedFile(pakedFilePath);
             List<string> fileNames = packedFile.GetFileNames();
 
             if (fileNames.Count == 0)
             {
-                Console.WriteLine("\"{0}\" is empty.", pakedFilePath);
+                Console.WriteLine($"{options.packedFile} is empty.");
             }
             else
             {
@@ -177,5 +101,11 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
             return 0;
         }
 
+        // This just to make code "preetier".
+        private int Error(Exception ex)
+        {
+            Console.Error.WriteLine($"Error: {ex.Message}");
+            return 1;
+        }
     }
 }
