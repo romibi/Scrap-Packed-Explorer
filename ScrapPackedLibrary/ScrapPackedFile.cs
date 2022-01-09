@@ -13,7 +13,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
         public ScrapPackedFile(string p_fileName)
         {
             fileName = p_fileName;
-            ReadPackedMetaData();
+            ReadPackedMetaData();            
         }
 
         private void ReadPackedMetaData()
@@ -21,9 +21,6 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             metaData = new PackedMetaData();
             metaData.fileList = new List<PackedFileIndexData>();
             metaData.fileByPath = new Dictionary<string, PackedFileIndexData>();
-
-            if (!File.Exists(fileName))
-                return;
 
             var fsPacked = new FileStream(fileName, FileMode.Open);
             try
@@ -37,7 +34,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
 
                 if (readFileHeader != PackedMetaData.fileHeader)
                 {
-                    throw new InvalidDataException("unsupported file type");
+                    throw new InvalidDataException($"Unable to open {fileName}: unsupported file type");
                 }
 
                 // read version
@@ -104,16 +101,16 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             return metaData.fileList;
         }
 
-        public bool Add(string p_externalPath, string p_packedPath) 
+        public void Add(string p_externalPath, string p_packedPath) 
         {
             FileAttributes fileAttributes = File.GetAttributes(p_externalPath);
             if (fileAttributes.HasFlag(FileAttributes.Directory))
-                return AddDirectory(p_externalPath, p_packedPath);
+                AddDirectory(p_externalPath, p_packedPath);
             else
-                return AddFile(p_externalPath, p_packedPath);
+                AddFile(p_externalPath, p_packedPath);
         }
 
-        private bool AddDirectory(string p_externalPath, string p_packedPath)
+        private void AddDirectory(string p_externalPath, string p_packedPath)
         {
             var externalPath = p_externalPath.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
             var packedPath = p_packedPath.TrimEnd('/') + "/";
@@ -123,150 +120,119 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             foreach (string file in Directory.EnumerateFiles(externalPath, "*", SearchOption.AllDirectories))
             {
                 var packedFilePath = packedPath + file.Substring(externalPath.Length);
-                if (!AddFile(file, packedFilePath))
-                {
-                    return false;
-                }
+                AddFile(file, packedFilePath);
             }
-
-            return true;
         }
 
-        private bool AddFile(string p_externalPath, string p_packedPath)
+        private void AddFile(string p_externalPath, string p_packedPath)
         {
-            if (!File.Exists(p_externalPath))
-                return false; 
-
             var newFile = new FileInfo(p_externalPath);
 
             if (newFile.Length > UInt32.MaxValue)
-                return false; 
+                throw new InvalidDataException($"Unable to add file {p_externalPath}: target size is too big");
 
             var packedPath = p_packedPath;
             if (packedPath.Length == 0)
                 packedPath = Path.GetFileName(p_externalPath);
 
             if (metaData.fileByPath.ContainsKey(packedPath))
-                if (!RemoveFile(packedPath))
-                {
-                    return false;
-                }
+                RemoveFile(packedPath);
 
             var newFileIndexData = new PackedFileIndexData(p_externalPath, packedPath, (UInt32) newFile.Length);
             metaData.fileList.Add(newFileIndexData);
             metaData.fileByPath.Add(packedPath, newFileIndexData);
-
-            return true;
         }
 
-        public bool Rename(string p_oldName, string p_newName)
+        public void Rename(string p_oldName, string p_newName)
         {
             if (p_oldName.EndsWith("/") || p_oldName.Length == 0)
-                return RenameDirectory(p_oldName, p_newName);
+                RenameDirectory(p_oldName, p_newName);
             else
-                return RenameFile(p_oldName, p_newName);
+                RenameFile(p_oldName, p_newName);
         }
 
-        private bool RenameFile(string p_oldFileName, string p_newFileName)
+        private void RenameFile(string p_oldFileName, string p_newFileName)
         {
             if (!metaData.fileByPath.ContainsKey(p_oldFileName))
-                return false;
+                throw new ArgumentException($"Unable to reanme {p_oldFileName}: target  is not exists in {fileName}");
 
             var fileMetaData = metaData.fileByPath[p_oldFileName];
             fileMetaData.FilePath = p_newFileName;
             metaData.fileByPath.Remove(p_oldFileName);
             metaData.fileByPath.Add(p_newFileName, fileMetaData);
-
-            return true;
         }
 
-        private bool RenameDirectory(string p_oldPath, string p_newPath)
+        private void RenameDirectory(string p_oldPath, string p_newPath)
         {
             if (p_oldPath == "/") 
                 p_oldPath = "";
 
+            // todo: better search function. This is not good 
             foreach (var file in metaData.fileList)
-            {
-                if (file.FilePath.StartsWith(p_oldPath)) {
-                    if (!RenameFile(file.FilePath, p_newPath + file.FilePath.Substring(p_oldPath.Length)))
-                    {
-                        return false;
-                    }
-                }
-            }
-
-            return true;
+                if (file.FilePath.StartsWith(p_oldPath))
+                    RenameFile(file.FilePath, p_newPath + file.FilePath.Substring(p_oldPath.Length));
         }
 
-        public bool Remove(string p_Name)
+        public void Remove(string p_Name)
         {
             if (p_Name.EndsWith("/"))
-                return RemoveDirectory(p_Name);
+                RemoveDirectory(p_Name);
             else
-                return RemoveFile(p_Name);
+                RemoveFile(p_Name);
         }
 
-        private bool RemoveFile(string p_Name)
+        private void RemoveFile(string p_Name)
         {
             if (!metaData.fileByPath.ContainsKey(p_Name))
-                return false; 
+                throw new ArgumentException($"Unable to remove {p_Name}: target is not exists in {fileName}");
+
             var oldFile = metaData.fileByPath[p_Name];
             metaData.fileList.Remove(oldFile);
             metaData.fileByPath.Remove(p_Name);
-
-            return true;
         }
 
-        private bool RemoveDirectory(string p_Name)
+        private void RemoveDirectory(string p_Name)
         {
+            if (p_Name == "/")
+                p_Name = "";
+
+            // todo: better search function. This is not good
             var fileList = metaData.fileList.ToArray();
             foreach (var file in fileList)
             {
                 if (file.FilePath.StartsWith(p_Name))
-                    if (!RemoveFile(file.FilePath))
-                        return false;
+                    RemoveFile(file.FilePath);
             }
-
-            return true;
         }
 
-        public bool Extract(string p_packedPath, string p_destinationPath)
+        public void Extract(string p_packedPath, string p_destinationPath)
         {
             if (p_packedPath.EndsWith("/") || p_packedPath.Length==0)
-                return ExtractDirectory(p_packedPath, p_destinationPath);
+                ExtractDirectory(p_packedPath, p_destinationPath);
             else
-                return ExtractFile(p_packedPath, p_destinationPath);
+                ExtractFile(p_packedPath, p_destinationPath);
         }
 
-        private bool ExtractDirectory(string p_packedPath, string p_destinationPath)
+        private void ExtractDirectory(string p_packedPath, string p_destinationPath)
         {
             var destinationPath = p_destinationPath.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
             var fsPacked = new FileStream(fileName, FileMode.Open);
             try
             {
                 foreach (var file in metaData.fileList)
-                {
                     if (file.FilePath.StartsWith(p_packedPath))
-                    {
-                        if (!ExtractFile(file.FilePath, destinationPath + file.FilePath.Substring(p_packedPath.Length), fsPacked))
-                        {
-                            return false;
-                        }
-                    }
-                }
+                       ExtractFile(file.FilePath, destinationPath + file.FilePath.Substring(p_packedPath.Length), fsPacked);
             }
             finally
             {
                 fsPacked.Close();
             }
-
-            return true;
         }
 
-        private bool ExtractFile(string p_packedPath, string p_destinationPath, FileStream p_PackedFileStream = null)
+        private void ExtractFile(string p_packedPath, string p_destinationPath, FileStream p_PackedFileStream = null)
         {
             if (!metaData.fileByPath.ContainsKey(p_packedPath))
-                return false;
+                throw new ArgumentException($"Unable to extract {p_packedPath}: target is not exists in {fileName}");
 
             var fileMetaData = metaData.fileByPath[p_packedPath];
 
@@ -276,35 +242,28 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             Directory.CreateDirectory(Path.GetDirectoryName(p_destinationPath));
 
             var fsPacked = p_PackedFileStream;
-            if(fsPacked==null)
+            if (fsPacked == null)
                 fsPacked = new FileStream(fileName, FileMode.Open);
+
+            var fsExtractFile = new FileStream(p_destinationPath, FileMode.Create);
             try
             {
-                var fsExtractFile = new FileStream(p_destinationPath, FileMode.Create);
-                try
-                {
-                    byte[] readBytes = new byte[fileMetaData.FileSize];
+                byte[] readBytes = new byte[fileMetaData.FileSize];
 
-                    fsPacked.Seek(fileMetaData.OriginalOffset, SeekOrigin.Begin);
-                    fsPacked.Read(readBytes, 0, (int)fileMetaData.FileSize);
+                fsPacked.Seek(fileMetaData.OriginalOffset, SeekOrigin.Begin);
+                fsPacked.Read(readBytes, 0, (int)fileMetaData.FileSize);
                     
-                    fsExtractFile.Write(readBytes);
-                }
-                finally
-                {
-                    fsExtractFile.Close();
-                }
+                fsExtractFile.Write(readBytes);
             }
             finally
             {
-                if (p_PackedFileStream == null)
-                    fsPacked.Close();
+                fsExtractFile.Close();
             }
-
-            return true;
+            if (p_PackedFileStream == null)
+                fsPacked.Close();
         }
 
-        public bool SaveToFile(string p_newFileName)
+        public void SaveToFile(string p_newFileName)
         {
             metaData.RecalcFileOffsets();
 
@@ -334,7 +293,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
                     File.Move(fileName, oldFileName, true);
                 fileName = oldFileName;
 
-                return false;
+                throw new IOException($"Unable to save file {p_newFileName}: unexpected error.");
             }
             else if (dirName != "") // if dirName is not same dir as working dir. 
             { 
@@ -344,14 +303,14 @@ namespace ch.romibi.Scrap.Packed.PackerLib
                     // with name <folder_name> already existing couse excteption. 
                     Directory.CreateDirectory(dirName);
                 }
-                catch
+                catch (Exception ex)
                 {
                     // restore backup
                     if (File.Exists(fileName))
                         File.Move(fileName, oldFileName, true);
                     fileName = oldFileName;
 
-                    return false;
+                    throw ex;
                 }
             }
 
@@ -373,16 +332,10 @@ namespace ch.romibi.Scrap.Packed.PackerLib
                 WriteFileMetaData(fsPackedNew);
                 WriteFileData(fsPackedNew);
             }
-            catch
-            {
-                return false;
-            }
             finally
             {
                 fsPackedNew.Close();
             }
-
-            return true;
         }
 
         private void WriteFileMetaData(FileStream p_fsPackedNew)
