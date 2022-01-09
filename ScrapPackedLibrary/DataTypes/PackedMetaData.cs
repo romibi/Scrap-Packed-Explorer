@@ -21,6 +21,9 @@ namespace ch.romibi.Scrap.Packed.PackerLib.DataTypes
                 file.Offset = currentOffset;
                 currentOffset += file.FileSize;
             }
+
+            if (currentOffset > UInt32.MaxValue)
+                throw new OverflowException("Too much data for single archive. Multipart archives is not supported yet");
         }
 
         private UInt32 CalculateFirstFileOffset()
