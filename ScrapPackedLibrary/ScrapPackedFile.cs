@@ -34,7 +34,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
 
                 if (readFileHeader != PackedMetaData.fileHeader)
                 {
-                    throw new InvalidDataException($"Unable to open {fileName}: unsupported file type");
+                    throw new InvalidDataException($"Unable to open '{Path.GetFullPath(fileName)}': unsupported file type");
                 }
 
                 // read version
