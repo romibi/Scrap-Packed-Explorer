@@ -68,8 +68,8 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
         [Option('q', "searchString", Required = false, Default = "", HelpText = "A Search string to filter the output with")]
         public string searchString { get; set; }
 
-        [Option('r', "regex", Required =false, Default = "", HelpText = "Defines if the search string is a regular expression")]
-        public string isRegex { get; set; }
+        [Option('r', "regex", Required =false, Default = false, HelpText = "Defines if the search string is a regular expression")]
+        public bool isRegex { get; set; }
     }
 
 }
