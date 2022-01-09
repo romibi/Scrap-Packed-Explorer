@@ -98,14 +98,14 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
                 "--sourcePath", @"TestData\exampleFolder1\" },
                 @"TestData\TestReferenceFiles\TestAdd\addFolderNew.packed",
                 @"TestResults\TestAdd\packedFile.packed",
-                "add folder to new");
+                "Add folder to new");
 
             // add folder existing root
             CheckRunCompareFile(new[] { "add", "--packedFile", @"TestResults\TestAdd\packedFile.packed",
                 "--sourcePath", @"TestData\exampleFolder2\" },
                 @"TestData\TestReferenceFiles\TestAdd\addFolderExistingToRoot.packed",
                 @"TestResults\TestAdd\packedFile.packed",
-                "add folder to existing to root");
+                "Add folder to existing to root");
 
             // add folder existing subfolder
             CheckRunCompareFile(new[] { "add", "--packedFile", @"TestResults\TestAdd\packedFile.packed", 
@@ -113,7 +113,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
                 "--packedPath", "subfolder/" },
                 @"TestData\TestReferenceFiles\TestAdd\addFolderExistingToSubfolder.packed",
                 @"TestResults\TestAdd\packedFile.packed",
-                "add folder to existing to subfolder");
+                "Add folder to existing to subfolder");
 
             // add folder replace some
             CheckRunCompareFile(new[] { "add", "--packedFile", @"TestResults\TestAdd\packedFile.packed",
@@ -121,7 +121,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
                 "--packedPath", "subfolder/" },
                 @"TestData\TestReferenceFiles\TestAdd\addFolderReplaceSome.packed",
                 @"TestResults\TestAdd\packedFile.packed",
-                "add folder to existing to subfolder, replace some");
+                "Add folder to existing to subfolder, replace some");
 
             // Note: outputPackedFile, keepBackup & overwriteOldBackup tested via add file
         }
@@ -141,7 +141,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
             {
                 CheckRunFail(new[] {"add", "--packedFile", @"TestResults\TestAdd\packedFile.packed",
                     "--sourcePath", @"TestData\examplefile1.txt",
-                    "--packedPath", "file.txt"}, 1, "expected file to be inaccessible");
+                    "--packedPath", "file.txt"}, 1, "Expected file to be inaccessible");
             }
             finally
             {
@@ -153,7 +153,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
             // check unreadable/invalid packed
             CheckRunFail(new[] { "add", "--packedFile", @"TestResults\TestAdd\packedFile.packed",
                 "--sourcePath", @"TestData\exampleFile1.txt",
-                "--packedPath", "file.txt"}, 1, "expected source file to be invalid");
+                "--packedPath", "file.txt"}, 1, "Expected source file to be invalid");
 
             // check backup failed
             // Todo implement
@@ -166,7 +166,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
             CheckRunFail(new[] { "add", "--packedFile", @"TestResults\TestAdd\packedFile.packed",
                 "--sourcePath", "exampleFile_missing.txt",
                 "--packedPath", "file.txt"},
-                1, "expected file not found");
+                1, "Expected file not found");
 
             // add file, file not readable
             // todo test add file that is not readable
@@ -180,7 +180,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
             CheckRunFail(new[] { "add", "--packedFile", @"TestResults\TestAdd\packedFile.packed",
                 "--sourcePath", "exampleFolder_missing/",
                 "--packedPath", "subfolder/"},
-                1, "expected file not found");
+                1, "Expected file not found");
 
             // add folder, some files not readable
             // todo test where some files in folder to ad are not readable
@@ -200,14 +200,14 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
                 "--packedPath", "file1.txt"},
                 @"TestData\TestReferenceFiles\TestRemove\removedFile.packed",
                 @"TestResults\TestRemove\packedFile.packed",
-                "remove file");
+                "Remove file");
 
             File.Copy(@"TestData\example.packed", @"TestResults\TestRemove\packedFile.packed", true);
             CheckRunCompareFile(new[] { "remove", "--packedFile" , @"TestResults\TestRemove\packedFile.packed",
                 "--packedPath", "folder1/"},
                 @"TestData\TestReferenceFiles\TestRemove\removedFolder.packed",
                 @"TestResults\TestRemove\packedFile.packed",
-                "remove folder");
+                "Remove folder");
 
             // Note: outputPackedFile, keepBackup & overwriteOldBackup tested via add
 
@@ -223,12 +223,12 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
 
             CheckRunFail(new[] { "remove", "--packedFile" , @"TestResults\TestRemove\packedFile.packed",
                 "--packedPath", "file_missing.txt"},
-                1, "remove file does not exist");
+                1, "Remove file does not exist");
 
             File.Copy(@"TestData\example.packed", @"TestResults\TestRemove\packedFile.packed", true);
             CheckRunFail(new[] { "remove", "--packedFile" , @"TestResults\TestRemove\packedFile.packed",
                 "--packedPath", "folder_missing/"},
-                1, "remove folder does not exist");
+                1, "Remove folder does not exist");
         }
 
         [TestMethod]
@@ -242,7 +242,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
                 "--newPackedPath", "file_renamed.txt"},
                 @"TestData\TestReferenceFiles\TestRename\renameFile.packed",
                 @"TestResults\TestRename\packedFile.packed",
-                "rename file");
+                "Rename file");
 
             File.Copy(@"TestData\example.packed", @"TestResults\TestRename\packedFile.packed", true);
             CheckRunCompareFile(new[] { "rename", "--packedFile" , @"TestResults\TestRename\packedFile.packed",
@@ -250,7 +250,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
                 "--newPackedPath", "directory/"},
                 @"TestData\TestReferenceFiles\TestRename\renameFolder.packed",
                 @"TestResults\TestRename\packedFile.packed",
-                "rename folder");
+                "Rename folder");
 
             File.Copy(@"TestData\example.packed", @"TestResults\TestRename\packedFile.packed", true);
             CheckRunCompareFile(new[] { "rename", "--packedFile" , @"TestResults\TestRename\packedFile.packed",
@@ -258,7 +258,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
                 "--newPackedPath", "sub/"},
                 @"TestData\TestReferenceFiles\TestRename\renameRoot.packed",
                 @"TestResults\TestRename\packedFile.packed",
-                "rename root");
+                "Rename root");
         }
 
         [TestMethod]
@@ -270,13 +270,13 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
             CheckRunFail(new[] { "rename", "--packedFile" , @"TestResults\TestRename\packedFile.packed",
                 "--oldPackedPath", "file_missing.txt",
                 "--newPackedPath", "file_renamed.txt"},
-                1, "rename missing file");
+                1, "Rename missing file");
 
             File.Copy(@"TestData\example.packed", @"TestResults\TestRename\packedFile.packed", true);
             CheckRunFail(new[] { "rename", "--packedFile" , @"TestResults\TestRename\packedFile.packed",
                 "--oldPackedPath", "folder_missing/",
                 "--newPackedPath", "directory/"},
-                1, "rename missing folder");
+                1, "Rename missing folder");
 
             // Note: outputPackedFile, keepBackup & overwriteOldBackup tested via add
         }
@@ -289,20 +289,20 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
                 "--destinationPath", @"TestResults\TestExtract\file.txt"},
                 @"TestData\TestReferenceFiles\TestExtract\ExtractFile\file.txt",
                 @"TestResults\TestExtract\file.txt",
-                "extract file");
+                "Extract file");
 
             CheckRunCompareFolder(new[] { "extract", "--packedFile", @"TestData\example.packed",
                 "--packedPath", "folder1/",
                 "--destinationPath", @"TestResults\TestExtract\someFolder\"},
                 @"TestData\TestReferenceFiles\TestExtract\ExtractFolder\someFolder\",
                 @"TestResults\TestExtract\someFolder\",
-                "extract folder");
+                "Extract folder");
 
             CheckRunCompareFolder(new[] { "extract", "--packedFile", @"TestData\example.packed",
                 "--destinationPath", @"TestResults\TestExtract\all\"},
                 @"TestData\TestReferenceFiles\TestExtract\ExtractAll\",
                 @"TestResults\TestExtract\all\",
-                "extract all");
+                "Extract all");
         }
 
         [TestMethod]
@@ -324,7 +324,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
                 "folder2/file2.txt\n" +
                 "folder2/folder1/file1.txt\n" +
                 "folder2/folder1/file2.txt",
-                "list");
+                "List");
 
             CheckRunCompareOutput(new[] { "list", "--packedFile", @"TestData\example.packed",
                 "--searchString", ".txt" },
@@ -335,7 +335,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
                 "folder2/file2.txt\n" +
                 "folder2/folder1/file1.txt\n" +
                 "folder2/folder1/file2.txt",
-                "list .txt");
+                "List .txt");
 
             CheckRunCompareOutput(new[] { "list", "--packedFile", @"TestData\example.packed",
                 "--searchString", "folder2/*.txt" },
@@ -343,7 +343,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
                 "folder2/file2.txt\n" +
                 "folder2/folder1/file1.txt\n" +
                 "folder2/folder1/file2.txt",
-                "list folder2/*.txt");
+                "List folder2/*.txt");
 
             CheckRunCompareOutput(new[] { "list", "--packedFile", @"TestData\example.packed",
                 "--searchString", @"folder2/.*\.txt", "--regex" },
@@ -351,7 +351,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
                 "folder2/file2.txt\n" +
                 "folder2/folder1/file1.txt\n" +
                 "folder2/folder1/file2.txt",
-                "list folder2/.*\\.txt");
+                "List folder2/.*\\.txt");
 
             CheckRunCompareOutput(new[] { "list", "--packedFile", @"TestData\example.packed",
                 "--outputStyle", "tree"},
@@ -369,7 +369,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
                 "    └───folder1\n" +
                 "            file1.txt\n" +
                 "            file2.txt",
-                "list as tree");
+                "List as tree");
 
             CheckRunCompareOutput(new[] { "list", "--packedFile", @"TestData\example.packed",
                 "--outputStyle", "names",
@@ -378,7 +378,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
             "file2.txt\n" +
             "file1.txt\n" +
             "file2.txt",
-            "list files with only filename from folder2");
+            "List files with only filename from folder2");
         }
 
         [TestMethod]
