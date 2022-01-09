@@ -33,6 +33,9 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
         [TestMethod]
         public void TestRunAddFile()
         {
+            Directory.CreateDirectory(@"TestResults\TestAdd");
+            File.Copy(@"TestData\example.packed", @"TestResults\TestAdd\packedFile.packed", true);
+
             // add file new
             CheckRunCompareFile(new[] {"add", "--packedFile", @"TestResults\TestAdd\packedFile.packed",
                 "--sourcePath", @"TestData\examplefile1.txt",
@@ -129,39 +132,6 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
         [TestMethod]
         public void TestRunAddFailed()
         {
-            // Todo: failed add calls
-            if (!Directory.Exists(@"TestResults\TestAdd"))
-                Directory.CreateDirectory(@"TestResults\TestAdd");
-            if (File.Exists(@"TestResults\TestAdd\packedFile.packed"))
-                File.Delete(@"TestResults\TestAdd\packedFile.packed");
-
-            // check inaccessable packed
-            var fsFile = new FileStream(@"TestResults\TestAdd\packedFile.packed", FileMode.OpenOrCreate);
-            try
-            {
-                CheckRunFail(new[] {"add", "--packedFile", @"TestResults\TestAdd\packedFile.packed",
-                    "--sourcePath", @"TestData\examplefile1.txt",
-                    "--packedPath", "file.txt"}, 1, "Expected file to be inaccessible");
-            }
-            finally
-            {
-                byte[] someContent = new[] { (byte)'H', (byte)'i' };
-                fsFile.Write(someContent);
-                fsFile.Close();
-            }
-
-            // check unreadable/invalid packed
-            CheckRunFail(new[] { "add", "--packedFile", @"TestResults\TestAdd\packedFile.packed",
-                "--sourcePath", @"TestData\exampleFile1.txt",
-                "--packedPath", "file.txt"}, 1, "Expected source file to be invalid");
-
-            // check backup failed
-            // Todo implement
-            // todo more tests?
-
-            if (File.Exists(@"TestResults\TestAdd\packedFile.packed"))
-                File.Delete(@"TestResults\TestAdd\packedFile.packed");
-
             // add file missing
             CheckRunFail(new[] { "add", "--packedFile", @"TestResults\TestAdd\packedFile.packed",
                 "--sourcePath", "exampleFile_missing.txt",
@@ -386,6 +356,49 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
         {
             Assert.Fail("check not implemented");
             // todo: think about failed list calls
+        }
+
+        [TestMethod]
+        public void TestInputPackedFail()
+        {
+            // check nonexisted output
+            CheckRunFail(new[] {"add", "--packedFile", "nonexsited.packed",
+                    "--sourcePath", @"TestData\examplefile1.txt",
+                    "--packedPath", "file.txt"}, 1, "expected file is nonexists");
+
+            if (!Directory.Exists(@"TestResults\TestAdd"))
+                Directory.CreateDirectory(@"TestResults\TestAdd");
+            if (File.Exists(@"TestResults\TestAdd\packedFile.packed"))
+                File.Delete(@"TestResults\TestAdd\packedFile.packed");
+
+            // check inaccessable packed
+            var fsFile = new FileStream(@"TestResults\TestAdd\packedFile.packed", FileMode.OpenOrCreate);
+            try
+            {
+                CheckRunFail(new[] {"add", "--packedFile", @"TestResults\TestAdd\packedFile.packed",
+                    "--sourcePath", @"TestData\examplefile1.txt",
+                    "--packedPath", "file.txt"}, 1, "Expected file to be inaccessible");
+            }
+            finally
+            {
+                byte[] someContent = new[] { (byte)'H', (byte)'i' };
+                fsFile.Write(someContent);
+                fsFile.Close();
+            }
+
+            // check unreadable/invalid packed
+            CheckRunFail(new[] {"add", "--packedFile", @"TestResults\TestAdd\packedFile.packed",
+                "--sourcePath", @"TestData\exampleFile1.txt",
+                "--packedPath", "file.txt"}, 1, "Expected packed file to be invalid");
+
+            if (File.Exists(@"TestResults\TestAdd\packedFile.packed"))
+                File.Delete(@"TestResults\TestAdd\packedFile.packed");
+        }
+
+        [TestMethod]
+        public void TestOutputPacked(string command)
+        {
+            Assert.Fail("check not implemented");
         }
 
         private void CheckRunCompareFile(string[] p_Args, string p_ExpectedFilePath, string p_ActualFilePath, string p_Message = "")
