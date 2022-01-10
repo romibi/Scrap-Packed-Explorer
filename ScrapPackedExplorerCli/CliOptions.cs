@@ -68,8 +68,15 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
         [Option('q', "searchString", Required = false, Default = "", HelpText = "A Search string to filter the output with")]
         public string searchString { get; set; }
 
-        [Option('r', "regex", Required =false, Default = false, HelpText = "Defines if the search string is a regular expression")]
+        [Option('r', "regex", Required = false, Default = false, HelpText = "Defines if the search string is a regular expression")]
         public bool isRegex { get; set; }
+
+        // todo: come up with better description
+        [Option('s', "starts-with", Required = false, Default = false, HelpText = "Apply search query only to beginnng of the files path \nBy default applies everywhere")]
+        public bool StartsWith { get; set; }
+
+        [Option('f', "match-filename", Required = false, Default = false, HelpText = "Search only by filenames. \nBy default search includes path")]
+        public bool MatchFilename { get; set; }
     }
 
 }
