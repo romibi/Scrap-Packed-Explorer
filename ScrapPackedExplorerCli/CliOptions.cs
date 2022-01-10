@@ -40,7 +40,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
     [Verb("rename", HelpText = "rename a file or folder inside the archive")]
     class RenameOptions : ModifyingOptions
     {
-        [Option('s', "oldPackedPath", Required = false, Default = "", HelpText = "What path to rename inside the archive")]
+        [Option('s', "oldPackedPath", Required = true, Default = "/", HelpText = "What path to rename inside the archive")]
         public string oldPackedPath { get; set; }
 
         [Option('d', "newPackedPath", Required = true, HelpText = "The new path to use for the files to rename")]
@@ -69,7 +69,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
         public string searchString { get; set; }
 
         [Option('r', "regex", Required =false, Default = false, HelpText = "Defines if the search string is a regular expression")]
-        public string isRegex { get; set; }
+        public bool isRegex { get; set; }
     }
 
 }
