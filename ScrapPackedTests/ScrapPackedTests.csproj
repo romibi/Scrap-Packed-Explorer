@@ -5,7 +5,7 @@
     <RootNamespace>ch.romibi.Scrap.Packed.PackerLib.Tests</RootNamespace>
     <IsPackable>false</IsPackable>
     <Authors>romibi</Authors>
-    <Company/>
+    <Company />
     <Product>Scrap Packed Explorer</Product>
   </PropertyGroup>
 
@@ -30,6 +30,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="TestData\empty.packed">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="TestData\example.packed">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
