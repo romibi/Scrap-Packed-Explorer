@@ -167,7 +167,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             if (p_oldPath == "/") 
                 p_oldPath = "";
 
-            // todo: better search function. This is not good 
+            // todo: make search fucntion to better find what to rename 
             foreach (var file in metaData.fileList)
                 if (file.FilePath.StartsWith(p_oldPath))
                     RenameFile(file.FilePath, p_newPath + file.FilePath.Substring(p_oldPath.Length));
@@ -196,7 +196,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             if (p_Name == "/")
                 p_Name = "";
 
-            // todo: better search function. This is not good
+            // todo: make search fucntion to better find what to remove
             var fileList = metaData.fileList.ToArray();
             foreach (var file in fileList)
             {
