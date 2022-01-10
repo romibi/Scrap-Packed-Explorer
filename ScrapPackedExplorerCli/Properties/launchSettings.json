@@ -2,7 +2,7 @@
   "profiles": {
     "ScrapPackedExplorerCli": {
       "commandName": "Project",
-      "commandLineArgs": "--help"      
+      "commandLineArgs": "--help"
     },
     "ScrapPackedExplorerCliAsGUI": {
       "commandName": "Project"

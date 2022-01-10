@@ -22,29 +22,22 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
 
         private int RunAdd(AddOptions options)
         {
-            ScrapPackedFile packedFile;
-            try { packedFile = new ScrapPackedFile(options.packedFile); }
+            try {
+                ScrapPackedFile packedFile = new ScrapPackedFile(options.packedFile); 
+                packedFile.Add(options.sourcePath, options.packedPath);
+                packedFile.SaveToFile(options.outputPackedFile);
+            }
             catch (Exception ex) { return Error(ex); }
-
-            try { packedFile.Add(options.sourcePath, options.packedPath); }
-            catch (Exception ex) { return Error(ex); }
-
-            try { packedFile.SaveToFile(options.outputPackedFile); }
-            catch (Exception ex) { return Error(ex); }
-
             return 0;
         }
 
         private int RunRemove(RemoveOptions options)
         {
-            ScrapPackedFile packedFile;
-            try { packedFile = new ScrapPackedFile(options.packedFile); }
-            catch (Exception ex) { return Error(ex); }
-
-            try { packedFile.Remove(options.packedPath); }
-            catch (Exception ex) { return Error(ex); }
-
-            try { packedFile.SaveToFile(options.outputPackedFile); }
+            try {
+                ScrapPackedFile packedFile = new ScrapPackedFile(options.packedFile);
+                packedFile.Remove(options.packedPath); 
+                packedFile.SaveToFile(options.outputPackedFile); 
+            }
             catch (Exception ex) { return Error(ex); }
 
             return 0;
@@ -52,26 +45,22 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
 
         private int RunRename(RenameOptions options)
         {
-            ScrapPackedFile packedFile;
-            try { packedFile = new ScrapPackedFile(options.packedFile); }
+            try
+            {
+                ScrapPackedFile packedFile = new ScrapPackedFile(options.packedFile);
+                packedFile.Rename(options.oldPackedPath, options.newPackedPath);
+                packedFile.SaveToFile(options.outputPackedFile);
+            }
             catch (Exception ex) { return Error(ex); }
-                        
-            try { packedFile.Rename(options.oldPackedPath, options.newPackedPath); }
-            catch (Exception ex) { return Error(ex); }
-
-            try { packedFile.SaveToFile(options.outputPackedFile); }
-            catch (Exception ex) { return Error(ex); }
-
             return 0;
         }
 
         private int RunExtract(ExtractOptions options)
         {
-            ScrapPackedFile packedFile;
-            try { packedFile = new ScrapPackedFile(options.packedFile); }
-            catch (Exception ex) { return Error(ex); }
-
-            try { packedFile.Extract(options.packedPath, options.destinationPath); }
+            try {
+                ScrapPackedFile packedFile = new ScrapPackedFile(options.packedFile);
+                packedFile.Extract(options.packedPath, options.destinationPath);
+            }
             catch (Exception ex) { return Error(ex); }
 
             return 0;
@@ -79,24 +68,18 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
 
         private int RunList(ListOptions options)
         {
-            ScrapPackedFile packedFile;
-            try { packedFile = new ScrapPackedFile(options.packedFile); }
+            try {
+                ScrapPackedFile packedFile = new ScrapPackedFile(options.packedFile);            
+                List<string> fileNames = packedFile.GetFileNames();
+
+                if (fileNames.Count == 0)
+                    Console.WriteLine($"{options.packedFile} is empty.");
+                else
+                    foreach (var fileName in fileNames)
+                        Console.WriteLine(fileName);
+            }
             catch (Exception ex) { return Error(ex); }
 
-            List<string> fileNames = packedFile.GetFileNames();
-
-            if (fileNames.Count == 0)
-            {
-                Console.WriteLine($"{options.packedFile} is empty.");
-            }
-            else
-            {
-                foreach (var fileName in fileNames)
-                {
-                    Console.WriteLine(fileName);
-                }
-            }
-            
             // Todo: implement RunList output styles
             return 0;
         }

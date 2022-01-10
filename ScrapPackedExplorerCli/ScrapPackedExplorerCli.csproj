@@ -6,8 +6,8 @@
     <RootNamespace>ch.romibi.Scrap.Packed.Explorer.Cli</RootNamespace>
     <UseWPF>true</UseWPF>
     <AssemblyName>ScrapPackedExplorerCli</AssemblyName>
-    <Authors>romibi</Authors>
-    <Company/>
+    <Authors>romibi, Strongleong</Authors>
+    <Company>romibi</Company>
     <Product>Scrap Packed Explorer</Product>
   </PropertyGroup>
 
