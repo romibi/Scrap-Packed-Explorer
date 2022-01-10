@@ -318,6 +318,30 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
             );
 
             CheckRunCompareOutput(new[] { "list", "--packedFile", @"TestData\example.packed",
+                "--searchString", "nothing"},
+                "Could not find anything by query 'nothing' in 'TestData\\example.packed'\r\n",
+                "List could not find"
+            );
+
+            CheckRunCompareOutput(new[] { "list", "--packedFile", @"TestData\example.packed",
+                "--searchString", "1" },
+                "file1.txt\r\n" +
+                "folder1/file1.txt\r\n" +
+                "folder2/file1.txt\r\n" +
+                "folder1/file2.png\r\n" +
+                "folder2/folder1/file1.txt\r\n" +
+                "folder2/folder1/file2.txt\r\n",
+                "List 1"
+            );
+
+            CheckRunCompareOutput(new[] { "list", "--packedFile", @"TestData\example.packed",
+                "--searchString", "file", "--starts-with" },
+                "file1.txt\r\n" +
+                "file2.txt\r\n",
+                "List file starts-width"
+            );
+
+            CheckRunCompareOutput(new[] { "list", "--packedFile", @"TestData\example.packed",
                 "--searchString", "*.txt" },
                 "file1.txt\r\n" +
                 "file2.txt\r\n" +
@@ -327,12 +351,6 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
                 "folder2/folder1/file1.txt\r\n" +
                 "folder2/folder1/file2.txt\r\n",
                 "List *.txt"
-            );
-
-            CheckRunCompareOutput(new[] { "list", "--packedFile", @"TestData\example.packed",
-                "--searchString", "nothing"},
-                "Could not find anything by query 'nothing' in 'TestData\\example.packed'\r\n",
-                "List could not find"
             );
 
             CheckRunCompareOutput(new[] { "list", "--packedFile", @"TestData\example.packed",
