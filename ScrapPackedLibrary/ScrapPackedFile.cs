@@ -241,9 +241,40 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             var fileMetaData = metaData.fileByPath[p_packedPath];
 
             if (File.Exists(p_destinationPath))
-                File.Delete(p_destinationPath);
+                File.Move(p_destinationPath, p_destinationPath + ".bak", true);
 
-            Directory.CreateDirectory(Path.GetDirectoryName(p_destinationPath));
+            string dirName = p_destinationPath;
+            if (p_destinationPath.EndsWith('\\'))
+            {
+                var path = p_packedPath.Split('/');
+                p_destinationPath = dirName + path[path.Length - 1];
+            }
+            else
+                dirName = Path.GetDirectoryName(p_destinationPath);
+
+            if (dirName == null)
+            {
+                // restore backup
+                if (File.Exists(p_destinationPath + ".bak"))
+                    File.Move(p_destinationPath + ".bak", p_destinationPath, true);
+
+                throw new IOException($"Unable to extract file {p_packedPath} to {p_destinationPath}: unexpected error.");
+            }
+            else if (dirName != "") // if dirName is not the same dir as the working dir. 
+            {
+                try
+                {
+                    Directory.CreateDirectory(dirName);
+                }
+                catch (Exception ex)
+                {
+                    // restore backup
+                    if (File.Exists(p_destinationPath + ".bak"))
+                        File.Move(p_destinationPath + ".bak", p_destinationPath, true);
+
+                    throw ex;
+                }
+            }
 
             var fsPacked = p_PackedFileStream;
             if (fsPacked == null)
@@ -270,7 +301,11 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             {
                 if (p_PackedFileStream == null)
                     fsPacked.Close();
-            }            
+            }
+
+            // delete backup
+            if (File.Exists(p_destinationPath + ".bak"))
+                File.Delete(p_destinationPath + ".bak");
         }
 
         public void SaveToFile(string p_newFileName)
