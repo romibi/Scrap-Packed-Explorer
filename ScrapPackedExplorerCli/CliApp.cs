@@ -98,9 +98,13 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
                 query = query.Replace("\\*", ".*");
                 query = query.Replace("\\?", ".");
 
+                if (options.StartsWith)
+                    query = "^" + query;                
+
                 Regex rg = new Regex(query);
                 
-                List<string> filtered = fileNames.Where(f => rg.IsMatch(f)).ToList();
+                List<string> filtered = fileNames.Where( f => rg.IsMatch(f)).ToList();
+
                 if (filtered.Count == 0)
                     Console.WriteLine($"Could not find anything by query '{options.searchString}' in '{options.packedFile}'");
 
