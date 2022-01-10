@@ -341,6 +341,13 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
                 "List file starts-width"
             );
 
+            CheckRunCompareOutput(new[] { "list", "--packedFile", @"TestData\TestReferenceFiles\TestList\listMatchFile.packed",
+                "--searchString", "file1", "--match-filename" },
+                "file1.txt\r\n" +
+                "folder1/file1.txt\r\n",
+                "List match-filename"
+            );
+
             CheckRunCompareOutput(new[] { "list", "--packedFile", @"TestData\example.packed",
                 "--searchString", "*.txt" },
                 "file1.txt\r\n" +
