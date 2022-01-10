@@ -167,10 +167,12 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             if (p_oldPath == "/") 
                 p_oldPath = "";
 
-            // todo: make search fucntion to better find what to rename 
-            foreach (var file in metaData.fileList)
-                if (file.FilePath.StartsWith(p_oldPath))
-                    RenameFile(file.FilePath, p_newPath + file.FilePath.Substring(p_oldPath.Length));
+            var fileList = FindFolder(p_oldPath);
+            if (fileList.Length == 0)
+                throw new ArgumentException($"Unable to remove {p_oldPath}: folder does not exists in {fileName}");
+
+            foreach (var file in fileList)
+                RenameFile(file.FilePath, p_newPath + file.FilePath.Substring(p_oldPath.Length));
         }
 
         public void Remove(string p_Name)
@@ -196,13 +198,12 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             if (p_Name == "/")
                 p_Name = "";
 
-            // todo: make search fucntion to better find what to remove
-            var fileList = metaData.fileList.ToArray();
+            var fileList = FindFolder(p_Name);
+            if (fileList.Length == 0)
+                throw new ArgumentException($"Unable to remove {p_Name}: folder does not exists in {fileName}");
+
             foreach (var file in fileList)
-            {
-                if (file.FilePath.StartsWith(p_Name))
-                    RemoveFile(file.FilePath);
-            }
+               RemoveFile(file.FilePath);
         }
 
         public void Extract(string p_packedPath, string p_destinationPath)
@@ -215,13 +216,16 @@ namespace ch.romibi.Scrap.Packed.PackerLib
 
         private void ExtractDirectory(string p_packedPath, string p_destinationPath)
         {
+            var fileList = FindFolder(p_packedPath);
+            if (fileList.Length == 0)
+                throw new ArgumentException($"Unable to remove {p_packedPath}: folder does not exists in {fileName}");
+
             var destinationPath = p_destinationPath.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
             var fsPacked = new FileStream(fileName, FileMode.Open);
             try
             {
-                foreach (var file in metaData.fileList)
-                    if (file.FilePath.StartsWith(p_packedPath))
-                        ExtractFile(file.FilePath, destinationPath + file.FilePath.Substring(p_packedPath.Length), fsPacked);
+                foreach (var file in fileList)
+                    ExtractFile(file.FilePath, destinationPath + file.FilePath.Substring(p_packedPath.Length), fsPacked);
             }
             finally
             {
@@ -401,6 +405,19 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             {
                 externalFileStream.Close();
             }
+        }
+
+        // todo: this needs to be better
+        private PackedFileIndexData[] FindFolder(string path)
+        {
+            var result = new List<PackedFileIndexData>();
+            var fileList = metaData.fileList.ToArray();
+            foreach (var file in fileList)
+            {
+                if (file.FilePath.StartsWith(path))
+                    result.Add(file);
+            }
+            return result.ToArray();
         }
     }
 }
