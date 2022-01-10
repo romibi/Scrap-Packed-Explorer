@@ -412,7 +412,37 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
         [TestMethod]
         public void TestOutputPackedFail()
         {
-            Assert.Fail("check not implemented");
+            Directory.CreateDirectory(@"TestResults\TestAdd");
+            File.Copy(@"TestData\empty.packed", @"TestResults\TestAdd\packedFile.packed", true);
+
+
+            // Access denied
+            Directory.CreateDirectory(@"TestResults\TestAdd\filenameWasTaken");
+            CheckRunFail(new[] { "add", "--packedFile", @"TestResults\TestAdd\packedFile.packed",
+                "--sourcePath", @"TestData\examplefile1.txt",
+                "--packedPath", "folder/file.txt",
+                "--outputPackedFile", @"TestResults\TestAdd\filenameWasTaken" },
+                1, "Access to output file is denied");
+
+            Directory.Delete(@"TestResults\TestAdd\filenameWasTaken");
+
+            // check inaccessable output packed
+            var fsFile = new FileStream(@"TestResults\TestAdd\packedOutFile.packed", FileMode.OpenOrCreate);
+            try
+            {
+                CheckRunFail(new[] {"add", "--packedFile", @"TestResults\TestAdd\packedFile.packed",
+                    "--sourcePath", @"TestData\examplefile1.txt",
+                    "--packedPath", "file.txt",
+                    "--outputPackedFile", @"TestResults\TestAdd\packedOutFile.packed" },
+                    1, "Expected output file to be inaccessible");
+            }
+            finally
+            {
+                fsFile.Close();
+            }
+
+            if (Directory.Exists("TestResults"))
+                Directory.Delete("TestResults", true);
         }
 
         private void CheckRunCompareFile(string[] p_Args, string p_ExpectedFilePath, string p_ActualFilePath, string p_Message = "")
