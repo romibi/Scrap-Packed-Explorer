@@ -298,13 +298,19 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
                 "--destinationPath", @"TestResults\TestExtract\all\"},
                 1, "Extract nonexisting folder");
 
-            CheckRunFail(new[] { "extract", "--packedFile", @"TestData\example.packed",
+            Directory.CreateDirectory(@"TestResults\TestExtract");
+            var fsFile = new FileStream(@"TestResults\TestExtract\file.txt", FileMode.OpenOrCreate);
+            try
+            {
+                CheckRunFail(new[] { "extract", "--packedFile", @"TestData\example.packed",
                 "--packedPath", "file1.txt",
                 "--destinationPath", @"TestResults\TestExtract\file.txt"},
-                1, "Destination path ");
-
-            // Assert.Fail("check not implemented");
-            // todo: think about failed extract calls
+                1, "Destination path is unavilable");
+            }
+            finally
+            {
+                fsFile.Close();
+            }
         }
 
         [TestMethod]
@@ -430,7 +436,6 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
         {
             Directory.CreateDirectory(@"TestResults\TestAdd");
             File.Copy(@"TestData\empty.packed", @"TestResults\TestAdd\packedFile.packed", true);
-
 
             // Access denied
             Directory.CreateDirectory(@"TestResults\TestAdd\filenameWasTaken");
