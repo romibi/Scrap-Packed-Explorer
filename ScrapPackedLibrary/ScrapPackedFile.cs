@@ -1,6 +1,7 @@
 ﻿using ch.romibi.Scrap.Packed.PackerLib.DataTypes;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 
 namespace ch.romibi.Scrap.Packed.PackerLib
@@ -240,40 +241,12 @@ namespace ch.romibi.Scrap.Packed.PackerLib
 
             var fileMetaData = metaData.fileByPath[p_packedPath];
 
-            if (File.Exists(p_destinationPath))
-                File.Move(p_destinationPath, p_destinationPath + ".bak", true);
+            MakeBackup(p_destinationPath);                
 
-            string dirName = p_destinationPath;
             if (p_destinationPath.EndsWith('\\'))
             {
                 var path = p_packedPath.Split('/');
-                p_destinationPath = dirName + path[path.Length - 1];
-            }
-            else
-                dirName = Path.GetDirectoryName(p_destinationPath);
-
-            if (dirName == null)
-            {
-                // restore backup
-                if (File.Exists(p_destinationPath + ".bak"))
-                    File.Move(p_destinationPath + ".bak", p_destinationPath, true);
-
-                throw new IOException($"Unable to extract file {p_packedPath} to {p_destinationPath}: unexpected error.");
-            }
-            else if (dirName != "") // if dirName is not the same dir as the working dir. 
-            {
-                try
-                {
-                    Directory.CreateDirectory(dirName);
-                }
-                catch (Exception ex)
-                {
-                    // restore backup
-                    if (File.Exists(p_destinationPath + ".bak"))
-                        File.Move(p_destinationPath + ".bak", p_destinationPath, true);
-
-                    throw ex;
-                }
+                p_destinationPath = p_destinationPath + path[path.Length - 1];
             }
 
             var fsPacked = p_PackedFileStream;
@@ -282,7 +255,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
 
             try
             {
-                var fsExtractFile = new FileStream(p_destinationPath, FileMode.Create);
+                var fsExtractFile = TryMakeFile(p_destinationPath);
                 try
                 {
                     byte[] readBytes = new byte[fileMetaData.FileSize];
@@ -292,10 +265,20 @@ namespace ch.romibi.Scrap.Packed.PackerLib
                     
                     fsExtractFile.Write(readBytes);
                 }
+                catch (Exception ex)
+                {
+                    RestoreBackup(p_destinationPath + ".bak");
+                    throw ex;
+                }
                 finally
                 {
                     fsExtractFile.Close();
                 }
+            }
+            catch (Exception ex)
+            {
+                RestoreBackup(p_destinationPath + ".bak");
+                throw ex;
             }
             finally
             {
@@ -303,9 +286,37 @@ namespace ch.romibi.Scrap.Packed.PackerLib
                     fsPacked.Close();
             }
 
-            // delete backup
-            if (File.Exists(p_destinationPath + ".bak"))
-                File.Delete(p_destinationPath + ".bak");
+            DeleteBackup(p_destinationPath + ".bak");
+        }
+
+        private void MakeBackup(string filePath)
+        {
+            Debug.Assert(filePath.EndsWith(".bak"), $"{filePath} is already a backup");
+            if (File.Exists(filePath))
+            {
+                File.Move(filePath, filePath + ".bak", true);
+                if (filePath == fileName)
+                    fileName = filePath + ".bak";
+            }
+        }
+
+        private void RestoreBackup(string filePath)
+        {
+            Debug.Assert(!filePath.EndsWith(".bak"), $"{filePath} is not a backup");
+            if (File.Exists(filePath))
+            {
+                File.Move(filePath, Path.GetFileNameWithoutExtension(filePath), true);
+                if (filePath == fileName)
+                    fileName = Path.GetFileNameWithoutExtension(filePath);
+            }
+        }
+
+        private void DeleteBackup(string filePath)
+        {
+            Debug.Assert(!filePath.EndsWith(".bak"), $"{filePath} is not a backup");
+            Debug.Assert(fileName == filePath, $"Can not delete myself");
+            if (File.Exists(filePath))
+                File.Delete(filePath);
         }
 
         public void SaveToFile(string p_newFileName)
@@ -313,72 +324,64 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             metaData.RecalcFileOffsets();
 
             var newFileName = fileName;
-            var oldFileName = fileName;
-
             if (p_newFileName.Length > 0)
                 newFileName = p_newFileName;
-            else
-            {
-                if (File.Exists(fileName))
-                    File.Move(fileName, fileName + ".bak", true);
-                fileName = fileName + ".bak";
-            }
 
             if (File.Exists(newFileName))
-                File.Delete(newFileName);
-
-            // todo: make backup function better
-
-            string dirName = Path.GetDirectoryName(newFileName);
-            
-            if (dirName == null)
             {
-                // restore backup
-                if (File.Exists(fileName))
-                    File.Move(fileName, oldFileName, true);
-                fileName = oldFileName;
-
-                throw new IOException($"Unable to save file {p_newFileName}: unexpected error.");
+                MakeBackup(fileName);
+                File.Delete(newFileName);
             }
-            else if (dirName != "") // if dirName is not the same dir as the working dir. 
-            { 
+
+            try
+            {
+                var fsPackedNew = TryMakeFile(newFileName);
                 try
                 {
-                    Directory.CreateDirectory(dirName);
+                    // write file header
+                    byte[] writeBytes = new byte[4];
+                    writeBytes = System.Text.Encoding.Default.GetBytes(PackedMetaData.fileHeader);
+                    fsPackedNew.Write(writeBytes);
+
+                    // write packed version
+                    fsPackedNew.Write(BitConverter.GetBytes(metaData.packedVersion));
+
+                    // write number of files
+                    fsPackedNew.Write(BitConverter.GetBytes((UInt32)metaData.fileList.Count));
+
+                    // write the file index
+                    WriteFileMetaData(fsPackedNew);
+                    WriteFileData(fsPackedNew);
                 }
                 catch (Exception ex)
                 {
-                    // restore backup
-                    if (File.Exists(fileName))
-                        File.Move(fileName, oldFileName, true);
-                    fileName = oldFileName;
-
+                    RestoreBackup(fileName);
                     throw ex;
                 }
+                finally
+                {
+                    fsPackedNew.Close();
+                }
             }
-
-            var fsPackedNew = new FileStream(newFileName, FileMode.Create);
-            try
+            catch (Exception ex)
             {
-                // write file header
-                byte[] writeBytes = new byte[4];
-                writeBytes = System.Text.Encoding.Default.GetBytes(PackedMetaData.fileHeader);
-                fsPackedNew.Write(writeBytes);
-
-                // write packed version
-                fsPackedNew.Write(BitConverter.GetBytes(metaData.packedVersion));
-
-                // write number of files
-                fsPackedNew.Write(BitConverter.GetBytes((UInt32)metaData.fileList.Count));
-
-                // write the file index
-                WriteFileMetaData(fsPackedNew);
-                WriteFileData(fsPackedNew);
+                RestoreBackup(fileName);
+                throw ex;
             }
-            finally
-            {
-                fsPackedNew.Close();
-            }
+        }
+
+        private FileStream TryMakeFile(string outputPath)
+        {
+            Debug.Assert(outputPath.EndsWith('\\'), "Output path cannot be only folder name.");
+
+            string dirName = Path.GetDirectoryName(outputPath);
+            if (dirName == null)                
+                throw new IOException($"Unable to create file {outputPath}: unexpected error.");
+
+            else if (dirName != "") // if dirName is not the same dir as the working dir.
+               Directory.CreateDirectory(dirName);
+
+            return new FileStream(outputPath, FileMode.Create);
         }
 
         private void WriteFileMetaData(FileStream p_fsPackedNew)
