@@ -34,7 +34,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
         public void TestRunAddFile()
         {
             Directory.CreateDirectory(@"TestResults\TestAdd");
-            File.Copy(@"TestData\example.packed", @"TestResults\TestAdd\packedFile.packed", true);
+            File.Copy(@"TestData\empty.packed", @"TestResults\TestAdd\packedFile.packed", true);
 
             // add file new
             CheckRunCompareFile(new[] {"add", "--packedFile", @"TestResults\TestAdd\packedFile.packed",
@@ -91,11 +91,17 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
             // (create dummy packedFile.packed.bak before call, expect to be unchanged)
             CheckRun(new[] { "add", "--packedFile", @"TestResults\TestAdd\packedFile.packed", "--sourcePath", "'examplefile2.png'", "--packedPath", "'folder/file.png'", "--overwriteOldBackup" }, "", "");
             */
+
+            if (Directory.Exists("TestResults"))
+                Directory.Delete("TestResults", true);
         }
 
         [TestMethod]
         public void TestRunAddFolder()
         {
+            Directory.CreateDirectory(@"TestResults\TestAdd");
+            File.Copy(@"TestData\empty.packed", @"TestResults\TestAdd\packedFile.packed", true);
+
             // add folder new
             CheckRunCompareFile(new[] { "add", "--packedFile", @"TestResults\TestAdd\packedFile.packed",
                 "--sourcePath", @"TestData\exampleFolder1\" },
@@ -126,7 +132,10 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
                 @"TestResults\TestAdd\packedFile.packed",
                 "Add folder to existing to subfolder, replace some");
 
-            // Note: outputPackedFile, keepBackup & overwriteOldBackup tested via add file
+            // Note: keepBackup & overwriteOldBackup tested via add file
+
+            if (Directory.Exists("TestResults"))
+                Directory.Delete("TestResults", true);
         }
 
         [TestMethod]
@@ -361,6 +370,11 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
         [TestMethod]
         public void TestInputPackedFail()
         {
+            // check uncorrect input
+            CheckRunFail(new[] {"add", "--packedFile", "/.,*&^$Q*",
+                    "--sourcePath", @"TestData\examplefile1.txt",
+                    "--packedPath", "file.txt"}, 1, "expected file is nonexists");
+
             // check nonexisted output
             CheckRunFail(new[] {"add", "--packedFile", "nonexsited.packed",
                     "--sourcePath", @"TestData\examplefile1.txt",
@@ -396,7 +410,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
         }
 
         [TestMethod]
-        public void TestOutputPacked(string command)
+        public void TestOutputPackedFail()
         {
             Assert.Fail("check not implemented");
         }
