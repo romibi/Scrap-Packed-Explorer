@@ -169,7 +169,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
 
             var fileList = FindFolder(p_oldPath);
             if (fileList.Length == 0)
-                throw new ArgumentException($"Unable to remove {p_oldPath}: folder does not exists in {fileName}");
+                throw new ArgumentException($"Unable to rename {p_oldPath}: folder does not exists in {fileName}");
 
             foreach (var file in fileList)
                 RenameFile(file.FilePath, p_newPath + file.FilePath.Substring(p_oldPath.Length));
@@ -218,7 +218,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
         {
             var fileList = FindFolder(p_packedPath);
             if (fileList.Length == 0)
-                throw new ArgumentException($"Unable to remove {p_packedPath}: folder does not exists in {fileName}");
+                throw new ArgumentException($"Unable to extract {p_packedPath}: folder does not exists in {fileName}");
 
             var destinationPath = p_destinationPath.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
             var fsPacked = new FileStream(fileName, FileMode.Open);
