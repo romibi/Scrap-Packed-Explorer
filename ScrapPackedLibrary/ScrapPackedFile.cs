@@ -13,7 +13,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
         public ScrapPackedFile(string p_fileName)
         {
             fileName = p_fileName;
-            ReadPackedMetaData();            
+            ReadPackedMetaData();
         }
 
         private void ReadPackedMetaData()
@@ -101,7 +101,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             return metaData.fileList;
         }
 
-        public void Add(string p_externalPath, string p_packedPath) 
+        public void Add(string p_externalPath, string p_packedPath)
         {
             FileAttributes fileAttributes = File.GetAttributes(p_externalPath);
             if (fileAttributes.HasFlag(FileAttributes.Directory))
@@ -129,7 +129,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             var newFile = new FileInfo(p_externalPath);
 
             if (newFile.Length > UInt32.MaxValue)
-                throw new InvalidDataException($"Unable to add file {p_externalPath}: target size is too big");
+                throw new InvalidDataException($"Unable to add file {p_externalPath}: file size is too big");
 
             var packedPath = p_packedPath;
             if (packedPath.Length == 0)
@@ -154,7 +154,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
         private void RenameFile(string p_oldFileName, string p_newFileName)
         {
             if (!metaData.fileByPath.ContainsKey(p_oldFileName))
-                throw new ArgumentException($"Unable to reanme {p_oldFileName}: target  is not exists in {fileName}");
+                throw new ArgumentException($"Unable to reanme {p_oldFileName}: file does not exists in {fileName}");
 
             var fileMetaData = metaData.fileByPath[p_oldFileName];
             fileMetaData.FilePath = p_newFileName;
@@ -184,7 +184,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
         private void RemoveFile(string p_Name)
         {
             if (!metaData.fileByPath.ContainsKey(p_Name))
-                throw new ArgumentException($"Unable to remove {p_Name}: target is not exists in {fileName}");
+                throw new ArgumentException($"Unable to remove {p_Name}: file does not exists in {fileName}");
 
             var oldFile = metaData.fileByPath[p_Name];
             metaData.fileList.Remove(oldFile);
@@ -221,7 +221,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             {
                 foreach (var file in metaData.fileList)
                     if (file.FilePath.StartsWith(p_packedPath))
-                       ExtractFile(file.FilePath, destinationPath + file.FilePath.Substring(p_packedPath.Length), fsPacked);
+                        ExtractFile(file.FilePath, destinationPath + file.FilePath.Substring(p_packedPath.Length), fsPacked);
             }
             finally
             {
@@ -232,7 +232,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
         private void ExtractFile(string p_packedPath, string p_destinationPath, FileStream p_PackedFileStream = null)
         {
             if (!metaData.fileByPath.ContainsKey(p_packedPath))
-                throw new ArgumentException($"Unable to extract {p_packedPath}: target is not exists in {fileName}");
+                throw new ArgumentException($"Unable to extract {p_packedPath}: file does not exists in {fileName}");
 
             var fileMetaData = metaData.fileByPath[p_packedPath];
 
@@ -245,22 +245,28 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             if (fsPacked == null)
                 fsPacked = new FileStream(fileName, FileMode.Open);
 
-            var fsExtractFile = new FileStream(p_destinationPath, FileMode.Create);
             try
             {
-                byte[] readBytes = new byte[fileMetaData.FileSize];
+                var fsExtractFile = new FileStream(p_destinationPath, FileMode.Create);
+                try
+                {
+                    byte[] readBytes = new byte[fileMetaData.FileSize];
 
-                fsPacked.Seek(fileMetaData.OriginalOffset, SeekOrigin.Begin);
-                fsPacked.Read(readBytes, 0, (int)fileMetaData.FileSize);
+                    fsPacked.Seek(fileMetaData.OriginalOffset, SeekOrigin.Begin);
+                    fsPacked.Read(readBytes, 0, (int)fileMetaData.FileSize);
                     
-                fsExtractFile.Write(readBytes);
+                    fsExtractFile.Write(readBytes);
+                }
+                finally
+                {
+                    fsExtractFile.Close();
+                }
             }
             finally
             {
-                fsExtractFile.Close();
-            }
-            if (p_PackedFileStream == null)
-                fsPacked.Close();
+                if (p_PackedFileStream == null)
+                    fsPacked.Close();
+            }            
         }
 
         public void SaveToFile(string p_newFileName)
@@ -295,12 +301,10 @@ namespace ch.romibi.Scrap.Packed.PackerLib
 
                 throw new IOException($"Unable to save file {p_newFileName}: unexpected error.");
             }
-            else if (dirName != "") // if dirName is not same dir as working dir. 
+            else if (dirName != "") // if dirName is not the same dir as the working dir. 
             { 
                 try
                 {
-                    // todo: when input "-o <folder_name>/<file_name>" while file (NOT DIR!)
-                    // with name <folder_name> already existing couse excteption. 
                     Directory.CreateDirectory(dirName);
                 }
                 catch (Exception ex)
