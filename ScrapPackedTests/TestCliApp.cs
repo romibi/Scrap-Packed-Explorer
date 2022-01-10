@@ -91,9 +91,6 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
             // (create dummy packedFile.packed.bak before call, expect to be unchanged)
             CheckRun(new[] { "add", "--packedFile", @"TestResults\TestAdd\packedFile.packed", "--sourcePath", "'examplefile2.png'", "--packedPath", "'folder/file.png'", "--overwriteOldBackup" }, "", "");
             */
-
-            if (Directory.Exists("TestResults"))
-                Directory.Delete("TestResults", true);
         }
 
         [TestMethod]
@@ -133,9 +130,6 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
                 "Add folder to existing to subfolder, replace some");
 
             // Note: keepBackup & overwriteOldBackup tested via add file
-
-            if (Directory.Exists("TestResults"))
-                Directory.Delete("TestResults", true);
         }
 
         [TestMethod]
@@ -278,6 +272,13 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
                 "Extract folder");
 
             CheckRunCompareFolder(new[] { "extract", "--packedFile", @"TestData\example.packed",
+                "--packedPath", "folder2/folder1/file1.txt",
+                "--destinationPath", @"TestResults\TestExtract\ExtractFileToFolder\Output\"},
+                @"TestData\TestReferenceFiles\TestExtract\ExtractFileToFolder\Output\",
+                @"TestResults\TestExtract\ExtractFileToFolder\Output\",
+                "Extract file from folder to folder");
+
+            CheckRunCompareFolder(new[] { "extract", "--packedFile", @"TestData\example.packed",
                 "--destinationPath", @"TestResults\TestExtract\all\"},
                 @"TestData\TestReferenceFiles\TestExtract\ExtractAll\",
                 @"TestResults\TestExtract\all\",
@@ -286,8 +287,23 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
 
         [TestMethod]
         public void TestRunExtractFailed()
-        {
-            Assert.Fail("check not implemented");
+        {           
+            CheckRunFail(new[] { "extract", "--packedFile", @"TestData\example.packed",
+                "--packedPath", "not_exsits.none",
+                "--destinationPath", @"TestResults\TestExtract\not_exists.none"},
+                1, "Extract nonexisting file");
+
+            CheckRunFail(new[] { "extract", "--packedFile", @"TestData\example.packed",
+                "--packedPath", "not_exsits/",
+                "--destinationPath", @"TestResults\TestExtract\all\"},
+                1, "Extract nonexisting folder");
+
+            CheckRunFail(new[] { "extract", "--packedFile", @"TestData\example.packed",
+                "--packedPath", "file1.txt",
+                "--destinationPath", @"TestResults\TestExtract\file.txt"},
+                1, "Destination path ");
+
+            // Assert.Fail("check not implemented");
             // todo: think about failed extract calls
         }
 
@@ -494,7 +510,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
             Assert.IsTrue(Directory.Exists(p_FolderActual), p_Message + ": actual folder missing");
 
             var expectedFiles = new List<string>(Directory.GetFiles(p_FolderExpected, "", SearchOption.AllDirectories));
-            var actualFiles = new List<string>(Directory.GetFiles(p_FolderExpected, "", SearchOption.AllDirectories));
+            var actualFiles = new List<string>(Directory.GetFiles(p_FolderActual, "", SearchOption.AllDirectories));
 
             Assert.AreEqual(expectedFiles.Count, actualFiles.Count, p_Message + ": different amount of files");
 
