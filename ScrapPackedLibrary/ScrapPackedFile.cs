@@ -291,7 +291,9 @@ namespace ch.romibi.Scrap.Packed.PackerLib
 
         private void MakeBackup(string filePath)
         {
-            Debug.Assert(filePath.EndsWith(".bak"), $"{filePath} is already a backup");
+            if (filePath.EndsWith(".bak"))
+                throw new ArgumentException($"{filePath} is already a backup");
+
             if (File.Exists(filePath))
             {
                 File.Move(filePath, filePath + ".bak", true);
@@ -302,7 +304,9 @@ namespace ch.romibi.Scrap.Packed.PackerLib
 
         private void RestoreBackup(string filePath)
         {
-            Debug.Assert(!filePath.EndsWith(".bak"), $"{filePath} is not a backup");
+            if (!filePath.EndsWith(".bak"))
+                throw new ArgumentException($"{filePath} is not a backup");
+
             if (File.Exists(filePath))
             {
                 File.Move(filePath, Path.GetFileNameWithoutExtension(filePath), true);
@@ -313,8 +317,11 @@ namespace ch.romibi.Scrap.Packed.PackerLib
 
         private void DeleteBackup(string filePath)
         {
-            Debug.Assert(!filePath.EndsWith(".bak"), $"{filePath} is not a backup");
-            Debug.Assert(fileName == filePath, $"Can not delete myself");
+            if (!filePath.EndsWith(".bak"))
+                throw new ArgumentException($"{filePath} is not a backup");
+            if (fileName == filePath)
+                throw new ArgumentException($"Can not delete myself");
+
             if (File.Exists(filePath))
                 File.Delete(filePath);
         }
@@ -355,7 +362,8 @@ namespace ch.romibi.Scrap.Packed.PackerLib
                 }
                 catch (Exception ex)
                 {
-                    RestoreBackup(fileName);
+                    if (fileName.EndsWith(".bak"))
+                        RestoreBackup(fileName);
                     throw ex;
                 }
                 finally
@@ -365,14 +373,15 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             }
             catch (Exception ex)
             {
-                RestoreBackup(fileName);
+                if (fileName.EndsWith(".bak"))
+                    RestoreBackup(fileName);
                 throw ex;
             }
         }
 
         private FileStream TryMakeFile(string outputPath)
         {
-            Debug.Assert(outputPath.EndsWith('\\'), "Output path cannot be only folder name.");
+            Debug.Assert(!outputPath.EndsWith('\\'), "Output path cannot be only folder name.");
 
             string dirName = Path.GetDirectoryName(outputPath);
             if (dirName == null)                
