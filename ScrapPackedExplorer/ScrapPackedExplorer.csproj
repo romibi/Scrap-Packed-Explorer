@@ -7,8 +7,8 @@
     <UseWPF>true</UseWPF>
     <StartupObject>ch.romibi.Scrap.Packed.Explorer.MainApp</StartupObject>
     <AssemblyName>ScrapPackedExplorer</AssemblyName>
-    <Authors>romibi</Authors>
-    <Company/>
+    <Authors>romibi, Strongleong</Authors>
+    <Company>romibi</Company>
     <Product>Scrap Packed Explorer</Product>
   </PropertyGroup>
 

@@ -4,8 +4,8 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>ch.romibi.Scrap.Packed.PackerLib.Tests</RootNamespace>
     <IsPackable>false</IsPackable>
-    <Authors>romibi</Authors>
-    <Company/>
+    <Authors>romibi, Strongleong</Authors>
+    <Company>romibi</Company>
     <Product>Scrap Packed Explorer</Product>
   </PropertyGroup>
 
