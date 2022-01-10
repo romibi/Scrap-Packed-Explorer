@@ -51,6 +51,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
                 packedFile.Rename(options.oldPackedPath, options.newPackedPath);
                 packedFile.SaveToFile(options.outputPackedFile);
             }
+            catch (Exception ex) { return Error(ex); }
             return 0;
         }
 
