@@ -101,7 +101,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
             return 0;
         }
 
-        // This just to make code "preetier".
+        // This just to make code "prettier". Multi-line `catch` with one-line `try` is kinda ugly
         private int Error(Exception ex)
         {
             Console.Error.WriteLine($"Error: {ex.Message}");
