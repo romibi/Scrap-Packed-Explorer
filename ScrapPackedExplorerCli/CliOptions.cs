@@ -75,7 +75,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
         [Option('s', "starts-with", Required = false, Default = false, HelpText = "Apply search query only to beginnng of the files path \nBy default applies everywhere")]
         public bool StartsWith { get; set; }
 
-        [Option('f', "match-filename", Required = false, Default = false, HelpText = "Search only by filenames. \nBy default search includes path")]
+        [Option('f', "match-filename", Required = false, Default = false, HelpText = "Search only by files. \nBy default search includes folders")]
         public bool MatchFilename { get; set; }
     }
 
