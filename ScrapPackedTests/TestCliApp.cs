@@ -306,80 +306,101 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
             );
 
             CheckRunCompareOutput(new[] { "list", "--packedFile", @"TestData\example.packed" },
-                "file1.txt Size: 102 Offset: 244\r\n" +
-                "file2.txt Size: 169 Offset: 346\r\n" +
-                "folder1/file1.txt Size: 454 Offset: 515\r\n" +
-                "folder2/file1.txt Size: 247 Offset: 969\r\n" +
-                "folder1/file2.png Size: 500 Offset: 1216\r\n" +
-                "folder2/file2.txt Size: 165 Offset: 1716\r\n" +
-                "folder2/folder1/file1.txt Size: 280 Offset: 1881\r\n" +
-                "folder2/folder1/file2.txt Size: 83 Offset: 2161\r\n",
+                "file1.txt\r\n" +
+                "file2.txt\r\n" +
+                "folder1/file1.txt\r\n" +
+                "folder2/file1.txt\r\n" +
+                "folder1/file2.png\r\n" +
+                "folder2/file2.txt\r\n" +
+                "folder2/folder1/file1.txt\r\n" +
+                "folder2/folder1/file2.txt\r\n",
                 "List full"
             );
 
-            //CheckRunCompareOutput(new[] { "list", "--packedFile", @"TestData\example.packed" },
-            //    "file1.txt\n" +
-            //    "file2.txt\n" +
-            //    "folder1/file1.txt\n" +
-            //    "folder1/file2.png\n" +
-            //    "folder2/file1.txt\n" +
-            //    "folder2/file2.txt\n" +
-            //    "folder2/folder1/file1.txt\n" +
-            //    "folder2/folder1/file2.txt",
-            //    "List");
+            CheckRunCompareOutput(new[] { "list", "--packedFile", @"TestData\example.packed",
+                "--searchString", "nothing"},
+                "Could not find anything by query 'nothing' in 'TestData\\example.packed'\r\n",
+                "List could not find"
+            );
 
-            //CheckRunCompareOutput(new[] { "list", "--packedFile", @"TestData\example.packed",
-            //    "--searchString", ".txt" },
-            //    "file1.txt\n" +
-            //    "file2.txt\n" +
-            //    "folder1/file1.txt\n" +
-            //    "folder2/file1.txt\n" +
-            //    "folder2/file2.txt\n" +
-            //    "folder2/folder1/file1.txt\n" +
-            //    "folder2/folder1/file2.txt",
-            //    "List .txt");
+            CheckRunCompareOutput(new[] { "list", "--packedFile", @"TestData\example.packed",
+                "--searchString", "1" },
+                "file1.txt\r\n" +
+                "folder1/file1.txt\r\n" +
+                "folder2/file1.txt\r\n" +
+                "folder1/file2.png\r\n" +
+                "folder2/folder1/file1.txt\r\n" +
+                "folder2/folder1/file2.txt\r\n",
+                "List 1"
+            );
 
-            //CheckRunCompareOutput(new[] { "list", "--packedFile", @"TestData\example.packed",
-            //    "--searchString", "folder2/*.txt" },
-            //    "folder2/file1.txt\n" +
-            //    "folder2/file2.txt\n" +
-            //    "folder2/folder1/file1.txt\n" +
-            //    "folder2/folder1/file2.txt",
-            //    "List folder2/*.txt");
+            CheckRunCompareOutput(new[] { "list", "--packedFile", @"TestData\example.packed",
+                "--searchString", "file", "--starts-with" },
+                "file1.txt\r\n" +
+                "file2.txt\r\n",
+                "List file starts-width"
+            );
 
-            //CheckRunCompareOutput(new[] { "list", "--packedFile", @"TestData\example.packed",
-            //    "--searchString", @"folder2/.*\.txt", "--regex" },
-            //    "folder2/file1.txt\n" +
-            //    "folder2/file2.txt\n" +
-            //    "folder2/folder1/file1.txt\n" +
-            //    "folder2/folder1/file2.txt",
-            //    "List folder2/.*\\.txt");
+            CheckRunCompareOutput(new[] { "list", "--packedFile", @"TestData\TestReferenceFiles\TestList\listMatchFile.packed",
+                "--searchString", "file1", "--match-filename" },
+                "file1.txt\r\n" +
+                "folder1/file1.txt\r\n",
+                "List match-filename"
+            );
+
+            CheckRunCompareOutput(new[] { "list", "--packedFile", @"TestData\example.packed",
+                "--searchString", "*.txt" },
+                "file1.txt\r\n" +
+                "file2.txt\r\n" +
+                "folder1/file1.txt\r\n" +
+                "folder2/file1.txt\r\n" +
+                "folder2/file2.txt\r\n" +
+                "folder2/folder1/file1.txt\r\n" +
+                "folder2/folder1/file2.txt\r\n",
+                "List *.txt"
+            );
+
+            CheckRunCompareOutput(new[] { "list", "--packedFile", @"TestData\example.packed",
+                "--searchString", "folder2/*.txt" },
+                "folder2/file1.txt\r\n" +
+                "folder2/file2.txt\r\n" +
+                "folder2/folder1/file1.txt\r\n" +
+                "folder2/folder1/file2.txt\r\n",
+                "List folder2/*.txt");
+
+            CheckRunCompareOutput(new[] { "list", "--packedFile", @"TestData\example.packed",
+                "--searchString", @"folder2/.*\.txt", "--regex" },
+                "folder2/file1.txt\r\n" +
+                "folder2/file2.txt\r\n" +
+                "folder2/folder1/file1.txt\r\n" +
+                "folder2/folder1/file2.txt\r\n",
+                "List folder2/.*\\.txt");
 
             //CheckRunCompareOutput(new[] { "list", "--packedFile", @"TestData\example.packed",
             //    "--outputStyle", "tree"},
-            //    "│   file1.txt\n" +
-            //    "│   file2.txt\n" +
-            //    "│\n" +
-            //    "├───folder1\n" +
-            //    "│       file1.txt\n" +
-            //    "│       file2.png\n" +
-            //    "│\n" +
-            //    "└───folder2\n" +
-            //    "    │   file1.txt\n" +
-            //    "    │   file2.txt\n" +
-            //    "    │\n" +
-            //    "    └───folder1\n" +
-            //    "            file1.txt\n" +
-            //    "            file2.txt",
+            //    "│   file1.txt\r\n" +
+            //    "│   file2.txt\r\n" +
+            //    "│\r\n" +
+            //    "├───folder1\r\n" +
+            //    "│       file1.txt\r\n" +
+            //    "│       file2.png\r\n" +
+            //    "│\r\n" +
+            //    "└───folder2\r\n" +
+            //    "    │   file1.txt\r\n" +
+            //    "    │   file2.txt\r\n" +
+            //    "    │\r\n" +
+            //    "    └───folder1\r\n" +
+            //    "            file1.txt\r\n" +
+            //    "            file2.txt\r\n",
             //    "List as tree");
 
             //CheckRunCompareOutput(new[] { "list", "--packedFile", @"TestData\example.packed",
             //    "--outputStyle", "names",
             //    "--searchString", "folder2/" },
-            //"file1.txt\n" +
-            //"file2.txt\n" +
-            //"file1.txt\n" +
-            //"file2.txt",
+            //"file1.txt\r\n" +
+            //"file2.txt\r\n" +
+            //"file1.txt\r\n" +
+            //"file2.txt\r\n",
             //"List files with only filename from folder2");
         }
 
@@ -575,7 +596,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
             Assert.AreEqual(0, returnValue, p_Message + ": wrong return value");
 
             var ActualOutput = stringWriter.ToString();
-            Assert.AreEqual(p_ExpectedOutput, ActualOutput);
+            Assert.AreEqual(p_ExpectedOutput, ActualOutput, p_Message + ": outputs are not equal");
         }
 
         private void CheckRunFileExists(string[] p_Args, string p_UnexpectedOutput, string p_Message)

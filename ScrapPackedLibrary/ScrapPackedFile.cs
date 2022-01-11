@@ -92,7 +92,9 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             var list = new List<string>();
             foreach (var file in metaData.fileList)
             {
-                list.Add(file.FilePath + " Size: " + file.FileSize + " Offset: " + file.OriginalOffset);
+                // todo: special flags for this stuff
+                // list.Add(file.FilePath + " Size: " + file.FileSize + " Offset: " + file.OriginalOffset);
+                list.Add(file.FilePath);
             }
             return list;
         }
