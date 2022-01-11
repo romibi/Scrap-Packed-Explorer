@@ -69,47 +69,50 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
 
         private int RunList(ListOptions options)
         {
-            try {
-                ScrapPackedFile packedFile = new ScrapPackedFile(options.packedFile);            
+            try
+            {
+                ScrapPackedFile packedFile = new ScrapPackedFile(options.packedFile);
                 List<string> fileNames = packedFile.GetFileNames();
 
-            if (fileNames.Count == 0)
-                Console.WriteLine($"{options.packedFile} is empty.");
-            else
-            {
-                string query = options.searchString;
-                if (!options.isRegex)
-                    query = Regex.Escape(query);
-
-                query = query.Replace("/", @"\/");
-                query = query.Replace("\\*", ".*");
-                query = query.Replace("\\?", ".");
-
-                if (options.StartsWith)
-                    query = "^" + query;
-
-                Regex rg = new Regex(query);
-                
-                List<string> filtered = fileNames.Where( f =>
+                if (fileNames.Count == 0)
+                    Console.WriteLine($"{options.packedFile} is empty.");
+                else
                 {
-                    if (options.MatchFilename)
-                    {
-                        var pathSplitted = f.Split('/');
-                        f = pathSplitted[pathSplitted.Length - 1];
-                    }
+                    string query = options.searchString;
+                    if (!options.isRegex)
+                        query = Regex.Escape(query);
 
-                    return rg.IsMatch(f);
-                }).ToList();
+                    query = query.Replace("/", @"\/");
+                    query = query.Replace("\\*", ".*");
+                    query = query.Replace("\\?", ".");
 
-                if (filtered.Count == 0)
-                    Console.WriteLine($"Could not find anything by query '{options.searchString}' in '{options.packedFile}'");
+                    if (options.StartsWith)
+                        query = "^" + query;
 
-                foreach (var fileName in filtered)
-                    Console.WriteLine(fileName);
+                    Regex rg = new Regex(query);
+
+                    List<string> filtered = fileNames.Where(f =>
+                   {
+                       if (options.MatchFilename)
+                       {
+                           var pathSplitted = f.Split('/');
+                           f = pathSplitted[pathSplitted.Length - 1];
+                       }
+
+                       return rg.IsMatch(f);
+                   }).ToList();
+
+                    if (filtered.Count == 0)
+                        Console.WriteLine($"Could not find anything by query '{options.searchString}' in '{options.packedFile}'");
+
+                    foreach (var fileName in filtered)
+                        Console.WriteLine(fileName);
+                }
+
+                // Todo: implement RunList output styles
+                return 0;
             }
-            
-            // Todo: implement RunList output styles
-            return 0;
+            catch (Exception ex) { return Error(ex); }
         }
 
         // This just to make code "prettier". Multi-line `catch` with one-line `try` is kinda ugly
