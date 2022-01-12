@@ -59,7 +59,8 @@ namespace ch.romibi.Scrap.Packed.Explorer
         {
             var clickedItem = ((FrameworkElement)e.OriginalSource).DataContext as TreeEntry;
             TreeContent_LoadTreeEntry(clickedItem);
-            clickedItem.GetContainerFromTree(FileTree).IsExpanded = true;
+            var containerItem = clickedItem.GetContainerFromTree(FileTree);
+            if (!(containerItem is null)) containerItem.IsExpanded = true;
         }
 
         private void FileTree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
