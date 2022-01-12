@@ -11,10 +11,32 @@ namespace ch.romibi.Scrap.Packed.PackerLib
         public string fileName { get; private set; }
         PackedMetaData metaData;
 
+        private string backupEnding = "";
+
         public ScrapPackedFile(string p_fileName)
         {
             fileName = p_fileName;
+
+            if (!File.Exists(fileName))
+                CreateNewFile(TryMakeFile(fileName));
+
             ReadPackedMetaData();
+        }
+
+        private void CreateNewFile(FileStream fsPacked)
+        {
+            try
+            {
+                byte[] fileHeader = System.Text.Encoding.Default.GetBytes(PackedMetaData.fileHeader);
+                byte[] nullBytes = new byte[8];
+
+                fsPacked.Write(fileHeader);
+                fsPacked.Write(nullBytes);
+            }
+            finally
+            {
+                fsPacked.Close();
+            }
         }
 
         private void ReadPackedMetaData()
@@ -168,8 +190,8 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             if (p_oldPath == "/") 
                 p_oldPath = "";
 
-            var fileList = FindFolder(p_oldPath);
-            if (fileList.Length == 0)
+            var fileList = GetFolderContent(p_oldPath);
+            if (fileList.Count == 0)
                 throw new ArgumentException($"Unable to rename {p_oldPath}: folder does not exists in {fileName}");
 
             foreach (var file in fileList)
@@ -199,8 +221,8 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             if (p_Name == "/")
                 p_Name = "";
 
-            var fileList = FindFolder(p_Name);
-            if (fileList.Length == 0)
+            var fileList = GetFolderContent(p_Name);
+            if (fileList.Count == 0)
                 throw new ArgumentException($"Unable to remove {p_Name}: folder does not exists in {fileName}");
 
             foreach (var file in fileList)
@@ -217,8 +239,8 @@ namespace ch.romibi.Scrap.Packed.PackerLib
 
         private void ExtractDirectory(string p_packedPath, string p_destinationPath)
         {
-            var fileList = FindFolder(p_packedPath);
-            if (fileList.Length == 0)
+            var fileList = GetFolderContent(p_packedPath);
+            if (fileList.Count == 0)
                 throw new ArgumentException($"Unable to extract {p_packedPath}: folder does not exists in {fileName}");
 
             var destinationPath = p_destinationPath.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
@@ -241,9 +263,11 @@ namespace ch.romibi.Scrap.Packed.PackerLib
 
             var fileMetaData = metaData.fileByPath[p_packedPath];
 
-            MakeBackup(p_destinationPath);                
+            if (File.Exists(p_destinationPath))
+                MakeBackup(p_destinationPath, true);
 
-            if (p_destinationPath.EndsWith('\\'))
+            // If user specified destination path as directory filename needs to be added
+            if (p_destinationPath.EndsWith(Path.DirectorySeparatorChar))
             {
                 var path = p_packedPath.Split('/');
                 p_destinationPath = p_destinationPath + path[path.Length - 1];
@@ -267,7 +291,8 @@ namespace ch.romibi.Scrap.Packed.PackerLib
                 }
                 catch (Exception ex)
                 {
-                    RestoreBackup(p_destinationPath + ".bak");
+                    if (backupEnding != "")
+                        RestoreBackup(p_destinationPath);
                     throw ex;
                 }
                 finally
@@ -277,7 +302,8 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             }
             catch (Exception ex)
             {
-                RestoreBackup(p_destinationPath + ".bak");
+                if (backupEnding != "")
+                    RestoreBackup(p_destinationPath);
                 throw ex;
             }
             finally
@@ -285,45 +311,71 @@ namespace ch.romibi.Scrap.Packed.PackerLib
                 if (p_PackedFileStream == null)
                     fsPacked.Close();
             }
-
-            DeleteBackup(p_destinationPath + ".bak");
+            if (backupEnding != "")
+                DeleteBackup(p_destinationPath);
         }
 
-        private void MakeBackup(string filePath)
+        private void MakeBackup(string filePath, bool temp = false)
         {
-            if (filePath.EndsWith(".bak"))
-                throw new ArgumentException($"{filePath} is already a backup");
+            // todo: test of this
+            if (!File.Exists(filePath))
+                throw new FileNotFoundException($"Unable to backup '{filePath}': file does not exists");
+            
+            Debug.Assert(backupEnding == "", $"Unable to backup '{filePath}': 'backupEnding' is not empty ('{backupEnding}').\r\n" +
+                                             $"Can track only one backup at a time for now.");
 
-            if (File.Exists(filePath))
+            if (temp)
             {
-                File.Move(filePath, filePath + ".bak", true);
-                if (filePath == fileName)
-                    fileName = filePath + ".bak";
+                Random random = new Random();
+                string tempIndex;
+                do
+                {
+                    tempIndex = ".";
+                    for (int i = 0; i < 5; i++)
+                        tempIndex += Convert.ToChar(Convert.ToInt32(Math.Floor(26 * random.NextDouble() + 65))).ToString();
+                    tempIndex += ".tmp";
+                }
+                while (File.Exists(backupEnding + tempIndex + ".bak"));
+
+                backupEnding += tempIndex;
             }
+
+            backupEnding += ".bak";
+
+            if (filePath == fileName)
+                fileName = filePath + backupEnding;
+
+            File.Move(filePath, filePath + backupEnding, true);
         }
 
         private void RestoreBackup(string filePath)
         {
-            if (!filePath.EndsWith(".bak"))
-                throw new ArgumentException($"{filePath} is not a backup");
+            string backupPath = filePath + backupEnding;
 
-            if (File.Exists(filePath))
-            {
-                File.Move(filePath, Path.GetFileNameWithoutExtension(filePath), true);
-                if (filePath == fileName)
-                    fileName = Path.GetFileNameWithoutExtension(filePath);
-            }
+            if (filePath == fileName)
+                fileName = backupPath.Replace(".bak", "");
+
+            // todo: test of this
+            if (backupEnding == "" || !File.Exists(backupPath))
+                throw new FileNotFoundException($"File '{filePath}' does not have any backups to restore");
+
+            backupEnding = "";
+            File.Move(backupPath, filePath, true);
         }
 
         private void DeleteBackup(string filePath)
         {
-            if (!filePath.EndsWith(".bak"))
-                throw new ArgumentException($"{filePath} is not a backup");
-            if (fileName == filePath)
-                throw new ArgumentException($"Can not delete myself");
+            string backupPath = filePath + backupEnding;
 
-            if (File.Exists(filePath))
-                File.Delete(filePath);
+            if (filePath == fileName)
+                fileName = backupPath.Replace(".bak", "");
+
+            // todo: test of this
+            if (backupEnding == "" || !File.Exists(backupPath))
+                throw new FileNotFoundException($"File '{filePath}' does not have any backups to delete");
+
+            backupEnding = "";
+            File.Delete(backupPath);
         }
 
         public void SaveToFile(string p_newFileName)
@@ -336,7 +388,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
 
             if (File.Exists(newFileName))
             {
-                MakeBackup(fileName);
+                MakeBackup(newFileName);
                 File.Delete(newFileName);
             }
 
@@ -359,11 +411,13 @@ namespace ch.romibi.Scrap.Packed.PackerLib
                     // write the file index
                     WriteFileMetaData(fsPackedNew);
                     WriteFileData(fsPackedNew);
+
+                    fileName = newFileName;
                 }
                 catch (Exception ex)
                 {
                     if (fileName.EndsWith(".bak"))
-                        RestoreBackup(fileName);
+                        RestoreBackup(newFileName);
                     throw ex;
                 }
                 finally
@@ -374,14 +428,14 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             catch (Exception ex)
             {
                 if (fileName.EndsWith(".bak"))
-                    RestoreBackup(fileName);
+                    RestoreBackup(newFileName);
                 throw ex;
             }
         }
 
         private FileStream TryMakeFile(string outputPath)
         {
-            Debug.Assert(!outputPath.EndsWith('\\'), "Output path cannot be only folder name.");
+            Debug.Assert(!outputPath.EndsWith(Path.DirectorySeparatorChar), "Output path cannot be only folder name.");
 
             string dirName = Path.GetDirectoryName(outputPath);
             if (dirName == null)                
@@ -455,7 +509,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
         }
 
         // todo: this needs to be better
-        private PackedFileIndexData[] FindFolder(string path)
+        private List<PackedFileIndexData> GetFolderContent(string path)
         {
             var result = new List<PackedFileIndexData>();
             var fileList = metaData.fileList.ToArray();
@@ -464,7 +518,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
                 if (file.FilePath.StartsWith(path))
                     result.Add(file);
             }
-            return result.ToArray();
+            return result;
         }
     }
 }

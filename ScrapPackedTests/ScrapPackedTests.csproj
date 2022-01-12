@@ -20,7 +20,11 @@
     <PackageReference Include="coverlet.collector" Version="1.2.0" />
   </ItemGroup>
 
-  <ItemGroup>
+	<ItemGroup>
+		<Folder Include="TestData\" />
+	</ItemGroup>
+
+	<ItemGroup>
     <ProjectReference Include="..\ScrapPackedExplorerCli\ScrapPackedExplorerCli.csproj" />
     <ProjectReference Include="..\ScrapPackedExplorer\ScrapPackedExplorer.csproj" />
   </ItemGroup>
