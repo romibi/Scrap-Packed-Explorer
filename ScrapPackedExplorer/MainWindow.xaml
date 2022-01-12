@@ -1,4 +1,4 @@
-﻿<Window x:Name="window" x:Class="ch.romibi.Scrap.Packed.Explorer.MainWindow"
+<Window x:Name="window" x:Class="ch.romibi.Scrap.Packed.Explorer.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -37,13 +37,13 @@
                     <TextBlock Text="Add"/>
                 </StackPanel>
             </Button>
-            <Button Name="ExtractToButton" Width="100" Click="ExtractToButton_Click">
+            <Button Name="ExtractToButton" Width="100" Click="ExtractToButton_Click" IsEnabled="{Binding Path=ContentSelected, RelativeSource={RelativeSource AncestorType=Window}}">
                 <StackPanel>
                     <Image Source="/Icons/MissingIcon.png" Height="50" />
                     <TextBlock Text="Extract to"/>
                 </StackPanel>
             </Button>
-            <Button Name="DeleteButton" Width="100" Click="DeleteButton_Click">
+            <Button Name="DeleteButton" Width="100" Click="DeleteButton_Click" IsEnabled="{Binding Path=ContentSelected, RelativeSource={RelativeSource AncestorType=Window}}">
                 <StackPanel>
                     <Image Source="/Icons/MissingIcon.png" Height="50" />
                     <TextBlock Text="Delete"/>
