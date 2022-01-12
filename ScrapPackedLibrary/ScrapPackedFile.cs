@@ -114,9 +114,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             var list = new List<string>();
             foreach (var file in metaData.fileList)
             {
-                // todo: special flags for this stuff
                 list.Add($"{file.FilePath}\tSize: {file.FileSize}\tOffset: {file.OriginalOffset}");
-                //list.Add(file.FilePath);
             }
             return list;
         }
