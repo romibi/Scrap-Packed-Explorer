@@ -1,4 +1,5 @@
 ﻿using CommandLine;
+using CommandLine.Text;
 using System;
 using System.Collections.Generic;
 
@@ -6,10 +7,9 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
 {
     abstract class BaseOptions
     {
-        [Option('p', "packedFile",  Required = true, HelpText = "The .packed file to use as basis")]
+        [Value(0, Required = true, MetaName = "Packed file", HelpText = "The .packed file to use as basis")]
         public string packedFile { get; set; }
     }
-
     abstract class ModifyingOptions : BaseOptions
     {
         [Option('o', "outputPackedFile", Required = false, Default = "", HelpText = "Where to store the new .packed file. Modify input if not provided.")]
@@ -100,5 +100,4 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
         Tree = 0x2,
         Name = 0x3
     }
-
 }
