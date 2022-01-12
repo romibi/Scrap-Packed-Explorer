@@ -126,6 +126,11 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             return metaData.fileList;
         }
 
+        public PackedFileIndexData GetFileIndexDataForFile(string p_packedPath)
+        {
+            return metaData.fileByPath[p_packedPath];
+        }
+
         public void Add(string p_externalPath, string p_packedPath)
         {
             FileAttributes fileAttributes = File.GetAttributes(p_externalPath);
