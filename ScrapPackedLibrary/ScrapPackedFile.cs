@@ -1,4 +1,4 @@
-﻿using ch.romibi.Scrap.Packed.PackerLib.DataTypes;
+using ch.romibi.Scrap.Packed.PackerLib.DataTypes;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,7 +11,9 @@ namespace ch.romibi.Scrap.Packed.PackerLib
         public string fileName { get; private set; }
         PackedMetaData metaData;
 
-        private string backupEnding = "";
+        // Todo: if we use MakeBackup multiple times before DeleteBackup or RestoreBackup
+        // this could be an issue: maybe use a map original-filname -> backup filename
+        private string temporaryBackupFileEnding = "";
 
         public ScrapPackedFile(string p_fileName)
         {
@@ -291,7 +293,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
                 }
                 catch (Exception ex)
                 {
-                    if (backupEnding != "")
+                    if (temporaryBackupFileEnding != "")
                         RestoreBackup(p_destinationPath);
                     throw ex;
                 }
@@ -302,7 +304,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             }
             catch (Exception ex)
             {
-                if (backupEnding != "")
+                if (temporaryBackupFileEnding != "")
                     RestoreBackup(p_destinationPath);
                 throw ex;
             }
@@ -311,7 +313,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
                 if (p_PackedFileStream == null)
                     fsPacked.Close();
             }
-            if (backupEnding != "")
+            if (temporaryBackupFileEnding != "")
                 DeleteBackup(p_destinationPath);
         }
 
@@ -321,60 +323,53 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             if (!File.Exists(filePath))
                 throw new FileNotFoundException($"Unable to backup '{filePath}': file does not exists");
             
-            Debug.Assert(backupEnding == "", $"Unable to backup '{filePath}': 'backupEnding' is not empty ('{backupEnding}').\r\n" +
+            Debug.Assert(temporaryBackupFileEnding == "", $"Unable to backup '{filePath}': 'backupEnding' is not empty ('{temporaryBackupFileEnding}').\r\n" +
                                              $"Can track only one backup at a time for now.");
 
             if (temp)
             {
-                Random random = new Random();
-                string tempIndex;
                 do
                 {
-                    tempIndex = ".";
-                    for (int i = 0; i < 5; i++)
-                        tempIndex += Convert.ToChar(Convert.ToInt32(Math.Floor(26 * random.NextDouble() + 65))).ToString();
-                    tempIndex += ".tmp";
+                    temporaryBackupFileEnding = $".{Guid.NewGuid().ToString().Substring(0,5)}.tmp";
                 }
-                while (File.Exists(backupEnding + tempIndex + ".bak"));
-
-                backupEnding += tempIndex;
+                while (File.Exists(temporaryBackupFileEnding + ".bak"));
             }
 
-            backupEnding += ".bak";
+            temporaryBackupFileEnding += ".bak";
 
             if (filePath == fileName)
-                fileName = filePath + backupEnding;
+                fileName = filePath + temporaryBackupFileEnding;
 
-            File.Move(filePath, filePath + backupEnding, true);
+            File.Move(filePath, filePath + temporaryBackupFileEnding, true);
         }
 
         private void RestoreBackup(string filePath)
         {
-            string backupPath = filePath + backupEnding;
+            string backupPath = filePath + temporaryBackupFileEnding;
 
             if (filePath == fileName)
                 fileName = backupPath.Replace(".bak", "");
 
             // todo: test of this
-            if (backupEnding == "" || !File.Exists(backupPath))
+            if (temporaryBackupFileEnding == "" || !File.Exists(backupPath))
                 throw new FileNotFoundException($"File '{filePath}' does not have any backups to restore");
 
-            backupEnding = "";
+            temporaryBackupFileEnding = "";
             File.Move(backupPath, filePath, true);
         }
 
         private void DeleteBackup(string filePath)
         {
-            string backupPath = filePath + backupEnding;
+            string backupPath = filePath + temporaryBackupFileEnding;
 
             if (filePath == fileName)
                 fileName = backupPath.Replace(".bak", "");
 
             // todo: test of this
-            if (backupEnding == "" || !File.Exists(backupPath))
+            if (temporaryBackupFileEnding == "" || !File.Exists(backupPath))
                 throw new FileNotFoundException($"File '{filePath}' does not have any backups to delete");
 
-            backupEnding = "";
+            temporaryBackupFileEnding = "";
             File.Delete(backupPath);
         }
 
@@ -512,8 +507,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
         private List<PackedFileIndexData> GetFolderContent(string path)
         {
             var result = new List<PackedFileIndexData>();
-            var fileList = metaData.fileList.ToArray();
-            foreach (var file in fileList)
+            foreach (var file in metaData.fileList)
             {
                 if (file.FilePath.StartsWith(path))
                     result.Add(file);
