@@ -37,7 +37,7 @@
                     <TextBlock Text="Add"/>
                 </StackPanel>
             </Button>
-            <Button Name="ExtractToButton" Width="100" Click="ExtractToButton_Click" IsEnabled="False">
+            <Button Name="ExtractToButton" Width="100" Click="ExtractToButton_Click">
                 <StackPanel>
                     <Image Source="/Icons/MissingIcon.png" Height="50" />
                     <TextBlock Text="Extract to"/>

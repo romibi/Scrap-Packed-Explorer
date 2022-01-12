@@ -18,20 +18,39 @@ using System.Windows.Shapes;
 using ch.romibi.Scrap.Packed.PackerLib.DataTypes;
 using System.IO;
 using System.Diagnostics;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Collections;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace ch.romibi.Scrap.Packed.Explorer
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
         ScrapPackedFile loadedPackedFile;
-        public bool PendingChanges { get; set; }
+
+        private bool _PendingChanges;
+        public bool PendingChanges {
+            get { return _PendingChanges; }
+            set {
+                _PendingChanges = value;
+                NotifyPropertyChanged();
+            }
+        }
 
         private bool _FileTreeSelectionUpdating = false;
 
         protected readonly string NAVIGATE_UP_NAME = "..";
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         public MainWindow()
         {
@@ -191,7 +210,61 @@ namespace ch.romibi.Scrap.Packed.Explorer
 
         private void ExtractToButton_Click(object sender, RoutedEventArgs e)
         {
+            var selectedItems = TreeContent.SelectedItems;
 
+            if (selectedItems.Count == 0) return; // todo make button not clickable in that case
+
+            if(selectedItems.Count > 1)
+            {
+                ExtractToFolder(selectedItems);
+            } else if((selectedItems[0] as TreeEntry).IsDirectory)
+            {
+                ExtractToFolder(selectedItems);
+            } else
+            {
+                ExtractToFile(selectedItems[0] as TreeEntry);
+            }
+        }
+
+        private void ExtractToFile(TreeEntry treeEntry)
+        {
+            string packedPath = treeEntry.IndexData.FilePath;
+            string defaultFilename = packedPath.Split('/').Last();
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.FileName = defaultFilename;
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                try
+                {
+                    loadedPackedFile.Extract(treeEntry.IndexData.FilePath, saveFileDialog.FileName);
+                } catch(Exception ex)
+                {
+                    Error(ex);
+                }
+            }
+        }
+
+        private void ExtractToFolder(IList selectedItems)
+        {
+            CommonOpenFileDialog folderDialog = new CommonOpenFileDialog();
+            folderDialog.IsFolderPicker = true;
+            if (folderDialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                foreach (var item in selectedItems)
+                {
+                    Debug.Assert(item is TreeEntry); // should always be the case
+                    TreeEntry entry = item as TreeEntry;
+                    try
+                    {
+                        loadedPackedFile.Extract(entry.GetItemPathString(), System.IO.Path.Combine(folderDialog.FileName,entry.Name));
+                    }
+                    catch (Exception ex)
+                    {
+                        Error(ex);
+                    }
+                }
+            }
         }
 
         private void AddButton_Click(object sender, RoutedEventArgs e)
@@ -216,11 +289,8 @@ namespace ch.romibi.Scrap.Packed.Explorer
             {
                 foreach (var item in selectedItems)
                 {
-                    if (item.IsFile)
-                    {
-                        loadedPackedFile.Remove(item.GetItemPathString());
-                        item.Parent.Items.Remove(item);
-                    }
+                    loadedPackedFile.Remove(item.GetItemPathString());
+                    item.Parent.Items.Remove(item);
                 }
             }
             catch (Exception ex)
