@@ -129,18 +129,13 @@ namespace ch.romibi.Scrap.Packed.Explorer
 
             TreeEntry selectedItem = e.AddedItems[0] as TreeEntry;
 
-            var doExpandSelection = false;
-            List<TreeEntry> itemPath;
-            // Todo: does this go nicer?
             if (selectedItem is TreeEntryAlias /* && selectedItem.Name.Equals(NAVIGATE_UP_NAME) */)
             {
-                itemPath = (selectedItem as TreeEntryAlias).ReferencedEntry.GetItemPath();
-                doExpandSelection = true;
+                (TreeContent.ItemContainerGenerator.ContainerFromItem(selectedItem) as ListViewItem).IsSelected = false;
+                return;
             }
-            else
-            {
-                itemPath = selectedItem.GetItemPath();
-            }
+
+            List<TreeEntry> itemPath = selectedItem.GetItemPath();
 
             // Update Tree Selection
             _FileTreeSelectionUpdating = true;
@@ -170,7 +165,7 @@ namespace ch.romibi.Scrap.Packed.Explorer
 
                     currentLevel = nextLevel;
                 }
-                TreeContent_SelectTreeViewItem(currentLevel as TreeViewItem, doExpandSelection);
+                TreeContent_SelectTreeViewItem(currentLevel as TreeViewItem);
             }
             finally
             {
@@ -178,21 +173,13 @@ namespace ch.romibi.Scrap.Packed.Explorer
             }
         }
 
-        private void TreeContent_SelectTreeViewItem(TreeViewItem p_SelectedTreeItem, bool p_DoExpandSelection)
+        private void TreeContent_SelectTreeViewItem(TreeViewItem p_SelectedTreeItem)
         {
             p_SelectedTreeItem.IsSelected = true;
             if (p_SelectedTreeItem.Items.Count != 0)
             {
-                p_SelectedTreeItem.IsExpanded = p_DoExpandSelection;
+                p_SelectedTreeItem.IsExpanded = false;
                 p_SelectedTreeItem.UpdateLayout();
-                if (p_DoExpandSelection)
-                {
-                    foreach (var item in p_SelectedTreeItem.Items)
-                    {
-                        TreeViewItem itemControl = p_SelectedTreeItem.ItemContainerGenerator.ContainerFromItem(item) as TreeViewItem;
-                        itemControl.IsExpanded = false;
-                    }
-                }
             }
             p_SelectedTreeItem.BringIntoView();
         }
