@@ -13,7 +13,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
 
         // Todo: if we use MakeBackup multiple times before DeleteBackup or RestoreBackup
         // this could be an issue: maybe use a map original-filname -> backup filename
-        private string temporaryBackupFileEnding = "";
+        private string backupFileEnding = "";
 
         public ScrapPackedFile(string p_fileName)
         {
@@ -293,7 +293,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
                 }
                 catch (Exception ex)
                 {
-                    if (temporaryBackupFileEnding != "")
+                    if (backupFileEnding != "")
                         RestoreBackup(p_destinationPath);
                     throw ex;
                 }
@@ -304,7 +304,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             }
             catch (Exception ex)
             {
-                if (temporaryBackupFileEnding != "")
+                if (backupFileEnding != "")
                     RestoreBackup(p_destinationPath);
                 throw ex;
             }
@@ -313,7 +313,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
                 if (p_PackedFileStream == null)
                     fsPacked.Close();
             }
-            if (temporaryBackupFileEnding != "")
+            if (backupFileEnding != "")
                 DeleteBackup(p_destinationPath);
         }
 
@@ -323,53 +323,53 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             if (!File.Exists(filePath))
                 throw new FileNotFoundException($"Unable to backup '{filePath}': file does not exists");
             
-            Debug.Assert(temporaryBackupFileEnding == "", $"Unable to backup '{filePath}': 'backupEnding' is not empty ('{temporaryBackupFileEnding}').\r\n" +
+            Debug.Assert(backupFileEnding == "", $"Unable to backup '{filePath}': 'backupEnding' is not empty ('{backupFileEnding}').\r\n" +
                                              $"Can track only one backup at a time for now.");
 
             if (temp)
             {
                 do
                 {
-                    temporaryBackupFileEnding = $".{Guid.NewGuid().ToString().Substring(0,5)}.tmp";
+                    backupFileEnding = $".{Guid.NewGuid().ToString().Substring(0,5)}.tmp";
                 }
-                while (File.Exists(temporaryBackupFileEnding + ".bak"));
+                while (File.Exists(backupFileEnding + ".bak"));
             }
 
-            temporaryBackupFileEnding += ".bak";
+            backupFileEnding += ".bak";
 
             if (filePath == fileName)
-                fileName = filePath + temporaryBackupFileEnding;
+                fileName = filePath + backupFileEnding;
 
-            File.Move(filePath, filePath + temporaryBackupFileEnding, true);
+            File.Move(filePath, filePath + backupFileEnding, true);
         }
 
         private void RestoreBackup(string filePath)
         {
-            string backupPath = filePath + temporaryBackupFileEnding;
+            string backupPath = filePath + backupFileEnding;
 
             if (filePath == fileName)
                 fileName = backupPath.Replace(".bak", "");
 
             // todo: test of this
-            if (temporaryBackupFileEnding == "" || !File.Exists(backupPath))
+            if (backupFileEnding == "" || !File.Exists(backupPath))
                 throw new FileNotFoundException($"File '{filePath}' does not have any backups to restore");
 
-            temporaryBackupFileEnding = "";
+            backupFileEnding = "";
             File.Move(backupPath, filePath, true);
         }
 
         private void DeleteBackup(string filePath)
         {
-            string backupPath = filePath + temporaryBackupFileEnding;
+            string backupPath = filePath + backupFileEnding;
 
             if (filePath == fileName)
                 fileName = backupPath.Replace(".bak", "");
 
             // todo: test of this
-            if (temporaryBackupFileEnding == "" || !File.Exists(backupPath))
+            if (backupFileEnding == "" || !File.Exists(backupPath))
                 throw new FileNotFoundException($"File '{filePath}' does not have any backups to delete");
 
-            temporaryBackupFileEnding = "";
+            backupFileEnding = "";
             File.Delete(backupPath);
         }
 
