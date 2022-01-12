@@ -29,7 +29,12 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
                 packedFile.Add(options.sourcePath, options.packedPath);
                 packedFile.SaveToFile(options.outputPackedFile);
             }
-            catch (Exception ex) { return Error(ex); }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error: {ex.Message}");
+                return 1;
+            }
+
             return 0;
         }
 
@@ -40,7 +45,11 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
                 packedFile.Remove(options.packedPath); 
                 packedFile.SaveToFile(options.outputPackedFile); 
             }
-            catch (Exception ex) { return Error(ex); }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error: {ex.Message}");
+                return 1;
+            }
 
             return 0;
         }
@@ -53,7 +62,12 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
                 packedFile.Rename(options.oldPackedPath, options.newPackedPath);
                 packedFile.SaveToFile(options.outputPackedFile);
             }
-            catch (Exception ex) { return Error(ex); }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error: {ex.Message}");
+                return 1;
+            }
+
             return 0;
         }
 
@@ -63,7 +77,11 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
                 ScrapPackedFile packedFile = new ScrapPackedFile(options.packedFile);
                 packedFile.Extract(options.packedPath, options.destinationPath);
             }
-            catch (Exception ex) { return Error(ex); }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error: {ex.Message}");
+                return 1;
+            }
 
             return 0;
         }
@@ -116,7 +134,6 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
                         if (Styles != OutputStyles.Name)
                             Output = FilePath + Output;
 
-
                         if (options.ShowFileSize)
                             Output += "   " + FileSize;
 
@@ -129,18 +146,13 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
                     if (!found)
                         Console.WriteLine($"Could not find anything by query '{options.searchString}' in '{options.packedFile}'");
                 }
-
-                // Todo: implement RunList output styles
                 return 0;
             }
-            catch (Exception ex) { return Error(ex); }
-        }
-
-        // This just to make code "prettier". Multi-line `catch` with one-line `try` is kinda ugly
-        private int Error(Exception ex)
-        {
-            Console.Error.WriteLine($"Error: {ex.Message}");
-            return 1;
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error: {ex.Message}");
+                return 1;
+            }
         }
     }
 }
