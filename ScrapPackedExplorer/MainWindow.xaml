@@ -1,4 +1,4 @@
-<Window x:Class="ch.romibi.Scrap.Packed.Explorer.MainWindow"
+﻿<Window x:Name="window" x:Class="ch.romibi.Scrap.Packed.Explorer.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -20,11 +20,15 @@
                     <TextBlock Text="Open"/>
                 </StackPanel>
             </Button>
-            <Button Name="SaveButton" Width="100" Click="SaveButton_Click" IsEnabled="False">
+            <Button Name="SaveButton" Width="100" Click="SaveButton_Click" IsEnabled="{Binding Path=PendingChanges, RelativeSource={RelativeSource AncestorType=Window}}">
                 <StackPanel>
                     <Image Source="/Icons/MissingIcon.png" Height="50" />
                     <TextBlock Text="Save"/>
                 </StackPanel>
+            </Button>
+            <!-- Todo: Make proper "Save As" Dropdown -->
+            <Button Name="SaveDropdownButton" Width="10" IsEnabled="False">
+                <TextBlock>v</TextBlock>
             </Button>
             <Separator Width="5"></Separator>
             <Button Name="AddButton" Width="100" Click="AddButton_Click" IsEnabled="False">
@@ -39,7 +43,7 @@
                     <TextBlock Text="Extract to"/>
                 </StackPanel>
             </Button>
-            <Button Name="DeleteButton" Width="100" Click="DeleteButton_Click" IsEnabled="False">
+            <Button Name="DeleteButton" Width="100" Click="DeleteButton_Click">
                 <StackPanel>
                     <Image Source="/Icons/MissingIcon.png" Height="50" />
                     <TextBlock Text="Delete"/>

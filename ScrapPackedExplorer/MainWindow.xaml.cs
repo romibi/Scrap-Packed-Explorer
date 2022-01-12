@@ -16,6 +16,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ch.romibi.Scrap.Packed.PackerLib.DataTypes;
+using System.IO;
+using System.Diagnostics;
 
 namespace ch.romibi.Scrap.Packed.Explorer
 {
@@ -25,12 +27,15 @@ namespace ch.romibi.Scrap.Packed.Explorer
     public partial class MainWindow : Window
     {
         ScrapPackedFile loadedPackedFile;
+        public bool PendingChanges { get; set; }
+
         private bool _FileTreeSelectionUpdating = false;
 
         protected readonly string NAVIGATE_UP_NAME = "..";
 
         public MainWindow()
         {
+            PendingChanges = false;
             InitializeComponent();
         }
 
@@ -179,6 +184,7 @@ namespace ch.romibi.Scrap.Packed.Explorer
             if (openFileDialog.ShowDialog() == true)
             {
                 loadedPackedFile = new ScrapPackedFile(openFileDialog.FileName);
+                PendingChanges = false;
                 RefreshTreeView();
             }
         }
@@ -195,6 +201,33 @@ namespace ch.romibi.Scrap.Packed.Explorer
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
+            List<TreeEntry> selectedItems = new List<TreeEntry>();
+            foreach (var item in TreeContent.SelectedItems)
+                selectedItems.Add(item as TreeEntry);
+
+            if (selectedItems.Count == 0) return;
+
+            if (MessageBox.Show($"Do you really want delete {selectedItems.Count} elements?",
+                    "Delete?",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes) return;
+
+            try
+            {
+                foreach (var item in selectedItems)
+                {
+                    if (item.IsFile)
+                    {
+                        loadedPackedFile.Remove(item.GetItemPathString());
+                        item.Parent.Items.Remove(item);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Error(ex);
+            }
+            PendingChanges = true;
 
         }
 
@@ -207,9 +240,37 @@ namespace ch.romibi.Scrap.Packed.Explorer
         {
 
         }
+
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
+            var filename = loadedPackedFile.fileName;
 
+            if (File.Exists(filename))
+                if (MessageBox.Show($"Do you really want to overwrite {filename}?",
+                    "Overwrite?",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes) return;
+
+            try
+            {
+
+                loadedPackedFile.SaveToFile(loadedPackedFile.fileName);
+                PendingChanges = false;
+            }
+            catch (Exception ex)
+            {
+                Error(ex);
+            }
+        }
+
+        private void Error(Exception ex)
+        {
+            MessageBox.Show(
+                ex.Message,
+                "Error",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error
+                );
         }
     }
 
@@ -303,6 +364,26 @@ namespace ch.romibi.Scrap.Packed.Explorer
             }
 
             return itemPath;
+        }
+
+        public string GetItemPathString(bool p_IgnoreRoot = true)
+        {
+            List<TreeEntry> itemPath = GetItemPath();
+            string pathString = "";
+
+            for (var i = 0; i < itemPath.Count; i++)
+            {
+                if (p_IgnoreRoot && i == 0) continue;
+
+                if (pathString.Length > 0)
+                    pathString += "/";
+                pathString += itemPath[i].Name;
+            }
+
+            if (itemPath.Last<TreeEntry>().IsDirectory)
+                pathString += "/";
+
+            return pathString;
         }
 
         public TreeViewItem GetContainerFromTree(TreeView p_TreeRoot)
