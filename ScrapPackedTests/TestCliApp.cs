@@ -86,9 +86,6 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
         [TestMethod]
         public void TestRunAddFolder()
         {
-            Directory.CreateDirectory(@"TestResults\TestAdd");
-            File.Copy(@"TestData\empty.packed", @"TestResults\TestAdd\packedFile.packed", true);
-
             // add folder new
             CheckRunCompareFile(new[] { "add", "--packedFile", @"TestResults\TestAdd\packedFile.packed",
                 "--sourcePath", @"TestData\exampleFolder1\" },
@@ -124,31 +121,52 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
         public void TestRunAddFailed()
         {
             // add file missing
-            CheckRunFail(new[] { "add", "--packedFile", @"TestResults\TestAdd\packedFile.packed",
+            CheckRunFail(new[] { "add", "--packedFile", @"TestResults\TestAddFail\packedFile.packed",
                 "--sourcePath", "exampleFile_missing.txt",
                 "--packedPath", "file.txt"},
                 1, "Expected file not found");
 
-            // add file, file not readable
-            // todo test add file that is not readable
-            /* CheckRunFail(new[] { "add", "--packedFile", @"TestResults\TestAdd\packedFile.packed",
-                "--sourcePath", "examplefile_readprotected.txt",
-                "--packedPath", "file.txt"},
-                1, "expected file not accessible"); */
-
-
             // add folder, folder not found
-            CheckRunFail(new[] { "add", "--packedFile", @"TestResults\TestAdd\packedFile.packed",
+            CheckRunFail(new[] { "add", "--packedFile", @"TestResults\TestAddFail\packedFile.packed",
                 "--sourcePath", "exampleFolder_missing/",
                 "--packedPath", "subfolder/"},
                 1, "Expected file not found");
 
+            // add file, file not readable
+            Directory.CreateDirectory(@"TestResults\TestAddFail");
+            var fsFile = new FileStream(@"TestResults\TestAddFail\examplefile_readprotected.txt", FileMode.OpenOrCreate);
+            try
+            {
+                CheckRunFail(new[] { "add", "--packedFile", @"TestResults\TestAddFail\packedFile.packed",
+                "--sourcePath", "examplefile_readprotected.txt",
+                "--packedPath", "file.txt"},
+                1, "expected file not accessible");
+            }
+            finally
+            {
+                fsFile.Close();
+            }
+
             // add folder, some files not readable
-            // todo test where some files in folder to ad are not readable
-            /* CheckRunFail(new[] { "add", "--packedFile", @"TestResults\TestAdd\packedFile.packed",
+            Directory.CreateDirectory(@"TestResults\TestAddFail\exampleFolder_readprotected");
+
+            File.Copy(@"TestData\examplefile1.txt", @"TestResults\TestAddFail\exampleFolder_readprotected\examplefile_notprotected.txt");
+            fsFile = new FileStream(@"TestResults\TestAddFail\exampleFolder_readprotected\examplefile_readprotected.txt", FileMode.OpenOrCreate);
+
+            try
+            {
+            CheckRunFail(new[] { "add", "--packedFile", @"TestResults\TestAddFail\packedFile.packed",
                 "--sourcePath", "exampleFolder_readprotected/",
                 "--packedPath", "subfolder/"},
-                1, "expected some file not found"); */
+                1, "expected some file not found");
+            }
+            finally
+            {
+                fsFile.Close();
+            }
+
+            // Not sure if it is needed
+            // Directory.Delete("TestResults");
         }
 
         [TestMethod]
@@ -421,12 +439,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
             // check uncorrect input
             CheckRunFail(new[] {"add", "--packedFile", "/.,*&^$Q*",
                     "--sourcePath", @"TestData\examplefile1.txt",
-                    "--packedPath", "file.txt"}, 1, "expected file is nonexists");
-
-            // check nonexisted output
-            CheckRunFail(new[] {"add", "--packedFile", "nonexsited.packed",
-                    "--sourcePath", @"TestData\examplefile1.txt",
-                    "--packedPath", "file.txt"}, 1, "expected file is nonexists");
+                    "--packedPath", "file.txt"}, 1, "unable to create expected file");
 
             if (!Directory.Exists(@"TestResults\TestInputPackedFail"))
                 Directory.CreateDirectory(@"TestResults\TestInputPackedFail");
