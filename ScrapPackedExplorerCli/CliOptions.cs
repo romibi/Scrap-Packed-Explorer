@@ -1,4 +1,6 @@
 ﻿using CommandLine;
+using System;
+using System.Collections.Generic;
 
 namespace ch.romibi.Scrap.Packed.Explorer.Cli
 {
@@ -62,8 +64,8 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
     [Verb("list", HelpText = "list or search files and folders in the archive")]
     class ListOptions : BaseOptions
     {
-        [Option('l', "outputStyle", Required = false, Default = "list", HelpText = "Output list (default) or tree view")]
-        public string outputStyle { get; set; }
+        [Option('l', "outputStyle", Required = false, Default = OutputStyles.List, HelpText = "Output list (default) or tree view")]
+        public OutputStyles outputStyle { get; set; }
 
         [Option('q', "searchString", Required = false, Default = "", HelpText = "A Search string to filter the output with")]
         public string searchString { get; set; }
@@ -72,11 +74,31 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
         public bool isRegex { get; set; }
 
         // todo: come up with better description
+        // todo: change arguments style
         [Option('s', "starts-with", Required = false, Default = false, HelpText = "Apply search query only to beginnng of the files path \nBy default applies everywhere")]
         public bool StartsWith { get; set; }
 
         [Option('f', "match-filename", Required = false, Default = false, HelpText = "Search only by files. \nBy default search includes folders")]
         public bool MatchFilename { get; set; }
+
+        // todo: change short arguments
+        [Option('z', "show-file-size", Required = false, Default = false, HelpText = "Show files sizes")]
+        public bool ShowFileSize { get; set; }
+
+        [Option('x', "show-file-offset", Required = false, Default = false, HelpText = "Show files offsets")]
+        public bool ShowFileOffset { get; set; }
+
+        // todo: make custom helper to make better help screen
+        // note: https://github.com/commandlineparser/commandline/wiki/HelpText-Configuration
+    }
+
+    [Flags]
+    public enum OutputStyles
+    {
+        None = 0x0,
+        List = 0x1,
+        Tree = 0x2,
+        Name = 0x3
     }
 
 }

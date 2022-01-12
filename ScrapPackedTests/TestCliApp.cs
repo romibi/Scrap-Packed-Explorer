@@ -301,7 +301,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
         public void TestRunList()
         {
             CheckRunCompareOutput(new[] { "list", "--packedFile", @"TestData\empty.packed" },
-                "TestData\\empty.packed is empty.\r\n",
+                "'TestData\\empty.packed' is empty.\r\n",
                 "List empty"
             );
 
@@ -309,8 +309,8 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
                 "file1.txt\r\n" +
                 "file2.txt\r\n" +
                 "folder1/file1.txt\r\n" +
-                "folder2/file1.txt\r\n" +
                 "folder1/file2.png\r\n" +
+                "folder2/file1.txt\r\n" +
                 "folder2/file2.txt\r\n" +
                 "folder2/folder1/file1.txt\r\n" +
                 "folder2/folder1/file2.txt\r\n",
@@ -327,8 +327,8 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
                 "--searchString", "1" },
                 "file1.txt\r\n" +
                 "folder1/file1.txt\r\n" +
-                "folder2/file1.txt\r\n" +
                 "folder1/file2.png\r\n" +
+                "folder2/file1.txt\r\n" +
                 "folder2/folder1/file1.txt\r\n" +
                 "folder2/folder1/file2.txt\r\n",
                 "List 1"
@@ -376,32 +376,33 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
                 "folder2/folder1/file2.txt\r\n",
                 "List folder2/.*\\.txt");
 
+            // todo: tree output
             //CheckRunCompareOutput(new[] { "list", "--packedFile", @"TestData\example.packed",
-            //    "--outputStyle", "tree"},
+            //    "--outputStyle", "Tree"},
             //    "│   file1.txt\r\n" +
             //    "│   file2.txt\r\n" +
-            //    "│\r\n" +
+            //    "│   \r\n" +
             //    "├───folder1\r\n" +
             //    "│       file1.txt\r\n" +
             //    "│       file2.png\r\n" +
-            //    "│\r\n" +
+            //    "│   \r\n" +
             //    "└───folder2\r\n" +
             //    "    │   file1.txt\r\n" +
             //    "    │   file2.txt\r\n" +
-            //    "    │\r\n" +
+            //    "    │   \r\n" +
             //    "    └───folder1\r\n" +
             //    "            file1.txt\r\n" +
             //    "            file2.txt\r\n",
             //    "List as tree");
 
-            //CheckRunCompareOutput(new[] { "list", "--packedFile", @"TestData\example.packed",
-            //    "--outputStyle", "names",
-            //    "--searchString", "folder2/" },
-            //"file1.txt\r\n" +
-            //"file2.txt\r\n" +
-            //"file1.txt\r\n" +
-            //"file2.txt\r\n",
-            //"List files with only filename from folder2");
+            CheckRunCompareOutput(new[] { "list", "--packedFile", @"TestData\example.packed",
+                "--outputStyle", "Name",
+                "--searchString", "folder2/" },
+                "file1.txt\r\n" +
+                "file2.txt\r\n" +
+                "file1.txt\r\n" +
+                "file2.txt\r\n",
+                "List files with only filename from folder2");
         }
 
         // note: list may fail only if input .packed file is not correct.
@@ -596,7 +597,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
             Assert.AreEqual(0, returnValue, p_Message + ": wrong return value");
 
             var ActualOutput = stringWriter.ToString();
-            Assert.AreEqual(p_ExpectedOutput, ActualOutput, p_Message + ": outputs are not equal");
+            Assert.AreEqual("\r\n" + p_ExpectedOutput, "\r\n" + ActualOutput, p_Message + ": outputs are not equal");
         }
 
         private void CheckRunFileExists(string[] p_Args, string p_UnexpectedOutput, string p_Message)

@@ -2,7 +2,7 @@
 using CommandLine;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Text.RegularExpressions;
 
 namespace ch.romibi.Scrap.Packed.Explorer.Cli
@@ -11,6 +11,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
     {
         public int Run(string[] args)
         {
+            // todo: make proper parser instanse to configure case insensitivity for enums and better help text
             return Parser.Default.ParseArguments<AddOptions, RemoveOptions, RenameOptions, ExtractOptions, ListOptions>(args)
                 .MapResult(
                     (AddOptions options) => RunAdd(options),
@@ -72,10 +73,11 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
             try
             {
                 ScrapPackedFile packedFile = new ScrapPackedFile(options.packedFile);
-                List<string> fileNames = packedFile.GetFileNames();
+                List<string> FileList = packedFile.GetFileNames();
+                FileList.Sort();
 
-                if (fileNames.Count == 0)
-                    Console.WriteLine($"{options.packedFile} is empty.");
+                if (FileList.Count == 0)
+                    Console.WriteLine($"'{options.packedFile}' is empty.");
                 else
                 {
                     string query = options.searchString;
@@ -91,22 +93,41 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
 
                     Regex rg = new Regex(query);
 
-                    List<string> filtered = fileNames.Where(f =>
-                   {
-                       if (options.MatchFilename)
-                       {
-                           var pathSplitted = f.Split('/');
-                           f = pathSplitted[pathSplitted.Length - 1];
-                       }
+                    bool found = false;
+                    foreach (var File in FileList)
+                    {
+                        OutputStyles Styles = options.outputStyle;
 
-                       return rg.IsMatch(f);
-                   }).ToList();
+                        var FileData = File.Split("\t");
+                        string FilePath = Path.GetDirectoryName(FileData[0]).Replace("\\", "/");
+                        string FileName = Path.GetFileName(FileData[0]);
+                        string FileSize = FileData[1];
+                        string FileOffset = FileData[2];
 
-                    if (filtered.Count == 0)
+                        if (FilePath != "")
+                            FilePath += "/";
+
+                        if (!rg.IsMatch(options.MatchFilename ? FileName : FilePath + FileName))
+                            continue;                        
+                        found = true;
+
+                        string Output = FileName;
+
+                        if (Styles != OutputStyles.Name)
+                            Output = FilePath + Output;
+
+
+                        if (options.ShowFileSize)
+                            Output += "   " + FileSize;
+
+                        if (options.ShowFileOffset)
+                            Output += "   " + FileOffset;
+
+                        Console.WriteLine(Output);
+                    }
+
+                    if (!found)
                         Console.WriteLine($"Could not find anything by query '{options.searchString}' in '{options.packedFile}'");
-
-                    foreach (var fileName in filtered)
-                        Console.WriteLine(fileName);
                 }
 
                 // Todo: implement RunList output styles
