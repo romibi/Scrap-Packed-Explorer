@@ -336,6 +336,45 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
             );
 
             CheckRunCompareOutput(new[] { "list", "--packedFile", @"TestData\example.packed",
+                "--show-file-size"},
+                "file1.txt   Size: 102\r\n" +
+                "file2.txt   Size: 169\r\n" +
+                "folder1/file1.txt   Size: 454\r\n" +
+                "folder1/file2.png   Size: 500\r\n" +
+                "folder2/file1.txt   Size: 247\r\n" +
+                "folder2/file2.txt   Size: 165\r\n" +
+                "folder2/folder1/file1.txt   Size: 280\r\n" +
+                "folder2/folder1/file2.txt   Size: 83\r\n",
+                "List full filesizes"
+            );
+
+            CheckRunCompareOutput(new[] { "list", "--packedFile", @"TestData\example.packed",
+                "--show-file-offset"},
+                "file1.txt   Offset: 244\r\n" +
+                "file2.txt   Offset: 346\r\n" +
+                "folder1/file1.txt   Offset: 515\r\n" +
+                "folder1/file2.png   Offset: 1216\r\n" +
+                "folder2/file1.txt   Offset: 969\r\n" +
+                "folder2/file2.txt   Offset: 1716\r\n" +
+                "folder2/folder1/file1.txt   Offset: 1881\r\n" +
+                "folder2/folder1/file2.txt   Offset: 2161\r\n" ,
+                "List full offsets"
+            );
+
+            CheckRunCompareOutput(new[] { "list", "--packedFile", @"TestData\example.packed",
+                "--show-file-size", "--show-file-offset"},
+                "file1.txt   Size: 102   Offset: 244\r\n" +
+                "file2.txt   Size: 169   Offset: 346\r\n" +
+                "folder1/file1.txt   Size: 454   Offset: 515\r\n" +
+                "folder1/file2.png   Size: 500   Offset: 1216\r\n" +
+                "folder2/file1.txt   Size: 247   Offset: 969\r\n" +
+                "folder2/file2.txt   Size: 165   Offset: 1716\r\n" +
+                "folder2/folder1/file1.txt   Size: 280   Offset: 1881\r\n" +
+                "folder2/folder1/file2.txt   Size: 83   Offset: 2161\r\n",
+                "List full filesizes + offsets"
+            );
+
+            CheckRunCompareOutput(new[] { "list", "--packedFile", @"TestData\example.packed",
                 "--searchString", "nothing"},
                 "Could not find anything by query 'nothing' in 'TestData\\example.packed'\r\n",
                 "List could not find"
@@ -421,6 +460,16 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
                 "file1.txt\r\n" +
                 "file2.txt\r\n",
                 "List files with only filename from folder2");
+
+            CheckRunCompareOutput(new[] { "list", "--packedFile", @"TestData\example.packed",
+                "--outputStyle", "Name",
+                "--searchString", "folder2/",
+                "--show-file-size", "--show-file-offset"},
+                "file1.txt   Size: 247   Offset: 969\r\n" +
+                "file2.txt   Size: 165   Offset: 1716\r\n" +
+                "file1.txt   Size: 280   Offset: 1881\r\n" +
+                "file2.txt   Size: 83   Offset: 2161\r\n",
+                "List files with only filename from folder2 + sizes + offsets");
         }
 
         // note: list may fail only if input .packed file is not correct.
@@ -567,6 +616,8 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
             // (create dummy packedFile.packed.bak before call, expect to be unchanged)
             CheckRun(new[] { "add", "--packedFile", @"TestResults\TestAdd\packedFile.packed", "--sourcePath", "'examplefile2.png'", "--packedPath", "'folder/file.png'", "--overwriteOldBackup" }, "", "");
             */
+
+            // todo: find a way to test MakeBackup(), RestoreBackup() and DeleteBackup()
         }
 
         private void CheckRunCompareFile(string[] p_Args, string p_ExpectedFilePath, string p_ActualFilePath, string p_Message = "", int p_ReturnCode = 0)
