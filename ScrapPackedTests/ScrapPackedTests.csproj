@@ -20,16 +20,19 @@
     <PackageReference Include="coverlet.collector" Version="1.2.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="TestData\" />
-  </ItemGroup>
+	<ItemGroup>
+		<Folder Include="TestData\" />
+	</ItemGroup>
 
-  <ItemGroup>
+	<ItemGroup>
     <ProjectReference Include="..\ScrapPackedExplorerCli\ScrapPackedExplorerCli.csproj" />
     <ProjectReference Include="..\ScrapPackedExplorer\ScrapPackedExplorer.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="TestData\empty.packed">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="TestData\example.packed">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -136,6 +139,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="TestData\TestReferenceFiles\TestExtract\ExtractAll\folder2\folder1\file2.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestData\TestReferenceFiles\TestExtract\ExtractFileToFolder\Output\file1.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="TestData\TestReferenceFiles\TestExtract\ExtractFile\file.txt">
