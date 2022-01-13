@@ -435,7 +435,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
 
             // todo: tree output
             //CheckRunCompareOutput(new[] { "list", @"TestData\example.packed",
-            //    "--outputStyle", "Tree"},
+            //    "--outputStyle", "tree"},
             //    "│   file1.txt\r\n" +
             //    "│   file2.txt\r\n" +
             //    "│   \r\n" +
@@ -453,7 +453,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
             //    "List as tree");
 
             CheckRunCompareOutput(new[] { "list", @"TestData\example.packed",
-                "--outputStyle", "Name",
+                "--outputStyle", "name",
                 "--searchString", "folder2/" },
                 "file1.txt\r\n" +
                 "file2.txt\r\n" +
