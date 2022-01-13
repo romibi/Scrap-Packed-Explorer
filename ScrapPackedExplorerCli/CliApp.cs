@@ -172,7 +172,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
                     query = query.Replace("\\*", ".*");
                     query = query.Replace("\\?", ".");
 
-                    if (options.StartsWith)
+                    if (options.MatchBeginning)
                         query = "^" + query;
 
                     Regex rg = new Regex(query);
@@ -192,7 +192,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
                             FilePath += "/";
 
                         if (!rg.IsMatch(options.MatchFilename ? FileName : FilePath + FileName))
-                            continue;                        
+                            continue;
                         found = true;
 
                         string Output = FileName;
@@ -201,10 +201,10 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
                             Output = FilePath + Output;
 
                         if (options.ShowFileSize)
-                            Output += "   " + FileSize;
+                            Output += "\t" + FileSize;
 
                         if (options.ShowFileOffset)
-                            Output += "   " + FileOffset;
+                            Output += "\t" + FileOffset;
 
                         Console.WriteLine(Output);
                     }

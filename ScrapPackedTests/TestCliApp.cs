@@ -337,40 +337,40 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
 
             CheckRunCompareOutput(new[] { "list", @"TestData\example.packed",
                 "--show-file-size"},
-                "file1.txt   Size: 102\r\n" +
-                "file2.txt   Size: 169\r\n" +
-                "folder1/file1.txt   Size: 454\r\n" +
-                "folder1/file2.png   Size: 500\r\n" +
-                "folder2/file1.txt   Size: 247\r\n" +
-                "folder2/file2.txt   Size: 165\r\n" +
-                "folder2/folder1/file1.txt   Size: 280\r\n" +
-                "folder2/folder1/file2.txt   Size: 83\r\n",
+                "file1.txt\tSize: 102\r\n" +
+                "file2.txt\tSize: 169\r\n" +
+                "folder1/file1.txt\tSize: 454\r\n" +
+                "folder1/file2.png\tSize: 500\r\n" +
+                "folder2/file1.txt\tSize: 247\r\n" +
+                "folder2/file2.txt\tSize: 165\r\n" +
+                "folder2/folder1/file1.txt\tSize: 280\r\n" +
+                "folder2/folder1/file2.txt\tSize: 83\r\n",
                 "List full filesizes"
             );
 
             CheckRunCompareOutput(new[] { "list", @"TestData\example.packed",
                 "--show-file-offset"},
-                "file1.txt   Offset: 244\r\n" +
-                "file2.txt   Offset: 346\r\n" +
-                "folder1/file1.txt   Offset: 515\r\n" +
-                "folder1/file2.png   Offset: 1216\r\n" +
-                "folder2/file1.txt   Offset: 969\r\n" +
-                "folder2/file2.txt   Offset: 1716\r\n" +
-                "folder2/folder1/file1.txt   Offset: 1881\r\n" +
-                "folder2/folder1/file2.txt   Offset: 2161\r\n" ,
+                "file1.txt\tOffset: 244\r\n" +
+                "file2.txt\tOffset: 346\r\n" +
+                "folder1/file1.txt\tOffset: 515\r\n" +
+                "folder1/file2.png\tOffset: 1216\r\n" +
+                "folder2/file1.txt\tOffset: 969\r\n" +
+                "folder2/file2.txt\tOffset: 1716\r\n" +
+                "folder2/folder1/file1.txt\tOffset: 1881\r\n" +
+                "folder2/folder1/file2.txt\tOffset: 2161\r\n" ,
                 "List full offsets"
             );
 
             CheckRunCompareOutput(new[] { "list", @"TestData\example.packed",
                 "--show-file-size", "--show-file-offset"},
-                "file1.txt   Size: 102   Offset: 244\r\n" +
-                "file2.txt   Size: 169   Offset: 346\r\n" +
-                "folder1/file1.txt   Size: 454   Offset: 515\r\n" +
-                "folder1/file2.png   Size: 500   Offset: 1216\r\n" +
-                "folder2/file1.txt   Size: 247   Offset: 969\r\n" +
-                "folder2/file2.txt   Size: 165   Offset: 1716\r\n" +
-                "folder2/folder1/file1.txt   Size: 280   Offset: 1881\r\n" +
-                "folder2/folder1/file2.txt   Size: 83   Offset: 2161\r\n",
+                "file1.txt\tSize: 102\tOffset: 244\r\n" +
+                "file2.txt\tSize: 169\tOffset: 346\r\n" +
+                "folder1/file1.txt\tSize: 454\tOffset: 515\r\n" +
+                "folder1/file2.png\tSize: 500\tOffset: 1216\r\n" +
+                "folder2/file1.txt\tSize: 247\tOffset: 969\r\n" +
+                "folder2/file2.txt\tSize: 165\tOffset: 1716\r\n" +
+                "folder2/folder1/file1.txt\tSize: 280\tOffset: 1881\r\n" +
+                "folder2/folder1/file2.txt\tSize: 83\tOffset: 2161\r\n",
                 "List full filesizes + offsets"
             );
 
@@ -395,7 +395,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
                 "--searchString", "file", "--starts-with" },
                 "file1.txt\r\n" +
                 "file2.txt\r\n",
-                "List file starts-width"
+                "List file match-beginning"
             );
 
             CheckRunCompareOutput(new[] { "list", @"TestData\TestReferenceFiles\TestList\listMatchFile.packed",
@@ -465,10 +465,10 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
                 "--outputStyle", "Name",
                 "--searchString", "folder2/",
                 "--show-file-size", "--show-file-offset"},
-                "file1.txt   Size: 247   Offset: 969\r\n" +
-                "file2.txt   Size: 165   Offset: 1716\r\n" +
-                "file1.txt   Size: 280   Offset: 1881\r\n" +
-                "file2.txt   Size: 83   Offset: 2161\r\n",
+                "file1.txt\tSize: 247\tOffset: 969\r\n" +
+                "file2.txt\tSize: 165\tOffset: 1716\r\n" +
+                "file1.txt\tSize: 280\tOffset: 1881\r\n" +
+                "file2.txt\tSize: 83\tOffset: 2161\r\n",
                 "List files with only filename from folder2 + sizes + offsets");
         }
 
