@@ -1,5 +1,6 @@
 ﻿using ch.romibi.Scrap.Packed.PackerLib;
 using CommandLine;
+using CommandLine.Text;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,15 +12,28 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
     {
         public int Run(string[] args)
         {
-            // todo: make proper parser instanse to configure case insensitivity for enums and better help text
-            return Parser.Default.ParseArguments<AddOptions, RemoveOptions, RenameOptions, ExtractOptions, ListOptions>(args)
-                .MapResult(
+            var result = new Parser(with =>
+            {
+                with.HelpWriter = null;
+                with.CaseInsensitiveEnumValues = true;
+            }).ParseArguments<AddOptions, RemoveOptions, RenameOptions, ExtractOptions, ListOptions>(args);
+
+            var helpText = HelpText.AutoBuild(result, h =>
+            {
+                h.AddEnumValuesToHelpText = true;
+                return h;
+            }, e => e);
+
+            return result.MapResult(
                     (AddOptions options) => RunAdd(options),
                     (RemoveOptions options) => RunRemove(options),
                     (RenameOptions options) => RunRename(options),
                     (ExtractOptions options) => RunExtract(options),
                     (ListOptions options) => RunList(options),
-                    errors => 1);
+                    errors => {
+                        Console.Error.WriteLine(helpText);
+                        return 1;
+                    });
         }
 
         private int RunAdd(AddOptions options)
