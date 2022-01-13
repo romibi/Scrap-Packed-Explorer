@@ -71,12 +71,21 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
                 h.AddEnumValuesToHelpText = true;
                 h.AutoHelp = true;
                 h.AddPreOptionsLine(usage);
+                h.OptionComparison = orderOnValues;
                 return h;
             });
 
             Console.Error.WriteLine(helpText);
             return 1;
         }
+
+        private static Comparison<ComparableOption> orderOnValues = (ComparableOption attr1, ComparableOption attr2) =>
+        {
+            if (attr1.IsValue)
+                return -1;
+            else
+                return 1;
+        };
 
         private int RunAdd(AddOptions options)
         {
