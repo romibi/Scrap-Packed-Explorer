@@ -75,8 +75,8 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
 
         // todo: come up with better description
         // todo: change arguments style
-        [Option('b', "match-beginning ", Required = false, Default = false, HelpText = "Apply search query only to beginnng of the files path. By default applies everywhere")]
-        public bool StartsWith { get; set; }
+        [Option('b', "match-beginning", Required = false, Default = false, HelpText = "Apply search query only to beginnng of the files path. By default applies everywhere")]
+        public bool MatchBeginning { get; set; }
 
         [Option('f', "match-filename", Required = false, Default = false, HelpText = "Search only by files. By default search includes folders")]
         public bool MatchFilename { get; set; }

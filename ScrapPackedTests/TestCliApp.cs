@@ -395,7 +395,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
                 "--searchString", "file", "--match-beginning" },
                 "file1.txt\r\n" +
                 "file2.txt\r\n",
-                "List file starts-width"
+                "List file match-beginning"
             );
 
             CheckRunCompareOutput(new[] { "list", "--packedFile", @"TestData\TestReferenceFiles\TestList\listMatchFile.packed",
