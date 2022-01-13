@@ -153,6 +153,9 @@
     <None Update="TestData\TestReferenceFiles\TestExtract\ExtractFolder\someFolder\file2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="TestData\TestReferenceFiles\TestList\listMatchFile.packed">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="TestData\TestReferenceFiles\TestRemove\removedFile.packed">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -3,6 +3,7 @@ using CommandLine;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace ch.romibi.Scrap.Packed.Explorer.Cli
 {
@@ -10,6 +11,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
     {
         public int Run(string[] args)
         {
+            // todo: make proper parser instance to configure case insensitivity for enums and better help text
             return Parser.Default.ParseArguments<AddOptions, RemoveOptions, RenameOptions, ExtractOptions, ListOptions>(args)
                 .MapResult(
                     (AddOptions options) => RunAdd(options),
@@ -27,7 +29,12 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
                 packedFile.Add(options.sourcePath, options.packedPath);
                 packedFile.SaveToFile(options.outputPackedFile);
             }
-            catch (Exception ex) { return Error(ex); }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error: {ex.Message}");
+                return 1;
+            }
+
             return 0;
         }
 
@@ -38,7 +45,11 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
                 packedFile.Remove(options.packedPath); 
                 packedFile.SaveToFile(options.outputPackedFile); 
             }
-            catch (Exception ex) { return Error(ex); }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error: {ex.Message}");
+                return 1;
+            }
 
             return 0;
         }
@@ -51,7 +62,12 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
                 packedFile.Rename(options.oldPackedPath, options.newPackedPath);
                 packedFile.SaveToFile(options.outputPackedFile);
             }
-            catch (Exception ex) { return Error(ex); }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error: {ex.Message}");
+                return 1;
+            }
+
             return 0;
         }
 
@@ -61,34 +77,82 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
                 ScrapPackedFile packedFile = new ScrapPackedFile(options.packedFile);
                 packedFile.Extract(options.packedPath, options.destinationPath);
             }
-            catch (Exception ex) { return Error(ex); }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error: {ex.Message}");
+                return 1;
+            }
 
             return 0;
         }
 
         private int RunList(ListOptions options)
         {
-            try {
-                ScrapPackedFile packedFile = new ScrapPackedFile(options.packedFile);            
-                List<string> fileNames = packedFile.GetFileNames();
+            try
+            {
+                ScrapPackedFile packedFile = new ScrapPackedFile(options.packedFile);
+                List<string> FileList = packedFile.GetFileNames();
+                FileList.Sort();
 
-                if (fileNames.Count == 0)
-                    Console.WriteLine($"{options.packedFile} is empty.");
+                if (FileList.Count == 0)
+                    Console.WriteLine($"'{options.packedFile}' is empty.");
                 else
-                    foreach (var fileName in fileNames)
-                        Console.WriteLine(fileName);
+                {
+                    string query = options.searchString;
+                    if (!options.isRegex)
+                        query = Regex.Escape(query);
+
+                    query = query.Replace("/", @"\/");
+                    query = query.Replace("\\*", ".*");
+                    query = query.Replace("\\?", ".");
+
+                    if (options.MatchBeginning)
+                        query = "^" + query;
+
+                    Regex rg = new Regex(query);
+
+                    bool found = false;
+                    foreach (var File in FileList)
+                    {
+                        OutputStyles Styles = options.outputStyle;
+
+                        var FileData = File.Split("\t");
+                        string FilePath = Path.GetDirectoryName(FileData[0]).Replace("\\", "/");
+                        string FileName = Path.GetFileName(FileData[0]);
+                        string FileSize = FileData[1];
+                        string FileOffset = FileData[2];
+
+                        if (FilePath != "")
+                            FilePath += "/";
+
+                        if (!rg.IsMatch(options.MatchFilename ? FileName : FilePath + FileName))
+                            continue;
+                        found = true;
+
+                        string Output = FileName;
+
+                        if (Styles != OutputStyles.Name)
+                            Output = FilePath + Output;
+
+                        if (options.ShowFileSize)
+                            Output += "\t" + FileSize;
+
+                        if (options.ShowFileOffset)
+                            Output += "\t" + FileOffset;
+
+                        Console.WriteLine(Output);
+                    }
+
+                    if (!found)
+                        Console.WriteLine($"Could not find anything by query '{options.searchString}' in '{options.packedFile}'");
+                }
+                return 0;
             }
-            catch (Exception ex) { return Error(ex); }
-
-            // Todo: implement RunList output styles
-            return 0;
-        }
-
-        // This just to make code "prettier". Multi-line `catch` with one-line `try` is kinda ugly
-        private int Error(Exception ex)
-        {
-            Console.Error.WriteLine($"Error: {ex.Message}");
-            return 1;
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error: {ex.Message}");
+                return 1;
+            }
         }
     }
 }

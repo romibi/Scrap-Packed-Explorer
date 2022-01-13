@@ -109,14 +109,34 @@ namespace ch.romibi.Scrap.Packed.PackerLib
 
             return new PackedFileIndexData(fileName, fileSize, fileOffset);
         }
-
+                
         public List<string> GetFileNames()
         {
             // todo refactor list output
             var list = new List<string>();
             foreach (var file in metaData.fileList)
             {
-                list.Add(file.FilePath + " Size: " + file.FileSize + " Offset: " + file.OriginalOffset);
+                list.Add($"{file.FilePath}\tSize: {file.FileSize}\tOffset: {file.OriginalOffset}");
+            }
+            return list;
+        }
+
+        // todo: deprecate this
+        public List<IDictionary<string, string>> GetFileList()
+        {
+            // todo refactor list output
+            var list = new List<IDictionary<string, string>>();
+            foreach (var file in metaData.fileList)
+            {
+                Dictionary<string, string> FileData = new Dictionary<string, string>()
+                {
+                    { "FileName",   Path.GetFileName(file.FilePath) },
+                    { "FilePath",   Path.GetDirectoryName(file.FilePath).Replace("\\", "/") },
+                    { "FileSize",   $"{file.FileSize}" },
+                    { "FileOffset", $"{file.OriginalOffset}" }
+                };
+
+                list.Add(FileData);
             }
             return list;
         }
