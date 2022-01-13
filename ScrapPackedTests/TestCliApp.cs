@@ -490,6 +490,10 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
                     "--sourcePath", @"TestData\examplefile1.txt",
                     "--packedPath", "file.txt"}, 1, "unable to create expected file");
 
+            // check nonexisted output
+            CheckRunFail(new[] {"remove", "nonexsited.packed",
+                    "--packedPath", "file.txt"}, 1, "expected file is nonexists");
+
             if (!Directory.Exists(@"TestResults\TestInputPackedFail"))
                 Directory.CreateDirectory(@"TestResults\TestInputPackedFail");
             if (File.Exists(@"TestResults\TestInputPackedFail\packedFile.packed"))
