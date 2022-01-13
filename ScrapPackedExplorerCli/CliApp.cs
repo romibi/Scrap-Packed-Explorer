@@ -12,20 +12,51 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
     {
         public int Run(string[] args)
         {
-            var result = new Parser(with =>
+            var parser = new Parser(with =>
             {
                 with.HelpWriter = null;
                 with.CaseInsensitiveEnumValues = true;
-            }).ParseArguments<AddOptions, RemoveOptions, RenameOptions, ExtractOptions, ListOptions>(args);
+            });
 
+            // Default parsing with verb as first arg
+            var result = parser.ParseArguments<BaseOptions, AddOptions, RemoveOptions, RenameOptions, ExtractOptions, ListOptions>(args);
             return result.MapResult(
                 (AddOptions     options) => RunAdd(options),
                 (RemoveOptions  options) => RunRemove(options),
                 (RenameOptions  options) => RunRename(options),
                 (ExtractOptions options) => RunExtract(options),
                 (ListOptions    options) => RunList(options),
-                errors => DisplayHelp(result, errors)
+                errors => ParseFirstArgNotVerb(args, parser) // if first arg is not verb it is must be PackedPath
             );
+        }
+
+        // todo: refactor this. Kinda ugly 
+        private int ParseFirstArgNotVerb(string[] args, Parser parser)
+        {
+            // if no verb specified print help message
+            if (args.Length == 1) {
+                List<string> _args = new List<string>(args);
+                _args.Add("help");
+                args = _args.ToArray();
+            }
+
+            // Just make verb firts lol
+            if (!new List<string>() { "help", "--help", "version", "--version" }.Contains(args[0]))
+            {
+                var temp = args[0];
+                args[0] = args[1];
+                args[1] = temp;
+            }
+
+            var result = parser.ParseArguments<BaseOptions, AddOptions, RemoveOptions, RenameOptions, ExtractOptions, ListOptions>(args);
+            return result.MapResult(
+               (AddOptions options) => RunAdd(options),
+               (RemoveOptions options) => RunRemove(options),
+               (RenameOptions options) => RunRename(options),
+               (ExtractOptions options) => RunExtract(options),
+               (ListOptions options) => RunList(options),
+               errors => DisplayHelp(result, errors)
+           );
         }
 
         private static int DisplayHelp<T>(ParserResult<T> result, IEnumerable<Error> errors)
