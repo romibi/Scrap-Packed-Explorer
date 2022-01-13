@@ -18,22 +18,27 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
                 with.CaseInsensitiveEnumValues = true;
             }).ParseArguments<AddOptions, RemoveOptions, RenameOptions, ExtractOptions, ListOptions>(args);
 
+            return result.MapResult(
+                (AddOptions     options) => RunAdd(options),
+                (RemoveOptions  options) => RunRemove(options),
+                (RenameOptions  options) => RunRename(options),
+                (ExtractOptions options) => RunExtract(options),
+                (ListOptions    options) => RunList(options),
+                errors => DisplayHelp(result, errors)
+            );
+        }
+
+        private static int DisplayHelp<T>(ParserResult<T> result, IEnumerable<Error> errors)
+        {
             var helpText = HelpText.AutoBuild(result, h =>
             {
                 h.AddEnumValuesToHelpText = true;
+                h.AutoHelp = true;
                 return h;
-            }, e => e);
+            });
 
-            return result.MapResult(
-                    (AddOptions options) => RunAdd(options),
-                    (RemoveOptions options) => RunRemove(options),
-                    (RenameOptions options) => RunRename(options),
-                    (ExtractOptions options) => RunExtract(options),
-                    (ListOptions options) => RunList(options),
-                    errors => {
-                        Console.Error.WriteLine(helpText);
-                        return 1;
-                    });
+            Console.Error.WriteLine(helpText);
+            return 1;
         }
 
         private int RunAdd(AddOptions options)
