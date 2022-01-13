@@ -87,9 +87,6 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
 
         [Option('x', "show-file-offset", Required = false, Default = false, HelpText = "Show files offsets")]
         public bool ShowFileOffset { get; set; }
-
-        // todo: make custom helper to make better help screen
-        // note: https://github.com/commandlineparser/commandline/wiki/HelpText-Configuration
     }
 
     [Flags]
