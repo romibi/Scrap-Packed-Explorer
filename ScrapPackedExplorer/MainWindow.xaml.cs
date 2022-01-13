@@ -16,30 +16,86 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ch.romibi.Scrap.Packed.PackerLib.DataTypes;
+using System.IO;
+using System.Diagnostics;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Collections;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace ch.romibi.Scrap.Packed.Explorer
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    /// 
+
+    // todo: lots of cleanup and refactoring
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        ScrapPackedFile loadedPackedFile;
+        private ScrapPackedFile _loadedPackedFile;
+        protected ScrapPackedFile LoadedPackedFile { 
+            get { return _loadedPackedFile; } 
+            set { 
+                _loadedPackedFile = value;
+                ArchiveLoaded = !(value is null);
+            }
+        }
+
+        private bool _PendingChanges;
+        public bool PendingChanges {
+            get { return _PendingChanges; }
+            set {
+                _PendingChanges = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private bool _ArchiveLoaded;
+        public bool ArchiveLoaded {
+            get { return _ArchiveLoaded; }
+            set { 
+                _ArchiveLoaded = value;
+                NotifyPropertyChanged(); 
+            }
+        }
+
+        // todo: make this also true if FileTree root is selected
+        private bool _ContentSelected;
+        public bool ContentSelected {
+            get { return _ContentSelected; }
+            set {
+                _ContentSelected = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private TreeEntry CurrentFolder = null;
+
         private bool _FileTreeSelectionUpdating = false;
 
         protected readonly string NAVIGATE_UP_NAME = "..";
+        protected readonly string PACKED_FILTER_STRING = "Scrapland Archive|*.packed|All Files|*.*";
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         public MainWindow()
         {
+            PendingChanges = false;
             InitializeComponent();
         }
 
         private void RefreshTreeView()
         {
 
-            TreeEntry root = new TreeEntry(null) { Name = loadedPackedFile.fileName };
+            TreeEntry root = new TreeEntry(null) { Name = LoadedPackedFile.fileName };
 
-            foreach (PackedFileIndexData file in loadedPackedFile.GetFileIndexDataList())
+            foreach (PackedFileIndexData file in LoadedPackedFile.GetFileIndexDataList())
             {
                 root.AddFileData(file);
             }
@@ -53,13 +109,15 @@ namespace ch.romibi.Scrap.Packed.Explorer
                 TreeContent.Items.Add(item);
             }
 
+            CurrentFolder = root;
         }
 
         private void TreeContent_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             var clickedItem = ((FrameworkElement)e.OriginalSource).DataContext as TreeEntry;
             TreeContent_LoadTreeEntry(clickedItem);
-            clickedItem.GetContainerFromTree(FileTree).IsExpanded = true;
+            var containerItem = clickedItem.GetContainerFromTree(FileTree);
+            if (!(containerItem is null)) containerItem.IsExpanded = true;
         }
 
         private void FileTree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -76,6 +134,7 @@ namespace ch.romibi.Scrap.Packed.Explorer
             else
             {
                 TreeContent_LoadTreeEntry(selectedEntry.Parent);
+                TreeContent.SelectedItem = selectedEntry;
             }
         }
 
@@ -85,6 +144,7 @@ namespace ch.romibi.Scrap.Packed.Explorer
             {
                 if (!loaditem.IsDirectory)
                     return;
+
                 TreeContent.Items.Clear();
                 if (!(loaditem.Parent is null))
                 {
@@ -95,27 +155,31 @@ namespace ch.romibi.Scrap.Packed.Explorer
                 {
                     TreeContent.Items.Add(item);
                 }
+
+                CurrentFolder = loaditem;
             }
+        }
+
+        private void TreeContent_ReloadCurrentFolder()
+        {
+            TreeContent_LoadTreeEntry(CurrentFolder);
         }
 
         private void TreeContent_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            ContentSelected = (TreeContent.SelectedItems.Count != 0);
+
             if (e.AddedItems.Count == 0) return;
 
             TreeEntry selectedItem = e.AddedItems[0] as TreeEntry;
 
-            var doExpandSelection = false;
-            List<TreeEntry> itemPath;
-            // Todo: does this go nicer?
             if (selectedItem is TreeEntryAlias /* && selectedItem.Name.Equals(NAVIGATE_UP_NAME) */)
             {
-                itemPath = (selectedItem as TreeEntryAlias).ReferencedEntry.GetItemPath();
-                doExpandSelection = true;
+                (TreeContent.ItemContainerGenerator.ContainerFromItem(selectedItem) as ListViewItem).IsSelected = false;
+                return;
             }
-            else
-            {
-                itemPath = selectedItem.GetItemPath();
-            }
+
+            List<TreeEntry> itemPath = selectedItem.GetItemPath();
 
             // Update Tree Selection
             _FileTreeSelectionUpdating = true;
@@ -145,7 +209,7 @@ namespace ch.romibi.Scrap.Packed.Explorer
 
                     currentLevel = nextLevel;
                 }
-                TreeContent_SelectTreeViewItem(currentLevel as TreeViewItem, doExpandSelection);
+                TreeContent_SelectTreeViewItem(currentLevel as TreeViewItem);
             }
             finally
             {
@@ -153,21 +217,13 @@ namespace ch.romibi.Scrap.Packed.Explorer
             }
         }
 
-        private void TreeContent_SelectTreeViewItem(TreeViewItem p_SelectedTreeItem, bool p_DoExpandSelection)
+        private void TreeContent_SelectTreeViewItem(TreeViewItem p_SelectedTreeItem)
         {
             p_SelectedTreeItem.IsSelected = true;
             if (p_SelectedTreeItem.Items.Count != 0)
             {
-                p_SelectedTreeItem.IsExpanded = p_DoExpandSelection;
+                p_SelectedTreeItem.IsExpanded = false;
                 p_SelectedTreeItem.UpdateLayout();
-                if (p_DoExpandSelection)
-                {
-                    foreach (var item in p_SelectedTreeItem.Items)
-                    {
-                        TreeViewItem itemControl = p_SelectedTreeItem.ItemContainerGenerator.ContainerFromItem(item) as TreeViewItem;
-                        itemControl.IsExpanded = false;
-                    }
-                }
             }
             p_SelectedTreeItem.BringIntoView();
         }
@@ -175,38 +231,236 @@ namespace ch.romibi.Scrap.Packed.Explorer
         private void OpenButton_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = PACKED_FILTER_STRING;
+
             if (openFileDialog.ShowDialog() == true)
             {
-                loadedPackedFile = new ScrapPackedFile(openFileDialog.FileName);
+                LoadedPackedFile = new ScrapPackedFile(openFileDialog.FileName);
+                PendingChanges = false;
                 RefreshTreeView();
             }
         }
 
         private void ExtractToButton_Click(object sender, RoutedEventArgs e)
         {
+            var selectedItems = TreeContent.SelectedItems;
 
+            if (selectedItems.Count == 0) return; // todo make button not clickable in that case
+
+            if (selectedItems.Count > 1)
+            {
+                ExtractToFolder(selectedItems);
+            }
+            else if ((selectedItems[0] as TreeEntry).IsDirectory)
+            {
+                ExtractToFolder(selectedItems);
+            }
+            else
+            {
+                ExtractToFile(selectedItems[0] as TreeEntry);
+            }
+        }
+
+        private void ExtractToFile(TreeEntry treeEntry)
+        {
+            string packedPath = treeEntry.IndexData.FilePath;
+            string defaultFilename = packedPath.Split('/').Last();
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.FileName = defaultFilename;
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                try
+                {
+                    LoadedPackedFile.Extract(treeEntry.IndexData.FilePath, saveFileDialog.FileName);
+                }
+                catch (Exception ex)
+                {
+                    Error(ex);
+                }
+            }
+        }
+
+        private void ExtractToFolder(IList selectedItems)
+        {
+            // todo: CommonOpenFileDialog is from WindowsAPICodePack-Shell: analyse Nuget warnings
+            CommonOpenFileDialog folderDialog = new CommonOpenFileDialog();
+            folderDialog.IsFolderPicker = true;
+            if (folderDialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                foreach (var item in selectedItems)
+                {
+                    Debug.Assert(item is TreeEntry); // should always be the case
+                    TreeEntry entry = item as TreeEntry;
+                    try
+                    {
+                        LoadedPackedFile.Extract(entry.GetItemPathString(), System.IO.Path.Combine(folderDialog.FileName, entry.Name));
+                    }
+                    catch (Exception ex)
+                    {
+                        Error(ex);
+                    }
+                }
+            }
         }
 
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
+            OpenFileDialog openDialog = new OpenFileDialog();
 
+            if (openDialog.ShowDialog() == true)
+            {
+                try
+                {
+                    string packedPathDir = CurrentFolder.GetItemPathString();
+                    if (packedPathDir == "/") packedPathDir = "";
+
+                    var packedPath = packedPathDir + System.IO.Path.GetFileName(openDialog.FileName);
+
+                    LoadedPackedFile.Add(openDialog.FileName, packedPath);
+                    (FileTree.Items[0] as TreeEntry).AddFileData(LoadedPackedFile.GetFileIndexDataForFile(packedPath));
+                    TreeContent_ReloadCurrentFolder();
+                } catch (Exception ex)
+                {
+                    Error(ex);
+                }
+                PendingChanges = true;
+            }
+        }
+
+        private void AddFolderButton_Click(object sender, RoutedEventArgs e)
+        {
+            // todo: CommonOpenFileDialog is from WindowsAPICodePack-Shell: analyse Nuget warnings
+            CommonOpenFileDialog openDialog = new CommonOpenFileDialog();
+            openDialog.IsFolderPicker = true;
+
+            if (openDialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                try
+                {
+                    string packedPathDir = CurrentFolder.GetItemPathString();
+                    if (packedPathDir == "/") packedPathDir = "";
+
+                    var packedPath = packedPathDir + System.IO.Path.GetFileName(openDialog.FileName);
+
+                    LoadedPackedFile.Add(openDialog.FileName, packedPath);
+                    //(FileTree.Items[0] as TreeEntry).AddFileData(LoadedPackedFile.GetFileIndexDataForFile(packedPath));
+                    //TreeContent_ReloadCurrentFolder();
+                    RefreshTreeView(); // todo: make this not need to refresh whole tree
+                }
+                catch (Exception ex)
+                {
+                    Error(ex);
+                }
+                PendingChanges = true;
+            }
         }
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
+            List<TreeEntry> selectedItems = new List<TreeEntry>();
+            foreach (var item in TreeContent.SelectedItems)
+                selectedItems.Add(item as TreeEntry);
+
+            if (selectedItems.Count == 0) return;
+
+            if (MessageBox.Show($"Do you really want delete {selectedItems.Count} elements?",
+                    "Delete?",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes) return;
+
+            try
+            {
+                foreach (var item in selectedItems)
+                {
+                    LoadedPackedFile.Remove(item.GetItemPathString());
+                    item.Parent.Items.Remove(item);
+                }
+            }
+            catch (Exception ex)
+            {
+                Error(ex);
+            }
+            PendingChanges = true;
 
         }
 
         private void CreateButton_Click(object sender, RoutedEventArgs e)
         {
+            SaveFileDialog saveDialog = new SaveFileDialog();
+            saveDialog.Filter = PACKED_FILTER_STRING;
+            saveDialog.DefaultExt = ".packed";
+            saveDialog.AddExtension = false; // todo: ok? or true?
 
+            if (saveDialog.ShowDialog() == true)
+            {
+                if (File.Exists(saveDialog.FileName))
+                {
+                    MessageBox.Show($"File {saveDialog.FileName} already exists. Cannot create new Archive with that name!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else
+                {
+                    LoadedPackedFile = new ScrapPackedFile(saveDialog.FileName);
+                    PendingChanges = true;
+                    RefreshTreeView();
+                }
+            }
         }
 
         private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
 
         }
+
         private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            SaveWithOverwriteWarning(LoadedPackedFile.fileName);
+        }
+
+        private void SaveAsButton_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog saveDialog = new SaveFileDialog();
+            saveDialog.Filter = PACKED_FILTER_STRING;
+            saveDialog.DefaultExt = ".packed";
+            saveDialog.AddExtension = false; // todo: ok? or true?
+
+            if (saveDialog.ShowDialog() == true)
+            {
+                SaveWithOverwriteWarning(saveDialog.FileName);
+            }
+        }
+
+        private void SaveWithOverwriteWarning(string p_NewFileName)
+        {
+            if (File.Exists(p_NewFileName))
+                if (MessageBox.Show($"Do you really want to overwrite {p_NewFileName}?",
+                    "Overwrite?",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes) return;
+
+            try
+            {
+
+                LoadedPackedFile.SaveToFile(p_NewFileName);
+                PendingChanges = false;
+            }
+            catch (Exception ex)
+            {
+                Error(ex);
+            }
+        }
+
+        private void Error(Exception ex)
+        {
+            MessageBox.Show(
+                ex.Message,
+                "Error",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error
+                );
+        }
+
+        private void OptionsButton_Click(object sender, RoutedEventArgs e)
         {
 
         }
@@ -302,6 +556,26 @@ namespace ch.romibi.Scrap.Packed.Explorer
             }
 
             return itemPath;
+        }
+
+        public string GetItemPathString(bool p_IgnoreRoot = true)
+        {
+            List<TreeEntry> itemPath = GetItemPath();
+            string pathString = "";
+
+            for (var i = 0; i < itemPath.Count; i++)
+            {
+                if (p_IgnoreRoot && i == 0) continue;
+
+                if (pathString.Length > 0)
+                    pathString += "/";
+                pathString += itemPath[i].Name;
+            }
+
+            if (itemPath.Last<TreeEntry>().IsDirectory)
+                pathString += "/";
+
+            return pathString;
         }
 
         public TreeViewItem GetContainerFromTree(TreeView p_TreeRoot)

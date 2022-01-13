@@ -13,10 +13,10 @@ There is already a CLI implementation to modify packed files using Python (3.5 ?
 - Graphical User Interface _(see also issue [#2](/../../issues/2))_
 	- [x] directory tree
 	- [x] folder content view
-	- [ ] add file/folder
+	- [x] add file/folder
 	- [ ] replace warning
-	- [ ] remove file/folder
-	- [ ] extract file/folder
+	- [x] remove file/folder
+	- [x] extract file/folder
 	- [ ] rename file/folder
 	- [ ] search name
 	- [ ] search content (maybe)

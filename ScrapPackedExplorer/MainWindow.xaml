@@ -1,4 +1,4 @@
-<Window x:Class="ch.romibi.Scrap.Packed.Explorer.MainWindow"
+﻿<Window x:Name="window" x:Class="ch.romibi.Scrap.Packed.Explorer.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,53 +7,77 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <DockPanel HorizontalAlignment="Left" Height="78" LastChildFill="False" VerticalAlignment="Top">
-            <Button Name="CreateButton" Width="100" Click="CreateButton_Click" IsEnabled="False">
+        <DockPanel HorizontalAlignment="Left" Height="64" LastChildFill="False" VerticalAlignment="Top">
+            <Button Name="CreateButton" Width="64" Click="CreateButton_Click">
                 <StackPanel>
-                    <Image Source="/Icons/MissingIcon.png" Height="50" />
+                    <Image Source="/Icons/MissingIcon.png" Height="42" />
                     <TextBlock Text="Create"/>
                 </StackPanel>
             </Button>
-            <Button Name="OpenButton" Width="100" Click="OpenButton_Click">
+            <Button Name="OpenButton" Width="64" Click="OpenButton_Click">
                 <StackPanel>
-                    <Image Source="/Icons/MissingIcon.png" Height="50" />
+                    <Image Source="/Icons/MissingIcon.png" Height="42" />
                     <TextBlock Text="Open"/>
                 </StackPanel>
             </Button>
-            <Button Name="SaveButton" Width="100" Click="SaveButton_Click" IsEnabled="False">
+            <Button Name="SaveButton" Width="64" Click="SaveButton_Click" IsEnabled="{Binding Path=PendingChanges, RelativeSource={RelativeSource AncestorType=Window}}">
                 <StackPanel>
-                    <Image Source="/Icons/MissingIcon.png" Height="50" />
+                    <Image Source="/Icons/MissingIcon.png" Height="42" />
                     <TextBlock Text="Save"/>
                 </StackPanel>
             </Button>
-            <Separator Width="5"></Separator>
-            <Button Name="AddButton" Width="100" Click="AddButton_Click" IsEnabled="False">
+            <Button Name="SaveAsButton" Width="64" Click="SaveAsButton_Click" IsEnabled="{Binding Path=ArchiveLoaded, RelativeSource={RelativeSource AncestorType=Window}}">
                 <StackPanel>
-                    <Image Source="/Icons/MissingIcon.png" Height="50" />
-                    <TextBlock Text="Add"/>
+                    <Image Source="/Icons/MissingIcon.png" Height="42" />
+                    <TextBlock Text="Save as …"/>
                 </StackPanel>
             </Button>
-            <Button Name="ExtractToButton" Width="100" Click="ExtractToButton_Click" IsEnabled="False">
+            <!-- Todo: Make proper "Save As" Dropdown -->
+            <!-- <Button Name="SaveDropdownButton" Width="10" IsEnabled="False">
+                <TextBlock>v</TextBlock>
+            </Button> -->
+            <Separator Width="5"></Separator>
+            <Button Name="AddButton" Width="64" Click="AddButton_Click" IsEnabled="{Binding Path=ArchiveLoaded, RelativeSource={RelativeSource AncestorType=Window}}">
                 <StackPanel>
-                    <Image Source="/Icons/MissingIcon.png" Height="50" />
+                    <Image Source="/Icons/MissingIcon.png" Height="42" />
+                    <TextBlock Text="Add File"/>
+                </StackPanel>
+            </Button>
+            <Button Name="AddFolderButton" Width="64" Click="AddFolderButton_Click" IsEnabled="{Binding Path=ArchiveLoaded, RelativeSource={RelativeSource AncestorType=Window}}">
+                <StackPanel>
+                    <Image Source="/Icons/MissingIcon.png" Height="42" />
+                    <TextBlock Text="Add Folder"/>
+                </StackPanel>
+            </Button>
+            <Button Name="ExtractToButton" Width="64" Click="ExtractToButton_Click" IsEnabled="{Binding Path=ContentSelected, RelativeSource={RelativeSource AncestorType=Window}}">
+                <StackPanel>
+                    <Image Source="/Icons/MissingIcon.png" Height="42" />
                     <TextBlock Text="Extract to"/>
                 </StackPanel>
             </Button>
-            <Button Name="DeleteButton" Width="100" Click="DeleteButton_Click" IsEnabled="False">
+            <Button Name="DeleteButton" Width="64" Click="DeleteButton_Click" IsEnabled="{Binding Path=ContentSelected, RelativeSource={RelativeSource AncestorType=Window}}">
                 <StackPanel>
-                    <Image Source="/Icons/MissingIcon.png" Height="50" />
+                    <Image Source="/Icons/MissingIcon.png" Height="42" />
                     <TextBlock Text="Delete"/>
                 </StackPanel>
             </Button>
             <Separator Width="5"></Separator>
-            <Button Name="SearchButton" Width="100" Click="SearchButton_Click" IsEnabled="False">
+            <Button Name="SearchButton" Width="64" Click="SearchButton_Click" IsEnabled="False">
+                <!-- IsEnabled="{Binding Path=ArchiveLoaded, RelativeSource={RelativeSource AncestorType=Window}}" -->
                 <StackPanel>
-                    <Image Source="/Icons/MissingIcon.png" Height="50" />
+                    <Image Source="/Icons/MissingIcon.png" Height="42" />
                     <TextBlock Text="Search"/>
                 </StackPanel>
             </Button>
+            <Button Name="OptionsButton" Width="64" Click="OptionsButton_Click" IsEnabled="False">
+                <!-- IsEnabled="{Binding Path=ArchiveLoaded, RelativeSource={RelativeSource AncestorType=Window}}" -->
+                <StackPanel>
+                    <Image Source="/Icons/MissingIcon.png" Height="42" />
+                    <TextBlock Text="Options"/>
+                </StackPanel>
+            </Button>
         </DockPanel>
-        <Grid Margin="0,78,0,0">
+        <Grid Margin="0,64,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="5"/>

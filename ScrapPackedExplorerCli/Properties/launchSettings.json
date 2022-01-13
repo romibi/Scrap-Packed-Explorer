@@ -6,6 +6,10 @@
     },
     "ScrapPackedExplorerCliAsGUI": {
       "commandName": "Project"
+    },
+    "ScrapPackedExplorerCli add to new": {
+      "commandName": "Project",
+      "commandLineArgs": "add -p new.packed -s examplefile1.txt"
     }
   }
 }
