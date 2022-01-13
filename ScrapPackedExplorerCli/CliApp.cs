@@ -11,7 +11,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
     {
         public int Run(string[] args)
         {
-            // todo: make proper parser instanse to configure case insensitivity for enums and better help text
+            // todo: make proper parser instance to configure case insensitivity for enums and better help text
             return Parser.Default.ParseArguments<AddOptions, RemoveOptions, RenameOptions, ExtractOptions, ListOptions>(args)
                 .MapResult(
                     (AddOptions options) => RunAdd(options),
@@ -135,10 +135,10 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
                             Output = FilePath + Output;
 
                         if (options.ShowFileSize)
-                            Output += "   " + FileSize;
+                            Output += "\t" + FileSize;
 
                         if (options.ShowFileOffset)
-                            Output += "   " + FileOffset;
+                            Output += "\t" + FileOffset;
 
                         Console.WriteLine(Output);
                     }

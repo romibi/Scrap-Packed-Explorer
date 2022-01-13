@@ -75,17 +75,17 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
 
         // todo: come up with better description
         // todo: change arguments style
-        [Option('s', "starts-with", Required = false, Default = false, HelpText = "Apply search query only to beginnng of the files path \nBy default applies everywhere")]
+        [Option('b', "match-beginning ", Required = false, Default = false, HelpText = "Apply search query only to beginnng of the files path. By default applies everywhere")]
         public bool StartsWith { get; set; }
 
-        [Option('f', "match-filename", Required = false, Default = false, HelpText = "Search only by files. \nBy default search includes folders")]
+        [Option('f', "match-filename", Required = false, Default = false, HelpText = "Search only by files. By default search includes folders")]
         public bool MatchFilename { get; set; }
 
         // todo: change short arguments
-        [Option('z', "show-file-size", Required = false, Default = false, HelpText = "Show files sizes")]
+        [Option('s', "show-file-size", Required = false, Default = false, HelpText = "Show files sizes")]
         public bool ShowFileSize { get; set; }
 
-        [Option('x', "show-file-offset", Required = false, Default = false, HelpText = "Show files offsets")]
+        [Option('o', "show-file-offset", Required = false, Default = false, HelpText = "Show files offsets")]
         public bool ShowFileOffset { get; set; }
 
         // todo: make custom helper to make better help screen
