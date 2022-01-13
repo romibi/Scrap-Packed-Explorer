@@ -64,13 +64,14 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
             string usage = "\r\nUSAGE: " +
                 "\r\n  ScrapPackedExplorerCli.exe <path-to-packed-file> <subcommand> <options>\r\n" +
                 "\r\nEXAMPLE: " +
-                "\r\n  ScrapPackedExplorerCli.exe example.packed list -xzq filename.txt -l tree";
+                "\r\n  ScrapPackedExplorerCli.exe example.packed list -xzq filename.txt -l tree\r\n" +
+                "\r\nOPTIONS:";
 
             var helpText = HelpText.AutoBuild(result, h =>
             {
                 h.AddEnumValuesToHelpText = true;
                 h.AutoHelp = true;
-                h.AddPreOptionsLine(usage);
+                h.AddPreOptionsText(usage);
                 h.OptionComparison = orderOnValues;
                 return h;
             });
