@@ -1,5 +1,6 @@
 ﻿using ch.romibi.Scrap.Packed.PackerLib;
 using CommandLine;
+using CommandLine.Text;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,16 +12,81 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
     {
         public int Run(string[] args)
         {
-            // todo: make proper parser instance to configure case insensitivity for enums and better help text
-            return Parser.Default.ParseArguments<AddOptions, RemoveOptions, RenameOptions, ExtractOptions, ListOptions>(args)
-                .MapResult(
-                    (AddOptions options) => RunAdd(options),
-                    (RemoveOptions options) => RunRemove(options),
-                    (RenameOptions options) => RunRename(options),
-                    (ExtractOptions options) => RunExtract(options),
-                    (ListOptions options) => RunList(options),
-                    errors => 1);
+            var parser = new Parser(with =>
+            {
+                with.HelpWriter = null;
+                with.CaseInsensitiveEnumValues = true;
+            });
+
+            // Default parsing with verb as first arg
+            var result = parser.ParseArguments<BaseOptions, AddOptions, RemoveOptions, RenameOptions, ExtractOptions, ListOptions>(args);
+            return result.MapResult(
+                (AddOptions     options) => RunAdd(options),
+                (RemoveOptions  options) => RunRemove(options),
+                (RenameOptions  options) => RunRename(options),
+                (ExtractOptions options) => RunExtract(options),
+                (ListOptions    options) => RunList(options),
+                errors => ParseFirstArgNotVerb(args, parser) // if first arg is not verb it is must be PackedPath
+            );
         }
+
+        // todo: refactor this. Kinda ugly 
+        private int ParseFirstArgNotVerb(string[] args, Parser parser)
+        {
+            // if no verb specified print help message
+            if (args.Length == 1) {
+                List<string> _args = new List<string>(args);
+                _args.Add("help");
+                args = _args.ToArray();
+            }
+
+            // Just make verb firts lol
+            if (!new List<string>() { "help", "--help", "version", "--version" }.Contains(args[0]))
+            {
+                var temp = args[0];
+                args[0] = args[1];
+                args[1] = temp;
+            }
+
+            var result = parser.ParseArguments<BaseOptions, AddOptions, RemoveOptions, RenameOptions, ExtractOptions, ListOptions>(args);
+            return result.MapResult(
+               (AddOptions options) => RunAdd(options),
+               (RemoveOptions options) => RunRemove(options),
+               (RenameOptions options) => RunRename(options),
+               (ExtractOptions options) => RunExtract(options),
+               (ListOptions options) => RunList(options),
+               errors => DisplayHelp(result, errors)
+           );
+        }
+
+        private static int DisplayHelp<T>(ParserResult<T> result, IEnumerable<Error> errors)
+        {
+            string usage = "\r\nUSAGE: " +
+                "\r\n  ScrapPackedExplorerCli.exe <path-to-packed-file> <subcommand> <options>\r\n" +
+                "\r\nEXAMPLE: " +
+                "\r\n  ScrapPackedExplorerCli.exe example.packed list -osq filename.txt -l tree\r\n" +
+                "\r\nOPTIONS:";
+
+            var helpText = HelpText.AutoBuild(result, h =>
+            {
+                h.AddEnumValuesToHelpText = true;
+                h.AutoHelp = true;
+                h.AddPreOptionsText(usage);
+                h.OptionComparison = orderOnValues;
+                return h;
+            });
+
+            Console.Error.WriteLine(helpText);
+            return 1;
+        }
+
+        private static Comparison<ComparableOption> orderOnValues = (ComparableOption attr1, ComparableOption attr2) =>
+        {
+            if (attr1.IsValue)
+                return -1;
+            else
+                return 1;
+        };
 
         private int RunAdd(AddOptions options)
         {
