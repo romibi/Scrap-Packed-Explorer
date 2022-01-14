@@ -22,7 +22,11 @@ There is already a CLI implementation to modify packed files using Python (3.5 ?
 * [Dependencies](#dependencies)
 * [Todo](#todo-not-strictly-ordered-by-priority)
 
+---
 
+## About "packed" files
+!TBD!
+<!-- No idea how to put it into words -->
 
 ---
 
