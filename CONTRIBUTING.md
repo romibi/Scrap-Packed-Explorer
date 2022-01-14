@@ -41,19 +41,19 @@ People *love* thorough bug reports. I'm not even kidding.
 ## Use a Consistent Coding Style
 
 ### Naming Conventions
-* Every class and method should be named with **PascalCase** convention (example: `void ReadFile()`)
-* Every method argument should be named with **camelCase** convetion with prefix _p__ (example: `string p_filePath`)
-* Every variable should be named with **camelCase** convention (example: `int maxLength`)
-* Every application's command line argument should be named with **camelCase** convention (example: `--keepBackup`)
+* Every class and method should be named using **PascalCase** convention (example: `void ReadFile()`)
+* Every method argument should be named using **camelCase** convetion with prefix _p__ (example: `string p_filePath`)
+* Every variable should be named using **camelCase** convention (example: `int maxLength`)
+* Every application's command line argument should be named using **camelCase** convention (example: `--keepBackup`)
 <!-- TODO: change args to kebab-case? (--keep-backup) -->
 
 ### Brackets and indentation
 Indentation must be done with 4 spaces. Lines should be ended with `\r\n` (Windows style)
 
-Brackets should **always** starts with new line. If brackets **can** be removed - they **should** be removed.
+Brackets should **always** start on a new line. If brackets **can** be removed - they **should** be removed.
 
 `else`, `catch` and `finally` blocks should be on next line after closing bracket
-For the control-flow blocks (`if`, `while`, `for`, etc.) brackets with condition should be separated from keyword with space.
+For control-flow blocks (`if`, `while`, `for`, etc.) the brackets containing the condition should be separated from keyword with a space.
 
 **Example:**
 ```c#
@@ -75,9 +75,9 @@ catch
 ```
 
 ### Class methods and properties arrangements
-Methods and properties should be in every class in this order:
+Methods and properties in every class should be in this order:
 
-- public const properties
+- public const/read-only properties
 - public variables/non-const properties
 - public methods
 - protected (same sub order as public)

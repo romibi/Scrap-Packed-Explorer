@@ -1,10 +1,9 @@
 Scrap Packed Explorer
 =====================
 
-With this App it is planned to make it userfriendly to create a new or modify the contents of an existing .packed file for the Game Scrapland.
+This App allows you to create or modify the contents of .packed files for the Game Scrapland.
 
-See also the [Scrap Hacks Project by Earthnuker](https://gitdab.com/Earthnuker/ScrapHacks) (on gitdab)  
-There is already a CLI implementation to modify packed files using Python (3.5 ?)
+See also the [Scrap Hacks Project by Earthnuker](https://gitdab.com/Earthnuker/ScrapHacks) (on gitdab) for an alternative implementation using python
 
 ---
 ## Table of contents
@@ -25,19 +24,22 @@ There is already a CLI implementation to modify packed files using Python (3.5 ?
 ---
 
 ## About "packed" files
-!TBD!
-<!-- No idea how to put it into words -->
+.packed Files are used by the Game Scrapland to have most of the game data merged into one big data archive.
+The contents are neither encrypted nor compressed. Therefore modifying it is relatively straight forward.
+
+But before this project there was no real userfriendly way to do that and the goal of this project was to enable modding for users who do not want to really think about how this filetype is made.
 
 ---
 
 ## How to use
-The App can work in 2 different modes: GUI and CLI.   
-To run App with GUI you just simply should run the any of distributed *.exe files.
-To run App with CLI you must run the ScrapPackedExplorer\<BitsVersion\>Cli.exe with command line arguments.
+The App can work in 2 different modes: GUI and CLI. (`Graphical User Interface` vs `Command Line Interface`)   
+To run App with GUI you just simply should run any of the distributed *.exe files.   
+To run App with CLI you must run ScrapPackedExplorerCli.exe (or ScrapPackedExplorerCli32.exe) with command line arguments.
 
-There is Cli version of distribution because when you launch it without any command line arguments it flashes cmd windows for a split second. If you ok with this - use Cli version. 
-Version without Cli supports only GUI mode so it no flashes cmd.
-<!-- Man, so hard to write this -->
+Although the CLI version also contains the whole GUI, a separate CLI version is distributed, because when you launch the GUI (by not providing any command line arguments) a cmd window flashes for a split second.    
+If you are ok with this you can use Cli version for both GUI and CLi mode.
+
+The Version without Cli in its name supports only the GUI mode but also has no flashing cmd window on startup.
 
 ---
 
@@ -47,11 +49,11 @@ Version without Cli supports only GUI mode so it no flashes cmd.
 ---
 
 ### CLI
-Basic command looks like this:
+Basic call looks like this:
 ```bash
 ScrapPackedExplorerCli.exe <path-to-the-packed-file> <subcommand> <options>
 ```
-You can specify subcommand first. 
+You can also specify the subcommand before the path to the packed file. 
 
 List of the subcommands:
 
@@ -68,7 +70,7 @@ List of the subcommands:
 ---
 
 ### Add
-Add file to given archive. If given archive is not exists the App will create new one.
+Add a file or folder to a given archive. If the archive does not exists the App will create new one.
 
 | Option                   | Description
 |--------------------------|--------------------------------------------------------------------------------------------------------|
@@ -89,7 +91,7 @@ ScrapPackedExplorerCli.exe exapmle.packed add -s folder\subfolder -p folder/
 ---
 
 ### Remove
-Removes file or folder from given archive.
+Removes a file or folder from the given archive.
 
 | Option                   | Description
 |--------------------------|--------------------------------------------------------------------------------------------------------|
@@ -110,7 +112,7 @@ ScrapPackedExplorerCli.exe exapmle.packed remove -p folder/
 ---
 
 ### Rename
-Renames file or folder inside of given archive. Can rename path of the file (basicaly move it).
+Renames file or folder inside the given archive. Also used to change the path of the file (to basicaly move it).
 
 | Option                   | Description
 |--------------------------|--------------------------------------------------------------------------------------------------------|
@@ -131,8 +133,8 @@ ScrapPackedExplorerCli.exe exapmle.packed rename -s file1.txt -d folder/file1.tx
 ---
 
 ### Extract
-Extracts file or folder from given archive to given path. 
-If  `-s` option is not specified the App will extract everything.
+Extracts a file or folder from the given archive to a given path. 
+If option `-s` is not specified, the App will extract everything.
 
 | Option                   | Description												|
 |--------------------------|------------------------------------------------------------|
@@ -152,7 +154,7 @@ ScrapPackedExplorerCli.exe exapmle.packed extract -d out\
 ---
 
 ### List
-Lists files and folders in given archive.
+Lists files and folders in the given archive.
 
 | Option                   | Description																							
 |--------------------------|--------------------------------------------------------------------------------------------------------|
@@ -175,8 +177,8 @@ ScrapPackedExplorerCli.exe exapmle.packed list -rfq file\.(txt|png) -sol name
 ---
 
 ### Help
-Prints help message on the screen. If only help provieded it shows avilible subcommands. 
-If after `help` another subcommand was provided it will show avilible options for that subcommand.
+Prints a help message on the screen. Without further parameters it shows the available subcommands. 
+If after `help` another subcommand is provided it will show avilible options for that subcommand.
 
 ```bash
 ScrapPackedExplorerCli.exe help
@@ -186,14 +188,14 @@ ScrapPackedExplorerCli.exe help list
 ---
 
 ### Version
-Display current version of App																	|
+Display the current version of the App																	|
 
 ```bash
 ScrapPackedExplorerCli.exe version
 ```
 ---
 ## Dependencies
-This App is using [.NET Core 3.1 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-aspnetcore-3.1.22-windows-hosting-bundle-installer) so be sure if it is installed on your computer.  
+This App is using [.NET Core 3.1 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-aspnetcore-3.1.22-windows-hosting-bundle-installer) which is often already installed on modern windows computers. If you have problems launching the App, make sure that it is installed on your computer.  
 No other dependencies are needed.
 
 ---
