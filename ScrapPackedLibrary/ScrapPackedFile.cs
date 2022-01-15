@@ -15,11 +15,11 @@ namespace ch.romibi.Scrap.Packed.PackerLib
         // this could be an issue: maybe use a map original-filname -> backup filename
         private string backupFileEnding = "";
 
-        public ScrapPackedFile(string p_fileName, bool p_CanCreate = false)
+        public ScrapPackedFile(string p_fileName, bool p_canCreate = false)
         {
             fileName = p_fileName;
 
-            if (!File.Exists(fileName) && p_CanCreate)
+            if (!File.Exists(fileName) && p_canCreate)
                 CreateNewFile(TryMakeFile(fileName));
 
             ReadPackedMetaData();
