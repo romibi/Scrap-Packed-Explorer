@@ -11,9 +11,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
         public string fileName { get; private set; }
         PackedMetaData metaData;
 
-        // Todo: if we use MakeBackup multiple times before DeleteBackup or RestoreBackup
-        // this could be an issue: maybe use a map original-filname -> backup filename
-        private string backupFileEnding = "";
+        private Dictionary<string, string> backups = new Dictionary<string, string>();
 
         public ScrapPackedFile(string p_fileName, bool p_canCreate = false)
         {
@@ -109,7 +107,8 @@ namespace ch.romibi.Scrap.Packed.PackerLib
 
             return new PackedFileIndexData(fileName, fileSize, fileOffset);
         }
-                
+
+        // todo: deprecate this
         public List<string> GetFileNames()
         {
             // todo refactor list output
@@ -121,7 +120,6 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             return list;
         }
 
-        // todo: deprecate this
         public List<IDictionary<string, string>> GetFileList()
         {
             // todo refactor list output
@@ -188,7 +186,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             if (metaData.fileByPath.ContainsKey(packedPath))
                 RemoveFile(packedPath);
 
-            var newFileIndexData = new PackedFileIndexData(p_externalPath, packedPath, (UInt32) newFile.Length);
+            var newFileIndexData = new PackedFileIndexData(p_externalPath, packedPath, (UInt32)newFile.Length);
             metaData.fileList.Add(newFileIndexData);
             metaData.fileByPath.Add(packedPath, newFileIndexData);
         }
@@ -214,7 +212,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
 
         private void RenameDirectory(string p_oldPath, string p_newPath)
         {
-            if (p_oldPath == "/") 
+            if (p_oldPath == "/")
                 p_oldPath = "";
 
             var fileList = GetFolderContent(p_oldPath);
@@ -253,12 +251,12 @@ namespace ch.romibi.Scrap.Packed.PackerLib
                 throw new ArgumentException($"Unable to remove {p_Name}: folder does not exists in {fileName}");
 
             foreach (var file in fileList)
-               RemoveFile(file.FilePath);
+                RemoveFile(file.FilePath);
         }
 
         public void Extract(string p_packedPath, string p_destinationPath)
         {
-            if (p_packedPath.EndsWith("/") || p_packedPath.Length==0)
+            if (p_packedPath.EndsWith("/") || p_packedPath.Length == 0)
                 ExtractDirectory(p_packedPath, p_destinationPath);
             else
                 ExtractFile(p_packedPath, p_destinationPath);
@@ -313,12 +311,12 @@ namespace ch.romibi.Scrap.Packed.PackerLib
 
                     fsPacked.Seek(fileMetaData.OriginalOffset, SeekOrigin.Begin);
                     fsPacked.Read(readBytes, 0, (int)fileMetaData.FileSize);
-                    
+
                     fsExtractFile.Write(readBytes);
                 }
                 catch (Exception ex)
                 {
-                    if (backupFileEnding != "")
+                    if (backups.ContainsKey(p_destinationPath))
                         RestoreBackup(p_destinationPath);
                     throw ex;
                 }
@@ -329,7 +327,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             }
             catch (Exception ex)
             {
-                if (backupFileEnding != "")
+                if (backups.ContainsKey(p_destinationPath))
                     RestoreBackup(p_destinationPath);
                 throw ex;
             }
@@ -338,7 +336,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
                 if (p_PackedFileStream == null)
                     fsPacked.Close();
             }
-            if (backupFileEnding != "")
+            if (backups.ContainsKey(p_destinationPath))
                 DeleteBackup(p_destinationPath);
         }
 
@@ -347,54 +345,63 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             // todo: test of this
             if (!File.Exists(filePath))
                 throw new FileNotFoundException($"Unable to backup '{filePath}': file does not exists");
-            
-            Debug.Assert(backupFileEnding == "", $"Unable to backup '{filePath}': 'backupEnding' is not empty ('{backupFileEnding}').\r\n" +
-                                             $"Can track only one backup at a time for now.");
 
+            string backupPath = filePath;
             if (temp)
             {
+                string randomId;
                 do
                 {
-                    backupFileEnding = $".{Guid.NewGuid().ToString().Substring(0,5)}.tmp";
+                    randomId = $".{Guid.NewGuid().ToString().Substring(0, 5)}.tmp";
                 }
-                while (File.Exists(backupFileEnding + ".bak"));
+                while (File.Exists(backupPath + randomId + ".bak"));
+                backupPath += randomId;
             }
 
-            backupFileEnding += ".bak";
+            backupPath += ".bak";
 
             if (filePath == fileName)
-                fileName = filePath + backupFileEnding;
+                fileName = backupPath;
 
-            File.Move(filePath, filePath + backupFileEnding, true);
+            backups.Add(filePath, backupPath);
+            File.Move(filePath, backupPath, true);
         }
 
         private void RestoreBackup(string filePath)
         {
-            string backupPath = filePath + backupFileEnding;
+            // todo: test of this
+            if (!backups.ContainsKey(filePath))
+                throw new FileNotFoundException($"File '{filePath}' does not have any backups to restore");
+
+            string backupPath = backups[filePath];
+
+            if (!File.Exists(backupPath))
+                throw new FileNotFoundException($"File '{filePath}' was previously backed up to `{backupPath}` but that backup does not exist anymore.\r\n" +
+                    $"Is there a bug somwhere in `MakeBackup()` or was the file deleted externally?"); // unreachble?
 
             if (filePath == fileName)
                 fileName = backupPath.Replace(".bak", "");
 
-            // todo: test of this
-            if (backupFileEnding == "" || !File.Exists(backupPath))
-                throw new FileNotFoundException($"File '{filePath}' does not have any backups to restore");
-
-            backupFileEnding = "";
+            backups.Remove(filePath);
             File.Move(backupPath, filePath, true);
         }
 
         private void DeleteBackup(string filePath)
         {
-            string backupPath = filePath + backupFileEnding;
+            // todo: test of this
+            if (!backups.ContainsKey(filePath))
+                throw new FileNotFoundException($"File '{filePath}' does not have any backups to delete");
+
+            string backupPath = backups[filePath];
+
+            if (!File.Exists(backupPath))
+                throw new FileNotFoundException($"File '{filePath}' have a record of backup `{backupPath}` but it is not exists as file.\r\n" +
+                    $"There is a bug somwhere in `MakeBackup()`"); // unreachble
 
             if (filePath == fileName)
                 fileName = backupPath.Replace(".bak", "");
 
-            // todo: test of this
-            if (backupFileEnding == "" || !File.Exists(backupPath))
-                throw new FileNotFoundException($"File '{filePath}' does not have any backups to delete");
-
-            backupFileEnding = "";
+            backups.Remove(filePath);
             File.Delete(backupPath);
         }
 
@@ -458,11 +465,11 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             Debug.Assert(!outputPath.EndsWith(Path.DirectorySeparatorChar), "Output path cannot be only folder name.");
 
             string dirName = Path.GetDirectoryName(outputPath);
-            if (dirName == null)                
+            if (dirName == null)
                 throw new IOException($"Unable to create file {outputPath}: unexpected error.");
 
             else if (dirName != "") // if dirName is not the same dir as the working dir.
-               Directory.CreateDirectory(dirName);
+                Directory.CreateDirectory(dirName);
 
             return new FileStream(outputPath, FileMode.Create);
         }
