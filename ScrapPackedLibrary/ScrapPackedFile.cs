@@ -13,11 +13,11 @@ namespace ch.romibi.Scrap.Packed.PackerLib
 
         private Dictionary<string, string> backups = new Dictionary<string, string>();
 
-        public ScrapPackedFile(string p_fileName)
+        public ScrapPackedFile(string p_fileName, bool p_canCreate = false)
         {
             fileName = p_fileName;
 
-            if (!File.Exists(fileName))
+            if (!File.Exists(fileName) && p_canCreate)
                 CreateNewFile(TryMakeFile(fileName));
 
             ReadPackedMetaData();

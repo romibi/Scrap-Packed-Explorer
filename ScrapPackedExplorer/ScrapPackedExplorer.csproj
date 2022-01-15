@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0-windows10.0.22000.0</TargetFramework>
     <RootNamespace>ch.romibi.Scrap.Packed.Explorer</RootNamespace>
     <UseWPF>true</UseWPF>
     <StartupObject>ch.romibi.Scrap.Packed.Explorer.MainApp</StartupObject>
@@ -10,6 +10,7 @@
     <Authors>romibi, Strongleong</Authors>
     <Company>romibi</Company>
     <Product>Scrap Packed Explorer</Product>
+    <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
   </PropertyGroup>
 
   <ItemGroup>
