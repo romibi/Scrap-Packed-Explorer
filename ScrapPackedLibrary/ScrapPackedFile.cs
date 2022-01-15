@@ -11,9 +11,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
         public string fileName { get; private set; }
         PackedMetaData metaData;
 
-        // Todo: if we use MakeBackup multiple times before DeleteBackup or RestoreBackup
-        // this could be an issue: maybe use a map original-filname -> backup filename
-        private string backupFileEnding = "";
+        private Dictionary<string, string> backups = new Dictionary<string, string>();
 
         public ScrapPackedFile(string p_fileName)
         {
@@ -110,6 +108,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             return new PackedFileIndexData(fileName, fileSize, fileOffset);
         }
                 
+        // todo: deprecate this
         public List<string> GetFileNames()
         {
             // todo refactor list output
@@ -121,7 +120,6 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             return list;
         }
 
-        // todo: deprecate this
         public List<IDictionary<string, string>> GetFileList()
         {
             // todo refactor list output
@@ -318,7 +316,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
                 }
                 catch (Exception ex)
                 {
-                    if (backupFileEnding != "")
+                    if (backups.ContainsKey(p_destinationPath))
                         RestoreBackup(p_destinationPath);
                     throw ex;
                 }
@@ -329,7 +327,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             }
             catch (Exception ex)
             {
-                if (backupFileEnding != "")
+                if (backups.ContainsKey(p_destinationPath))
                     RestoreBackup(p_destinationPath);
                 throw ex;
             }
@@ -338,8 +336,8 @@ namespace ch.romibi.Scrap.Packed.PackerLib
                 if (p_PackedFileStream == null)
                     fsPacked.Close();
             }
-            if (backupFileEnding != "")
-                DeleteBackup(p_destinationPath);
+            if (backups.ContainsKey(p_destinationPath))
+                    DeleteBackup(p_destinationPath);
         }
 
         private void MakeBackup(string filePath, bool temp = false)
@@ -347,54 +345,63 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             // todo: test of this
             if (!File.Exists(filePath))
                 throw new FileNotFoundException($"Unable to backup '{filePath}': file does not exists");
-            
-            Debug.Assert(backupFileEnding == "", $"Unable to backup '{filePath}': 'backupEnding' is not empty ('{backupFileEnding}').\r\n" +
-                                             $"Can track only one backup at a time for now.");
 
+            string backupPath = filePath;
             if (temp)
             {
+                string randomId;
                 do
                 {
-                    backupFileEnding = $".{Guid.NewGuid().ToString().Substring(0,5)}.tmp";
+                    randomId = $".{Guid.NewGuid().ToString().Substring(0,5)}.tmp";
                 }
-                while (File.Exists(backupFileEnding + ".bak"));
+                while (File.Exists(backupPath + randomId + ".bak"));
+                backupPath += randomId;
             }
 
-            backupFileEnding += ".bak";
+            backupPath += ".bak";
 
             if (filePath == fileName)
-                fileName = filePath + backupFileEnding;
+                fileName = backupPath;
 
-            File.Move(filePath, filePath + backupFileEnding, true);
+            backups.Add(filePath, backupPath);
+            File.Move(filePath, backupPath, true);
         }
 
         private void RestoreBackup(string filePath)
         {
-            string backupPath = filePath + backupFileEnding;
+            // todo: test of this
+            if (!backups.ContainsKey(filePath))
+                throw new FileNotFoundException($"File '{filePath}' does not have any backups to restore");
+
+            string backupPath = backups[filePath];
+
+            if (!File.Exists(backupPath))
+                throw new FileNotFoundException($"File '{filePath}' have a record of backup `{backupPath}` but it is not exists as file.\r\n" +
+                    $"There is a bug somwhere in `MakeBackup()`"); // unreachble
 
             if (filePath == fileName)
                 fileName = backupPath.Replace(".bak", "");
 
-            // todo: test of this
-            if (backupFileEnding == "" || !File.Exists(backupPath))
-                throw new FileNotFoundException($"File '{filePath}' does not have any backups to restore");
-
-            backupFileEnding = "";
+            backups.Remove(filePath);
             File.Move(backupPath, filePath, true);
         }
 
         private void DeleteBackup(string filePath)
         {
-            string backupPath = filePath + backupFileEnding;
+            // todo: test of this
+            if (!backups.ContainsKey(filePath))
+                throw new FileNotFoundException($"File '{filePath}' does not have any backups to delete");
+
+            string backupPath = backups[filePath];
+
+            if (!File.Exists(backupPath))
+                throw new FileNotFoundException($"File '{filePath}' have a record of backup `{backupPath}` but it is not exists as file.\r\n" +
+                    $"There is a bug somwhere in `MakeBackup()`"); // unreachble
 
             if (filePath == fileName)
                 fileName = backupPath.Replace(".bak", "");
 
-            // todo: test of this
-            if (backupFileEnding == "" || !File.Exists(backupPath))
-                throw new FileNotFoundException($"File '{filePath}' does not have any backups to delete");
-
-            backupFileEnding = "";
+            backups.Remove(filePath);
             File.Delete(backupPath);
         }
 
