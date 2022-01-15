@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <RootNamespace>ch.romibi.Scrap.Packed.PackerLib</RootNamespace>
     <PackageId>ScrapPackedLibrary</PackageId>
     <Authors>romibi, Strongleong</Authors>
