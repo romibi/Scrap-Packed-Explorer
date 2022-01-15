@@ -107,7 +107,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
 
             return new PackedFileIndexData(fileName, fileSize, fileOffset);
         }
-                
+
         // todo: deprecate this
         public List<string> GetFileNames()
         {
@@ -186,7 +186,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             if (metaData.fileByPath.ContainsKey(packedPath))
                 RemoveFile(packedPath);
 
-            var newFileIndexData = new PackedFileIndexData(p_externalPath, packedPath, (UInt32) newFile.Length);
+            var newFileIndexData = new PackedFileIndexData(p_externalPath, packedPath, (UInt32)newFile.Length);
             metaData.fileList.Add(newFileIndexData);
             metaData.fileByPath.Add(packedPath, newFileIndexData);
         }
@@ -212,7 +212,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
 
         private void RenameDirectory(string p_oldPath, string p_newPath)
         {
-            if (p_oldPath == "/") 
+            if (p_oldPath == "/")
                 p_oldPath = "";
 
             var fileList = GetFolderContent(p_oldPath);
@@ -251,12 +251,12 @@ namespace ch.romibi.Scrap.Packed.PackerLib
                 throw new ArgumentException($"Unable to remove {p_Name}: folder does not exists in {fileName}");
 
             foreach (var file in fileList)
-               RemoveFile(file.FilePath);
+                RemoveFile(file.FilePath);
         }
 
         public void Extract(string p_packedPath, string p_destinationPath)
         {
-            if (p_packedPath.EndsWith("/") || p_packedPath.Length==0)
+            if (p_packedPath.EndsWith("/") || p_packedPath.Length == 0)
                 ExtractDirectory(p_packedPath, p_destinationPath);
             else
                 ExtractFile(p_packedPath, p_destinationPath);
@@ -311,7 +311,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
 
                     fsPacked.Seek(fileMetaData.OriginalOffset, SeekOrigin.Begin);
                     fsPacked.Read(readBytes, 0, (int)fileMetaData.FileSize);
-                    
+
                     fsExtractFile.Write(readBytes);
                 }
                 catch (Exception ex)
@@ -337,7 +337,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
                     fsPacked.Close();
             }
             if (backups.ContainsKey(p_destinationPath))
-                    DeleteBackup(p_destinationPath);
+                DeleteBackup(p_destinationPath);
         }
 
         private void MakeBackup(string filePath, bool temp = false)
@@ -352,7 +352,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
                 string randomId;
                 do
                 {
-                    randomId = $".{Guid.NewGuid().ToString().Substring(0,5)}.tmp";
+                    randomId = $".{Guid.NewGuid().ToString().Substring(0, 5)}.tmp";
                 }
                 while (File.Exists(backupPath + randomId + ".bak"));
                 backupPath += randomId;
@@ -376,8 +376,8 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             string backupPath = backups[filePath];
 
             if (!File.Exists(backupPath))
-                throw new FileNotFoundException($"File '{filePath}' have a record of backup `{backupPath}` but it is not exists as file.\r\n" +
-                    $"There is a bug somwhere in `MakeBackup()`"); // unreachble
+                throw new FileNotFoundException($"File '{filePath}' was previously backed up to `{backupPath}` but that backup does not exist anymore.\r\n" +
+                    $"Is there a bug somwhere in `MakeBackup()` or was the file deleted externally?"); // unreachble?
 
             if (filePath == fileName)
                 fileName = backupPath.Replace(".bak", "");
@@ -465,11 +465,11 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             Debug.Assert(!outputPath.EndsWith(Path.DirectorySeparatorChar), "Output path cannot be only folder name.");
 
             string dirName = Path.GetDirectoryName(outputPath);
-            if (dirName == null)                
+            if (dirName == null)
                 throw new IOException($"Unable to create file {outputPath}: unexpected error.");
 
             else if (dirName != "") // if dirName is not the same dir as the working dir.
-               Directory.CreateDirectory(dirName);
+                Directory.CreateDirectory(dirName);
 
             return new FileStream(outputPath, FileMode.Create);
         }
