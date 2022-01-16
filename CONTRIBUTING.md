@@ -57,10 +57,8 @@ For control-flow blocks (`if`, `while`, `for`, etc.) the brackets containing the
 
 **Example:**
 ```c#
-try
-{
-    if (a == b)
-    {
+try {
+    if (a == b) {
         // Some code...
         // Some code...
         // Some code...
@@ -68,8 +66,7 @@ try
     else
         // One line of code
 }
-catch
-{
+catch {
     // Error handling code
 }
 ```
