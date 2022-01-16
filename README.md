@@ -24,7 +24,7 @@ See also the [Scrap Hacks Project by Earthnuker](https://gitdab.com/Earthnuker/S
 ---
 
 ## About "packed" files
-.packed Files are used by the Game Scrapland to have most of the game data merged into one big data archive.
+.packed Files are used by the Game Scrapland to have most of the game data merged into one big data container.
 The contents are neither encrypted nor compressed. Therefore modifying it is relatively straight forward.
 
 But before this project there was no real userfriendly way to do that and the goal of this project was to enable modding for users who do not want to really think about how this filetype is made.
@@ -59,18 +59,18 @@ List of the subcommands:
 
 | Subcommand		 | Description										|
 |--------------------|--------------------------------------------------|
-|[add](#add)		 |Add file to the archive							|
-|[remove](#remove)	 |Remove a file from the archive					|
-|[rename](#rename)	 |rename a file or folder inside the archive		|
-|[extract](#extract) |Extract/unpack a file from the archive			|
-|[list](#list)		 |list or search files and folders in the archive	|
+|[add](#add)		 |Add file to the container							|
+|[remove](#remove)	 |Remove a file from the container					|
+|[rename](#rename)	 |rename a file or folder inside the container		|
+|[extract](#extract) |Extract/unpack a file from the container			|
+|[list](#list)		 |list or search files and folders in the container	|
 |[help](#help)		 |Display more information on a specific command.	|
 |[version](#version) |Display version information.						|
 
 ---
 
 ### Add
-Add a file or folder to a given archive. If the archive does not exists the App will create new one.
+Add a file or folder to a given container. If the container does not exists the App will create new one.
 
 | Option                   | Description
 |--------------------------|--------------------------------------------------------------------------------------------------------|
@@ -91,12 +91,12 @@ ScrapPackedExplorerCli.exe exapmle.packed add -s folder\subfolder -p folder/
 ---
 
 ### Remove
-Removes a file or folder from the given archive.
+Removes a file or folder from the given container.
 
 | Option                   | Description
 |--------------------------|--------------------------------------------------------------------------------------------------------|
 |Packed file (pos. 0)      |Required. The .packed file to use as basis																|
-|-p, --packedPath          |Required. What path to remove from the archive															|
+|-p, --packedPath          |Required. What path to remove from the container															|
 |-o, --outputPackedFile    |(Default: ) Where to store the new .packed file. Modify input if not provided.							|
 |-k, --keepBackup          |(Default: false) Keep the backup file that gets created during saving even after successful processing.	|
 |--overwriteOldBackup      |(Default: false) Allow overwriting existing .bak files													|
@@ -112,12 +112,12 @@ ScrapPackedExplorerCli.exe exapmle.packed remove -p folder/
 ---
 
 ### Rename
-Renames file or folder inside the given archive. Also used to change the path of the file (to basicaly move it).
+Renames file or folder inside the given container. Also used to change the path of the file (to basicaly move it).
 
 | Option                   | Description
 |--------------------------|--------------------------------------------------------------------------------------------------------|
 |Packed file (pos. 0)      |Required. The .packed file to use as basis																|
-|-s, --oldPackedPath       |Required. (Default: /) What path to rename inside the archive											|
+|-s, --oldPackedPath       |Required. (Default: /) What path to rename inside the container											|
 |-d, --newPackedPath       |Required. The new path to use for the files to rename													|
 |-o, --outputPackedFile    |(Default: ) Where to store the new .packed file. Modify input if not provided.							|
 |-k, --keepBackup          |(Default: false) Keep the backup file that gets created during saving even after successful processing.	|
@@ -133,14 +133,14 @@ ScrapPackedExplorerCli.exe exapmle.packed rename -s file1.txt -d folder/file1.tx
 ---
 
 ### Extract
-Extracts a file or folder from the given archive to a given path. 
+Extracts a file or folder from the given container to a given path. 
 If option `-s` is not specified, the App will extract everything.
 
 | Option                   | Description												|
 |--------------------------|------------------------------------------------------------|
 |Packed file (pos. 0)      |Required. The .packed file to use as basis					|
-|-s, --packedPath          |(Default: ) What path to extract from the archive			|
-|-d, --destinationPath     |Required. The path to extract the files from the archive to	|
+|-s, --packedPath          |(Default: ) What path to extract from the container			|
+|-d, --destinationPath     |Required. The path to extract the files from the container to	|
 |--help                    |Display this help screen.									|
 |--version                 |Display version information.								|
 
@@ -154,7 +154,7 @@ ScrapPackedExplorerCli.exe exapmle.packed extract -d out\
 ---
 
 ### List
-Lists files and folders in the given archive.
+Lists files and folders in the given container.
 
 | Option                   | Description																							
 |--------------------------|--------------------------------------------------------------------------------------------------------|
@@ -218,8 +218,8 @@ No other dependencies are needed.
 	- [ ] icon
 	- [ ] nice loading animation
 	- [ ] direct vs prepare modes
-    	_Re-create archive on each change or prepare changes and then save_
+    	_Re-create container on each change or prepare changes and then save_
 	- [ ] "modding" mode (maybe)
-    	_Have huge gaps between files edited to not move around bits much inside archive while constantly editing_
+    	_Have huge gaps between files edited to not move around bits much inside container while constantly editing_
 	- [ ] file preview (maybe)
 - Misc: see [other issues](/../../issues/)

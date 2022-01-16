@@ -1,2 +1,2 @@
-Begin of this first file in the example packed archive.
+Begin of this first file in the example packed container.
 Content not relevant. This is already the END

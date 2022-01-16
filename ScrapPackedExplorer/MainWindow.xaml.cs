@@ -38,7 +38,7 @@ namespace ch.romibi.Scrap.Packed.Explorer
             get { return _loadedPackedFile; } 
             set { 
                 _loadedPackedFile = value;
-                ArchiveLoaded = !(value is null);
+                ContainerLoaded = !(value is null);
             }
         }
 
@@ -51,11 +51,11 @@ namespace ch.romibi.Scrap.Packed.Explorer
             }
         }
 
-        private bool _ArchiveLoaded;
-        public bool ArchiveLoaded {
-            get { return _ArchiveLoaded; }
+        private bool _ContainerLoaded;
+        public bool ContainerLoaded {
+            get { return _ContainerLoaded; }
             set { 
-                _ArchiveLoaded = value;
+                _ContainerLoaded = value;
                 NotifyPropertyChanged(); 
             }
         }
@@ -75,7 +75,7 @@ namespace ch.romibi.Scrap.Packed.Explorer
         private bool _FileTreeSelectionUpdating = false;
 
         protected readonly string NAVIGATE_UP_NAME = "..";
-        protected readonly string PACKED_FILTER_STRING = "Scrapland Archive|*.packed|All Files|*.*";
+        protected readonly string PACKED_FILTER_STRING = "Scrapland Container|*.packed|All Files|*.*";
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -396,7 +396,7 @@ namespace ch.romibi.Scrap.Packed.Explorer
             {
                 if (File.Exists(saveDialog.FileName))
                 {
-                    MessageBox.Show($"File {saveDialog.FileName} already exists. Cannot create new Archive with that name!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"File {saveDialog.FileName} already exists. Cannot create new Container with that name!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 else
                 {

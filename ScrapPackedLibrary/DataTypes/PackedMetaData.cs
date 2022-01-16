@@ -22,7 +22,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.DataTypes
                 currentOffset += file.FileSize;
 
                 if (currentOffset > UInt32.MaxValue - file.FileSize)
-                    throw new OverflowException("Too much data for single archive. Multipart archives are not supported yet");
+                    throw new OverflowException("Too much data for single container. Multipart containers are not supported yet");
             }
         }
 
