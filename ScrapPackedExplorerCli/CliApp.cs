@@ -80,6 +80,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
                 h.AddPreOptionsText(usage);
                 h.OptionComparison = orderOnValues;
                 h.MaximumDisplayWidth = 250;
+                h.AdditionalNewLineAfterOption = false;
                 return h;
             });
 
@@ -98,7 +99,8 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
         private int RunAdd(AddOptions options)
         {
             try {
-                ScrapPackedFile packedFile = new ScrapPackedFile(options.packedFile, true); 
+                // TODO: sanitize input
+                ScrapPackedFile packedFile = new ScrapPackedFile(options.packedFile); 
                 packedFile.Add(options.sourcePath, options.packedPath);
                 packedFile.SaveToFile(options.outputPackedFile);
             }
