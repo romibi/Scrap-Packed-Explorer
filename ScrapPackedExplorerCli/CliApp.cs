@@ -27,15 +27,20 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
                 (RenameOptions  options) => RunRename(options),
                 (ExtractOptions options) => RunExtract(options),
                 (ListOptions    options) => RunList(options),
-                errors => ParseFirstArgNotVerb(args, parser) // if first arg is not verb it is must be PackedPath
+                errors => {
+                    foreach (Error error in errors)
+                        if (error.Tag == ErrorType.BadVerbSelectedError)
+                            return ParseFirstArgNotVerb(args, parser); // if first arg is not verb it is must be PackedPath
+                    return DisplayHelp(result, errors);
+                }
             );
         }
 
-        // todo: refactor this. Kinda ugly 
         private int ParseFirstArgNotVerb(string[] args, Parser parser)
         {
             // if no verb specified print help message
-            if (args.Length == 1) {
+            if (args.Length == 1)
+            {
                 List<string> _args = new List<string>(args);
                 _args.Add("help");
                 args = _args.ToArray();
@@ -51,13 +56,13 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
 
             var result = parser.ParseArguments<BaseOptions, AddOptions, RemoveOptions, RenameOptions, ExtractOptions, ListOptions>(args);
             return result.MapResult(
-               (AddOptions options) => RunAdd(options),
-               (RemoveOptions options) => RunRemove(options),
-               (RenameOptions options) => RunRename(options),
-               (ExtractOptions options) => RunExtract(options),
-               (ListOptions options) => RunList(options),
-               errors => DisplayHelp(result, errors)
-           );
+                (AddOptions options) => RunAdd(options),
+                (RemoveOptions options) => RunRemove(options),
+                (RenameOptions options) => RunRename(options),
+                (ExtractOptions options) => RunExtract(options),
+                (ListOptions options) => RunList(options),
+                errors => DisplayHelp(result, errors)
+            );
         }
 
         private static int DisplayHelp<T>(ParserResult<T> result, IEnumerable<Error> errors)
