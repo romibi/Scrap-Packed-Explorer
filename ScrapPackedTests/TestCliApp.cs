@@ -336,7 +336,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
             );
 
             CheckRunCompareOutput(new[] { "list", @"TestData\example.packed",
-                "--show-file-size"},
+                "--showFileSize"},
                 "file1.txt\tSize: 102\r\n" +
                 "file2.txt\tSize: 169\r\n" +
                 "folder1/file1.txt\tSize: 454\r\n" +
@@ -349,7 +349,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
             );
 
             CheckRunCompareOutput(new[] { "list", @"TestData\example.packed",
-                "--show-file-offset"},
+                "--showFileOffset"},
                 "file1.txt\tOffset: 244\r\n" +
                 "file2.txt\tOffset: 346\r\n" +
                 "folder1/file1.txt\tOffset: 515\r\n" +
@@ -362,7 +362,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
             );
 
             CheckRunCompareOutput(new[] { "list", @"TestData\example.packed",
-                "--show-file-size", "--show-file-offset"},
+                "--showFileSize", "--showFileOffset"},
                 "file1.txt\tSize: 102\tOffset: 244\r\n" +
                 "file2.txt\tSize: 169\tOffset: 346\r\n" +
                 "folder1/file1.txt\tSize: 454\tOffset: 515\r\n" +
@@ -392,14 +392,14 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
             );
 
             CheckRunCompareOutput(new[] { "list", @"TestData\example.packed",
-                "--searchString", "file", "--match-beginning" },
+                "--searchString", "file", "--matchBeginning" },
                 "file1.txt\r\n" +
                 "file2.txt\r\n",
-                "List file match-beginning"
+                "List file matchBeginning"
             );
 
             CheckRunCompareOutput(new[] { "list", @"TestData\TestReferenceFiles\TestList\listMatchFile.packed",
-                "--searchString", "file1", "--match-filename" },
+                "--searchString", "file1", "--matchFilename" },
                 "file1.txt\r\n" +
                 "folder1/file1.txt\r\n",
                 "List match-filename"
@@ -464,7 +464,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
             CheckRunCompareOutput(new[] { "list", @"TestData\example.packed",
                 "--outputStyle", "Name",
                 "--searchString", "folder2/",
-                "--show-file-size", "--show-file-offset"},
+                "--showFileSize", "--showFileOffset"},
                 "file1.txt\tSize: 247\tOffset: 969\r\n" +
                 "file2.txt\tSize: 165\tOffset: 1716\r\n" +
                 "file1.txt\tSize: 280\tOffset: 1881\r\n" +

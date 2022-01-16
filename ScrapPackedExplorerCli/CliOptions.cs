@@ -22,7 +22,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
         public bool overwriteOldBackup { get; set; }
     }
 
-    [Verb("add", HelpText = "Add file to the archive")]
+    [Verb("add", HelpText = "Add file to the container")]
     class AddOptions : ModifyingOptions
     {
         [Option('s', "sourcePath", Required = true, HelpText = "What file or folder to add to the .packed file")]
@@ -32,36 +32,36 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
         public string packedPath { get; set; }
     }
 
-    [Verb("remove", HelpText = "Remove a file from the archive")]
+    [Verb("remove", HelpText = "Remove a file from the container")]
     class RemoveOptions : ModifyingOptions
     {
-        [Option('d', "packedPath", Required = true, HelpText = "What path to remove from the archive")]
+        [Option('d', "packedPath", Required = true, HelpText = "What path to remove from the container")]
         public string packedPath { get; set; }
     }
 
-    [Verb("rename", HelpText = "rename a file or folder inside the archive")]
+    [Verb("rename", HelpText = "rename a file or folder inside the container")]
     class RenameOptions : ModifyingOptions
     {
-        [Option('s', "oldPackedPath", Required = true, Default = "/", HelpText = "What path to rename inside the archive")]
+        [Option('s', "oldPackedPath", Required = true, Default = "/", HelpText = "What path to rename inside the container")]
         public string oldPackedPath { get; set; }
 
         [Option('d', "newPackedPath", Required = true, HelpText = "The new path to use for the files to rename")]
         public string newPackedPath { get; set; }
     }
 
-    [Verb("extract", HelpText = "Extract/unpack a file from the archive")]
+    [Verb("extract", HelpText = "Extract/unpack a file from the container")]
     class ExtractOptions : BaseOptions
     {
-        [Option('s', "packedPath", Required = false, Default = "", HelpText = "What path to extract from the archive")]
+        [Option('s', "packedPath", Required = false, Default = "", HelpText = "What path to extract from the container")]
         public string packedPath { get; set; }
 
-        [Option('d', "destinationPath", Required = true, HelpText = "The path to extract the files from the archive to")]
+        [Option('d', "destinationPath", Required = true, HelpText = "The path to extract the files from the container to")]
         public string destinationPath { get; set; }
 
         // todo add overwrite options
     }
 
-    [Verb("list", HelpText = "list or search files and folders in the archive")]
+    [Verb("list", HelpText = "list or search files and folders in the container")]
     class ListOptions : BaseOptions
     {
         [Option('l', "outputStyle", Required = false, Default = OutputStyles.List, HelpText = "Output list (default) or tree view")]
@@ -75,17 +75,17 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
 
         // todo: come up with better description
         // todo: change arguments style
-        [Option('b', "match-beginning", Required = false, Default = false, HelpText = "Apply search query only to beginnng of the files path. By default applies everywhere")]
+        [Option('b', "matchBeginning", Required = false, Default = false, HelpText = "Apply search query only to beginnng of the files path. By default applies everywhere")]
         public bool MatchBeginning { get; set; }
 
-        [Option('f', "match-filename", Required = false, Default = false, HelpText = "Search only by files. By default search includes folders")]
+        [Option('f', "matchFilename", Required = false, Default = false, HelpText = "Search only by files. By default search includes folders")]
         public bool MatchFilename { get; set; }
 
         // todo: change short arguments
-        [Option('s', "show-file-size", Required = false, Default = false, HelpText = "Show files sizes")]
+        [Option('s', "showFileSize", Required = false, Default = false, HelpText = "Show files sizes")]
         public bool ShowFileSize { get; set; }
 
-        [Option('o', "show-file-offset", Required = false, Default = false, HelpText = "Show files offsets")]
+        [Option('o', "showFileOffset", Required = false, Default = false, HelpText = "Show files offsets")]
         public bool ShowFileOffset { get; set; }
     }
 
