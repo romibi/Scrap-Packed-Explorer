@@ -195,7 +195,7 @@ ScrapPackedExplorerCli.exe version
 ```
 ---
 ## Dependencies
-This App is using [.NET Core 3.1 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-aspnetcore-3.1.22-windows-hosting-bundle-installer) which is often already installed on modern windows computers. If you have problems launching the App, make sure that it is installed on your computer.  
+This App is using [.NET Core 6.0](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-aspnetcore-6.0.1-windows-hosting-bundle-installer) which is often already installed on modern windows computers. If you have problems launching the App, make sure that it is installed on your computer.  
 No other dependencies are needed.
 
 ---
