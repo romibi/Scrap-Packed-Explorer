@@ -16,6 +16,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
             {
                 with.HelpWriter = null;
                 with.CaseInsensitiveEnumValues = true;
+                with.CaseSensitive = false;
             });
 
             // Default parsing with verb as first arg
@@ -73,6 +74,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
                 h.AutoHelp = true;
                 h.AddPreOptionsText(usage);
                 h.OptionComparison = orderOnValues;
+                h.MaximumDisplayWidth = 250;
                 return h;
             });
 
