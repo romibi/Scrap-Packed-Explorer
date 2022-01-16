@@ -32,7 +32,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
 
 
         [TestMethod]
-        public void TestRunAddFile()
+            public void TestRunAddFile()
         {
             Directory.CreateDirectory(@"TestResults\TestAdd");
             File.Copy(@"TestData\empty.packed", @"TestResults\TestAdd\packedFile.packed", true);
@@ -337,40 +337,40 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
 
             CheckRunCompareOutput(new[] { "list", @"TestData\example.packed",
                 "--showFileSize"},
-                "file1.txt\tSize: 102\r\n" +
-                "file2.txt\tSize: 169\r\n" +
-                "folder1/file1.txt\tSize: 454\r\n" +
+                "file1.txt\tSize: 104\r\n" +
+                "file2.txt\tSize: 171\r\n" +
+                "folder1/file1.txt\tSize: 456\r\n" +
                 "folder1/file2.png\tSize: 500\r\n" +
-                "folder2/file1.txt\tSize: 247\r\n" +
-                "folder2/file2.txt\tSize: 165\r\n" +
-                "folder2/folder1/file1.txt\tSize: 280\r\n" +
-                "folder2/folder1/file2.txt\tSize: 83\r\n",
+                "folder2/file1.txt\tSize: 249\r\n" +
+                "folder2/file2.txt\tSize: 167\r\n" +
+                "folder2/folder1/file1.txt\tSize: 282\r\n" +
+                "folder2/folder1/file2.txt\tSize: 85\r\n",
                 "List full filesizes"
             );
 
             CheckRunCompareOutput(new[] { "list", @"TestData\example.packed",
                 "--showFileOffset"},
                 "file1.txt\tOffset: 244\r\n" +
-                "file2.txt\tOffset: 346\r\n" +
-                "folder1/file1.txt\tOffset: 515\r\n" +
-                "folder1/file2.png\tOffset: 1216\r\n" +
-                "folder2/file1.txt\tOffset: 969\r\n" +
-                "folder2/file2.txt\tOffset: 1716\r\n" +
-                "folder2/folder1/file1.txt\tOffset: 1881\r\n" +
-                "folder2/folder1/file2.txt\tOffset: 2161\r\n" ,
+                "file2.txt\tOffset: 348\r\n" +
+                "folder1/file1.txt\tOffset: 519\r\n" +
+                "folder1/file2.png\tOffset: 975\r\n" +
+                "folder2/file1.txt\tOffset: 1475\r\n" +
+                "folder2/file2.txt\tOffset: 1724\r\n" +
+                "folder2/folder1/file1.txt\tOffset: 1891\r\n" +
+                "folder2/folder1/file2.txt\tOffset: 2173\r\n" ,
                 "List full offsets"
             );
 
             CheckRunCompareOutput(new[] { "list", @"TestData\example.packed",
                 "--showFileSize", "--showFileOffset"},
-                "file1.txt\tSize: 102\tOffset: 244\r\n" +
-                "file2.txt\tSize: 169\tOffset: 346\r\n" +
-                "folder1/file1.txt\tSize: 454\tOffset: 515\r\n" +
-                "folder1/file2.png\tSize: 500\tOffset: 1216\r\n" +
-                "folder2/file1.txt\tSize: 247\tOffset: 969\r\n" +
-                "folder2/file2.txt\tSize: 165\tOffset: 1716\r\n" +
-                "folder2/folder1/file1.txt\tSize: 280\tOffset: 1881\r\n" +
-                "folder2/folder1/file2.txt\tSize: 83\tOffset: 2161\r\n",
+                "file1.txt\tSize: 104\tOffset: 244\r\n" +
+                "file2.txt\tSize: 171\tOffset: 348\r\n" +
+                "folder1/file1.txt\tSize: 456\tOffset: 519\r\n" +
+                "folder1/file2.png\tSize: 500\tOffset: 975\r\n" +
+                "folder2/file1.txt\tSize: 249\tOffset: 1475\r\n" +
+                "folder2/file2.txt\tSize: 167\tOffset: 1724\r\n" +
+                "folder2/folder1/file1.txt\tSize: 282\tOffset: 1891\r\n" +
+                "folder2/folder1/file2.txt\tSize: 85\tOffset: 2173\r\n",
                 "List full filesizes + offsets"
             );
 
@@ -402,7 +402,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
                 "--searchString", "file1", "--matchFilename" },
                 "file1.txt\r\n" +
                 "folder1/file1.txt\r\n",
-                "List match-filename"
+                "List matchFilename"
             );
 
             CheckRunCompareOutput(new[] { "list", @"TestData\example.packed",
@@ -465,10 +465,10 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
                 "--outputStyle", "Name",
                 "--searchString", "folder2/",
                 "--showFileSize", "--showFileOffset"},
-                "file1.txt\tSize: 247\tOffset: 969\r\n" +
-                "file2.txt\tSize: 165\tOffset: 1716\r\n" +
-                "file1.txt\tSize: 280\tOffset: 1881\r\n" +
-                "file2.txt\tSize: 83\tOffset: 2161\r\n",
+                "file1.txt\tSize: 249\tOffset: 1475\r\n" +
+                "file2.txt\tSize: 167\tOffset: 1724\r\n" +
+                "file1.txt\tSize: 282\tOffset: 1891\r\n" +
+                "file2.txt\tSize: 85\tOffset: 2173\r\n",
                 "List files with only filename from folder2 + sizes + offsets");
         }
 
