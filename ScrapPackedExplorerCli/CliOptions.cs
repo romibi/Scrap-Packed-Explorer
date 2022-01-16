@@ -73,15 +73,12 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
         [Option('r', "regex", Required = false, Default = false, HelpText = "Defines if the search string is a regular expression")]
         public bool isRegex { get; set; }
 
-        // todo: come up with better description
-        // todo: change arguments style
         [Option('b', "matchBeginning", Required = false, Default = false, HelpText = "Apply search query only to beginnng of the files path. By default applies everywhere")]
         public bool MatchBeginning { get; set; }
 
         [Option('f', "matchFilename", Required = false, Default = false, HelpText = "Search only by files. By default search includes folders")]
         public bool MatchFilename { get; set; }
 
-        // todo: change short arguments
         [Option('s', "showFileSize", Required = false, Default = false, HelpText = "Show files sizes")]
         public bool ShowFileSize { get; set; }
 
