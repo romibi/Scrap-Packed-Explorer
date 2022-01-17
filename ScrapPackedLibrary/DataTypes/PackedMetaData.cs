@@ -1,27 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace ch.romibi.Scrap.Packed.PackerLib.DataTypes
 {
     public class PackedMetaData
     {
         // Fields
-        public const string fileHeader = "BFPK";
-        public UInt32 packedVersion { get; set; } // always 0 (not sure if really a version number)
-        public List<PackedFileIndexData> fileList { get; set; }
-        public Dictionary<string, PackedFileIndexData> fileByPath { get; set; }
+        public const string FileHeader = "BFPK";
+        public uint PackedVersion { get; set; } // always 0 (not sure if really a version number)
+        public List<PackedFileIndexData> FileList { get; set; }
+        public Dictionary<string, PackedFileIndexData> FileByPath { get; set; }
 
         // Methods
         public void RecalcFileOffsets()
         {
-            UInt32 currentOffset = CalculateFirstFileOffset();
-            foreach (var file in fileList)
-            {
+            uint currentOffset = CalculateFirstFileOffset();
+            foreach (PackedFileIndexData file in FileList) {
                 file.Offset = currentOffset;
                 currentOffset += file.FileSize;
 
-                if (currentOffset > UInt32.MaxValue - file.FileSize)
+                if (currentOffset > uint.MaxValue - file.FileSize)
                     throw new OverflowException("Too much data for single container. Multipart containers are not supported yet");
             }
         }
@@ -29,12 +27,11 @@ namespace ch.romibi.Scrap.Packed.PackerLib.DataTypes
         //-------------------------------------------------------
 
         // Why this is private? 
-        private const UInt32 DATA_LENGTH_STATIC = 12; // 4 bytes each: "PFBK", version (all 0s), number of files
-        private UInt32 CalculateFirstFileOffset()
+        private const uint DATA_LENGTH_STATIC = 12; // 4 bytes each: "PFBK", version (all 0s), number of files
+        private uint CalculateFirstFileOffset()
         {
-            UInt32 result = DATA_LENGTH_STATIC;
-            foreach (var fileEntry in fileList)
-            {
+            uint result = DATA_LENGTH_STATIC;
+            foreach (PackedFileIndexData fileEntry in FileList) {
                 result += fileEntry.IndexEntrySize;
             }
             return result;
@@ -46,22 +43,16 @@ namespace ch.romibi.Scrap.Packed.PackerLib.DataTypes
         // Fields
         public string FilePath { get; set; }
         public string OriginalFilePath { get; private set; }
-        public UInt32 FileSize { get; set; }
-        public UInt32 OriginalOffset { get; private set; }
-        public UInt32 Offset { get; set; }
-        public UInt32 IndexEntrySize {
-            get {
-                return (uint)(DATA_LENGTH_STATIC + FilePath.Length);
-            }
-        }
-        public bool UseExternalData { get {
-                return ExternalFilePath.Length != 0;
-        } }
+        public uint FileSize { get; set; }
+        public uint OriginalOffset { get; private set; }
+        public uint Offset { get; set; }
+        public uint IndexEntrySize => (uint)(DATA_LENGTH_STATIC + FilePath.Length);
+        public bool UseExternalData => ExternalFilePath.Length != 0;
         public string ExternalFilePath { get; set; }
 
         // Constructors
-        public PackedFileIndexData(string p_FilePath, UInt32 p_FileSize, UInt32 p_Offset) : this("", p_FilePath, p_FileSize, p_Offset) { }
-        public PackedFileIndexData(string p_ExternalFilePath, string p_FilePath, UInt32 p_FileSize, UInt32 p_Offset = 0)
+        public PackedFileIndexData(string p_FilePath, uint p_FileSize, uint p_Offset) : this("", p_FilePath, p_FileSize, p_Offset) { }
+        public PackedFileIndexData(string p_ExternalFilePath, string p_FilePath, uint p_FileSize, uint p_Offset = 0)
         {
             FilePath = p_FilePath;
             OriginalFilePath = p_FilePath;
@@ -74,6 +65,6 @@ namespace ch.romibi.Scrap.Packed.PackerLib.DataTypes
         //-------------------------------------------------------
 
         // Why this is private?
-        private const UInt32 DATA_LENGTH_STATIC = 12; // 4 bytes each: path length, file size, offset
+        private const uint DATA_LENGTH_STATIC = 12; // 4 bytes each: path length, file size, offset
     }
 }

@@ -10,125 +10,116 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
 {
     public class CliApp
     {
-        public int Run(string[] args)
+        public static int Run(string[] p_Args)
         {
-            var parser = new Parser(with =>
-            {
-                with.HelpWriter = null;
-                with.CaseInsensitiveEnumValues = true;
-                with.CaseSensitive = false;
+            Parser parser = new(p_With => {
+                p_With.HelpWriter = null;
+                p_With.CaseInsensitiveEnumValues = true;
+                p_With.CaseSensitive = false;
             });
 
             // Default parsing with verb as first arg
-            var result = parser.ParseArguments<BaseOptions, AddOptions, RemoveOptions, RenameOptions, ExtractOptions, ListOptions>(args);
+            ParserResult<object> result = parser.ParseArguments<BaseOptions, AddOptions, RemoveOptions, RenameOptions, ExtractOptions, ListOptions>(p_Args);
             return result.MapResult(
-                (AddOptions     options) => RunAdd(options),
-                (RemoveOptions  options) => RunRemove(options),
-                (RenameOptions  options) => RunRename(options),
-                (ExtractOptions options) => RunExtract(options),
-                (ListOptions    options) => RunList(options),
-                errors => {
-                    foreach (Error error in errors)
+                (AddOptions p_Options) => RunAdd(p_Options),
+                (RemoveOptions p_Options) => RunRemove(p_Options),
+                (RenameOptions p_Options) => RunRename(p_Options),
+                (ExtractOptions p_Options) => RunExtract(p_Options),
+                (ListOptions p_Options) => RunList(p_Options),
+                p_Errors => {
+                    foreach (Error error in p_Errors)
                         if (error.Tag == ErrorType.BadVerbSelectedError)
-                            return ParseFirstArgNotVerb(args, parser); // if first arg is not verb it is must be PackedPath
-                    return DisplayHelp(result, errors);
+                            return ParseFirstArgNotVerb(p_Args, parser); // if first arg is not verb it is must be PackedPath
+                    return DisplayHelp(result);
                 }
             );
         }
 
         // Main functionality 
-        private int RunAdd(AddOptions options)
+        private static int RunAdd(AddOptions p_Options)
         {
             try {
                 // TODO: sanitize input
-                ScrapPackedFile packedFile = new ScrapPackedFile(options.packedFile, true); 
-                packedFile.Add(options.sourcePath, options.packedPath);
-                packedFile.SaveToFile(options.outputPackedFile);
+                ScrapPackedFile packedFile = new(p_Options.PackedFile, true);
+                packedFile.Add(p_Options.SourcePath, p_Options.PackedPath);
+                packedFile.SaveToFile(p_Options.OutputPackedFile);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 Console.Error.WriteLine($"Error: {ex.Message}");
                 return 1;
             }
 
             return 0;
         }
-        private int RunRemove(RemoveOptions options)
+        private static int RunRemove(RemoveOptions p_Options)
         {
             try {
-                ScrapPackedFile packedFile = new ScrapPackedFile(options.packedFile);
-                packedFile.Remove(options.packedPath); 
-                packedFile.SaveToFile(options.outputPackedFile); 
+                ScrapPackedFile packedFile = new(p_Options.PackedFile);
+                packedFile.Remove(p_Options.PackedPath);
+                packedFile.SaveToFile(p_Options.OutputPackedFile);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 Console.Error.WriteLine($"Error: {ex.Message}");
                 return 1;
             }
 
             return 0;
         }
-        private int RunRename(RenameOptions options)
-        {
-            try
-            {
-                ScrapPackedFile packedFile = new ScrapPackedFile(options.packedFile);
-                packedFile.Rename(options.oldPackedPath, options.newPackedPath);
-                packedFile.SaveToFile(options.outputPackedFile);
-            }
-            catch (Exception ex)
-            {
-                Console.Error.WriteLine($"Error: {ex.Message}");
-                return 1;
-            }
-
-            return 0;
-        }
-        private int RunExtract(ExtractOptions options)
+        private static int RunRename(RenameOptions p_Options)
         {
             try {
-                ScrapPackedFile packedFile = new ScrapPackedFile(options.packedFile);
-                packedFile.Extract(options.packedPath, options.destinationPath);
+                ScrapPackedFile packedFile = new(p_Options.PackedFile);
+                packedFile.Rename(p_Options.OldPackedPath, p_Options.NewPackedPath);
+                packedFile.SaveToFile(p_Options.OutputPackedFile);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 Console.Error.WriteLine($"Error: {ex.Message}");
                 return 1;
             }
 
             return 0;
         }
-        private int RunList(ListOptions options)
+        private static int RunExtract(ExtractOptions p_Options)
         {
-            try
-            {
-                ScrapPackedFile packedFile = new ScrapPackedFile(options.packedFile);
+            try {
+                ScrapPackedFile packedFile = new(p_Options.PackedFile);
+                packedFile.Extract(p_Options.PackedPath, p_Options.DestinationPath);
+            }
+            catch (Exception ex) {
+                Console.Error.WriteLine($"Error: {ex.Message}");
+                return 1;
+            }
+
+            return 0;
+        }
+        private static int RunList(ListOptions p_Options)
+        {
+            try {
+                ScrapPackedFile packedFile = new(p_Options.PackedFile);
                 List<string> FileList = packedFile.GetFileNames();
                 FileList.Sort();
 
                 if (FileList.Count == 0)
-                    Console.WriteLine($"'{options.packedFile}' is empty.");
-                else
-                {
-                    string query = options.searchString;
-                    if (!options.isRegex)
+                    Console.WriteLine($"'{p_Options.PackedFile}' is empty.");
+                else {
+                    string query = p_Options.SearchString;
+                    if (!p_Options.IsRegex)
                         query = Regex.Escape(query);
 
                     query = query.Replace("/", @"\/");
                     query = query.Replace("\\*", ".*");
                     query = query.Replace("\\?", ".");
 
-                    if (options.MatchBeginning)
+                    if (p_Options.MatchBeginning)
                         query = "^" + query;
 
-                    Regex rg = new Regex(query);
+                    Regex rg = new(query);
 
                     bool found = false;
-                    foreach (var File in FileList)
-                    {
-                        OutputStyles Styles = options.outputStyle;
+                    foreach (string File in FileList) {
+                        OutputStyles Styles = p_Options.OutputStyle;
 
-                        var FileData = File.Split("\t");
+                        string[] FileData = File.Split("\t");
                         string FilePath = Path.GetDirectoryName(FileData[0]).Replace("\\", "/");
                         string FileName = Path.GetFileName(FileData[0]);
                         string FileSize = FileData[1];
@@ -137,7 +128,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
                         if (FilePath != "")
                             FilePath += "/";
 
-                        if (!rg.IsMatch(options.MatchFilename ? FileName : FilePath + FileName))
+                        if (!rg.IsMatch(p_Options.MatchFilename ? FileName : FilePath + FileName))
                             continue;
                         found = true;
 
@@ -146,79 +137,75 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
                         if (Styles != OutputStyles.Name)
                             Output = FilePath + Output;
 
-                        if (options.ShowFileSize)
+                        if (p_Options.ShowFileSize)
                             Output += "\t" + FileSize;
 
-                        if (options.ShowFileOffset)
+                        if (p_Options.ShowFileOffset)
                             Output += "\t" + FileOffset;
 
                         Console.WriteLine(Output);
                     }
 
                     if (!found)
-                        Console.WriteLine($"Could not find anything by query '{options.searchString}' in '{options.packedFile}'");
+                        Console.WriteLine($"Could not find anything by query '{p_Options.SearchString}' in '{p_Options.PackedFile}'");
                 }
                 return 0;
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 Console.Error.WriteLine($"Error: {ex.Message}");
                 return 1;
             }
         }
 
         // Arguments processing stuff
-        private static Comparison<ComparableOption> orderOnValues = (ComparableOption attr1, ComparableOption attr2) =>
-        {
-            if (attr1.IsValue)
+        private static readonly Comparison<ComparableOption> OrderOnValues = (ComparableOption p_Attr1, ComparableOption p_Attr2) => {
+            if (p_Attr1.IsValue)
                 return -1;
             else
                 return 1;
         };
-        private int ParseFirstArgNotVerb(string[] args, Parser parser)
+        private static int ParseFirstArgNotVerb(string[] p_Args, Parser p_Parser)
         {
             // if no verb specified print help message
-            if (args.Length == 1)
-            {
-                List<string> _args = new List<string>(args);
-                _args.Add("help");
-                args = _args.ToArray();
+            if (p_Args.Length == 1) {
+                List<string> _args = new(p_Args) {
+                    "help"
+                };
+                p_Args = _args.ToArray();
             }
 
             // Just make verb firts lol
-            if (!new List<string>() { "help", "--help", "version", "--version" }.Contains(args[0]))
-            {
-                var temp = args[0];
-                args[0] = args[1];
-                args[1] = temp;
+            if (!new List<string>() { "help", "--help", "version", "--version" }.Contains(p_Args[0])) {
+                string temp = p_Args[0];
+                p_Args[0] = p_Args[1];
+                p_Args[1] = temp;
             }
 
-            var result = parser.ParseArguments<BaseOptions, AddOptions, RemoveOptions, RenameOptions, ExtractOptions, ListOptions>(args);
+            ParserResult<object> result = p_Parser.ParseArguments<BaseOptions, AddOptions, RemoveOptions, RenameOptions, ExtractOptions, ListOptions>(p_Args);
             return result.MapResult(
-                (AddOptions options) => RunAdd(options),
-                (RemoveOptions options) => RunRemove(options),
-                (RenameOptions options) => RunRename(options),
-                (ExtractOptions options) => RunExtract(options),
-                (ListOptions options) => RunList(options),
-                errors => DisplayHelp(result, errors)
+                (AddOptions p_Options) => RunAdd(p_Options),
+                (RemoveOptions p_Options) => RunRemove(p_Options),
+                (RenameOptions p_Options) => RunRename(p_Options),
+                (ExtractOptions p_Options) => RunExtract(p_Options),
+                (ListOptions p_Options) => RunList(p_Options),
+                p_Errors => DisplayHelp(result)
             );
         }
-        private static int DisplayHelp<T>(ParserResult<T> result, IEnumerable<Error> errors)
+        private static int DisplayHelp<T>(ParserResult<T> p_Result)
         {
             string usage = "USAGE: " +
                 "\r\n  ScrapPackedExplorerCli.exe <path-to-packed-file> <subcommand> <options>\r\n" +
                 "EXAMPLE: " +
                 "\r\n  ScrapPackedExplorerCli.exe example.packed list -osq filename.txt -l tree";
 
-            var helpText = HelpText.AutoBuild(result, h =>
-            {
-                h.AddEnumValuesToHelpText = true;
-                h.AutoHelp = true;
-                h.AddPreOptionsText(usage);
-                h.OptionComparison = orderOnValues;
-                h.MaximumDisplayWidth = 250;
-                h.AdditionalNewLineAfterOption = false;
-                return h;
+            HelpText helpText = HelpText.AutoBuild(p_Result, p_HelpText => {
+                p_HelpText.AddEnumValuesToHelpText = true;
+                p_HelpText.AutoHelp = true;
+                p_HelpText.AddPreOptionsText(usage);
+                p_HelpText.OptionComparison = OrderOnValues;
+                p_HelpText.MaximumDisplayWidth = 250;
+                p_HelpText.AdditionalNewLineAfterOption = false;
+                return p_HelpText;
             });
 
             Console.Error.WriteLine(helpText);

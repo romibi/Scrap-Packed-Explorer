@@ -93,7 +93,7 @@ namespace ch.romibi.Scrap.Packed.Explorer
         private void RefreshTreeView()
         {
 
-            TreeEntry root = new TreeEntry(null) { Name = LoadedPackedFile.fileName };
+            TreeEntry root = new TreeEntry(null) { Name = LoadedPackedFile.FileName };
 
             foreach (PackedFileIndexData file in LoadedPackedFile.GetFileIndexDataList())
             {
@@ -414,7 +414,7 @@ namespace ch.romibi.Scrap.Packed.Explorer
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            SaveWithOverwriteWarning(LoadedPackedFile.fileName);
+            SaveWithOverwriteWarning(LoadedPackedFile.FileName);
         }
 
         private void SaveAsButton_Click(object sender, RoutedEventArgs e)

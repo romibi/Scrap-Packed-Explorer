@@ -8,34 +8,34 @@ namespace ch.romibi.Scrap.Packed.PackerLib
 {
     public class ScrapPackedFile
     {
-        public string fileName { get; private set; }
-        public PackedMetaData metaData;
+        public string FileName { get; private set; }
+        public PackedMetaData MetaData;
 
-        public ScrapPackedFile(string p_fileName, bool p_canCreate = false)
+        public ScrapPackedFile(string p_FileName, bool p_CanCreate = false)
         {
-            fileName = p_fileName;
+            FileName = p_FileName;
 
-            if (!File.Exists(fileName) && p_canCreate)
-                CreateNewFile(TryMakeFile(fileName));
+            if (!File.Exists(FileName) && p_CanCreate)
+                CreateNewFile(TryMakeFile(FileName));
 
             ReadPackedMetaData();
         }
-        
+
         // General functionality
-        public void Add(string p_externalPath, string p_packedPath)
+        public void Add(string p_ExternalPath, string p_PackedPath)
         {
-            FileAttributes fileAttributes = File.GetAttributes(p_externalPath);
+            FileAttributes fileAttributes = File.GetAttributes(p_ExternalPath);
             if (fileAttributes.HasFlag(FileAttributes.Directory))
-                AddDirectory(p_externalPath, p_packedPath);
+                AddDirectory(p_ExternalPath, p_PackedPath);
             else
-                AddFile(p_externalPath, p_packedPath);
+                AddFile(p_ExternalPath, p_PackedPath);
         }
-        public void Rename(string p_oldName, string p_newName)
+        public void Rename(string p_OldName, string p_NewName)
         {
-            if (p_oldName.EndsWith("/") || p_oldName.Length == 0)
-                RenameDirectory(p_oldName, p_newName);
+            if (p_OldName.EndsWith("/") || p_OldName.Length == 0)
+                RenameDirectory(p_OldName, p_NewName);
             else
-                RenameFile(p_oldName, p_newName);
+                RenameFile(p_OldName, p_NewName);
         }
         public void Remove(string p_Name)
         {
@@ -44,20 +44,20 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             else
                 RemoveFile(p_Name);
         }
-        public void Extract(string p_packedPath, string p_destinationPath)
+        public void Extract(string p_PackedPath, string p_DestinationPath)
         {
-            if (p_packedPath.EndsWith("/") || p_packedPath.Length == 0)
-                ExtractDirectory(p_packedPath, p_destinationPath);
+            if (p_PackedPath.EndsWith("/") || p_PackedPath.Length == 0)
+                ExtractDirectory(p_PackedPath, p_DestinationPath);
             else
-                ExtractFile(p_packedPath, p_destinationPath);
+                ExtractFile(p_PackedPath, p_DestinationPath);
         }
-        public void SaveToFile(string p_newFileName)
+        public void SaveToFile(string p_NewFileName)
         {
-            metaData.RecalcFileOffsets();
+            MetaData.RecalcFileOffsets();
 
-            string newFileName = fileName;
-            if (p_newFileName.Length > 0)
-                newFileName = p_newFileName;
+            string newFileName = FileName;
+            if (p_NewFileName.Length > 0)
+                newFileName = p_NewFileName;
 
             if (File.Exists(newFileName)) {
                 MakeBackup(newFileName);
@@ -69,34 +69,34 @@ namespace ch.romibi.Scrap.Packed.PackerLib
                 try {
                     // write file header
                     byte[] writeBytes = new byte[4];
-                    writeBytes = System.Text.Encoding.Default.GetBytes(PackedMetaData.fileHeader);
+                    writeBytes = System.Text.Encoding.Default.GetBytes(PackedMetaData.FileHeader);
                     fsPackedNew.Write(writeBytes);
 
                     // write packed version
-                    fsPackedNew.Write(BitConverter.GetBytes(metaData.packedVersion));
+                    fsPackedNew.Write(BitConverter.GetBytes(MetaData.PackedVersion));
 
                     // write number of files
-                    fsPackedNew.Write(BitConverter.GetBytes((uint)metaData.fileList.Count));
+                    fsPackedNew.Write(BitConverter.GetBytes((uint)MetaData.FileList.Count));
 
                     // write the file index
                     WriteFileMetaData(fsPackedNew);
                     WriteFileData(fsPackedNew);
 
-                    fileName = newFileName;
+                    FileName = newFileName;
                 }
-                catch (Exception ex) {
-                    if (fileName.EndsWith(".bak"))
+                catch {
+                    if (FileName.EndsWith(".bak"))
                         RestoreBackup(newFileName);
-                    throw ex;
+                    throw;
                 }
                 finally {
                     fsPackedNew.Close();
                 }
             }
-            catch (Exception ex) {
-                if (fileName.EndsWith(".bak"))
+            catch {
+                if (FileName.EndsWith(".bak"))
                     RestoreBackup(newFileName);
-                throw ex;
+                throw;
             }
         }
 
@@ -105,8 +105,8 @@ namespace ch.romibi.Scrap.Packed.PackerLib
         public List<string> GetFileNames()
         {
             // todo refactor list output
-            List<string> list = new List<string>();
-            foreach (PackedFileIndexData file in metaData.fileList) {
+            List<string> list = new();
+            foreach (PackedFileIndexData file in MetaData.FileList) {
                 list.Add($"{file.FilePath}\tSize: {file.FileSize}\tOffset: {file.OriginalOffset}");
             }
             return list;
@@ -114,13 +114,13 @@ namespace ch.romibi.Scrap.Packed.PackerLib
         public List<IDictionary<string, string>> GetFileList()
         {
             // todo refactor list output
-            List<IDictionary<string, string>> list = new List<IDictionary<string, string>>();
-            foreach (PackedFileIndexData file in metaData.fileList) {
-                Dictionary<string, string> FileData = new Dictionary<string, string>()
+            List<IDictionary<string, string>> list = new();
+            foreach (PackedFileIndexData file in MetaData.FileList) {
+                Dictionary<string, string> FileData = new()
                 {
-                    { "FileName",   Path.GetFileName(file.FilePath) },
-                    { "FilePath",   Path.GetDirectoryName(file.FilePath).Replace("\\", "/") },
-                    { "FileSize",   $"{file.FileSize}" },
+                    { "FileName", Path.GetFileName(file.FilePath) },
+                    { "FilePath", Path.GetDirectoryName(file.FilePath).Replace("\\", "/") },
+                    { "FileSize", $"{file.FileSize}" },
                     { "FileOffset", $"{file.OriginalOffset}" }
                 };
 
@@ -130,81 +130,81 @@ namespace ch.romibi.Scrap.Packed.PackerLib
         }
         public List<PackedFileIndexData> GetFileIndexDataList()
         {
-            return metaData.fileList;
+            return MetaData.FileList;
         }
-        public PackedFileIndexData GetFileIndexDataForFile(string p_packedPath)
+        public PackedFileIndexData GetFileIndexDataForFile(string p_PackedPath)
         {
-            return metaData.fileByPath[p_packedPath];
+            return MetaData.FileByPath[p_PackedPath];
         }
         // todo: this needs to be better
-        public List<PackedFileIndexData> GetFolderContent(string path)
+        public List<PackedFileIndexData> GetFolderContent(string p_Path)
         {
-            List<PackedFileIndexData> result = new List<PackedFileIndexData>();
-            foreach (PackedFileIndexData file in metaData.fileList) {
-                if (file.FilePath.StartsWith(path))
+            List<PackedFileIndexData> result = new();
+            foreach (PackedFileIndexData file in MetaData.FileList) {
+                if (file.FilePath.StartsWith(p_Path))
                     result.Add(file);
             }
             return result;
         }
 
         // ---------------------------------------------------------------------------
-        
+
         // Add
-        private void AddDirectory(string p_externalPath, string p_packedPath)
+        private void AddDirectory(string p_ExternalPath, string p_PackedPath)
         {
-            string externalPath = p_externalPath.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
-            string packedPath = p_packedPath.TrimEnd('/') + "/";
+            string externalPath = p_ExternalPath.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
+            string packedPath = p_PackedPath.TrimEnd('/') + "/";
             if (packedPath == "/")
                 packedPath = "";
 
             foreach (string file in Directory.EnumerateFiles(externalPath, "*", SearchOption.AllDirectories)) {
-                string packedFilePath = packedPath + file.Substring(externalPath.Length);
+                string packedFilePath = string.Concat(packedPath, file.AsSpan(externalPath.Length));
                 AddFile(file, packedFilePath);
             }
         }
-        private void AddFile(string p_externalPath, string p_packedPath)
+        private void AddFile(string p_ExternalPath, string p_PackedPath)
         {
-            FileInfo newFile = new FileInfo(p_externalPath);
+            FileInfo newFile = new(p_ExternalPath);
 
             if (newFile.Length > uint.MaxValue)
-                throw new InvalidDataException($"Unable to add file {p_externalPath}: file size is too big");
+                throw new InvalidDataException($"Unable to add file {p_ExternalPath}: file size is too big");
 
-            string packedPath = p_packedPath;
+            string packedPath = p_PackedPath;
             if (packedPath.Length == 0)
-                packedPath = Path.GetFileName(p_externalPath);
+                packedPath = Path.GetFileName(p_ExternalPath);
 
-            if (metaData.fileByPath.ContainsKey(packedPath))
+            if (MetaData.FileByPath.ContainsKey(packedPath))
                 RemoveFile(packedPath);
 
-            PackedFileIndexData newFileIndexData = new PackedFileIndexData(p_externalPath, packedPath, (uint)newFile.Length);
-            metaData.fileList.Add(newFileIndexData);
-            metaData.fileByPath.Add(packedPath, newFileIndexData);
+            PackedFileIndexData newFileIndexData = new(p_ExternalPath, packedPath, (uint)newFile.Length);
+            MetaData.FileList.Add(newFileIndexData);
+            MetaData.FileByPath.Add(packedPath, newFileIndexData);
         }
-        
-        // Rename
-        private void RenameDirectory(string p_oldPath, string p_newPath)
-        {
-            if (p_oldPath == "/")
-                p_oldPath = "";
 
-            List<PackedFileIndexData> fileList = GetFolderContent(p_oldPath);
+        // Rename
+        private void RenameDirectory(string p_OldPath, string p_NewPath)
+        {
+            if (p_OldPath == "/")
+                p_OldPath = "";
+
+            List<PackedFileIndexData> fileList = GetFolderContent(p_OldPath);
             if (fileList.Count == 0)
-                throw new ArgumentException($"Unable to rename {p_oldPath}: folder does not exists in {fileName}");
+                throw new ArgumentException($"Unable to rename {p_OldPath}: folder does not exists in {FileName}");
 
             foreach (PackedFileIndexData file in fileList)
-                RenameFile(file.FilePath, p_newPath + file.FilePath.Substring(p_oldPath.Length));
+                RenameFile(file.FilePath, string.Concat(p_NewPath, file.FilePath.AsSpan(p_OldPath.Length)));
         }
-        private void RenameFile(string p_oldFileName, string p_newFileName)
+        private void RenameFile(string p_OldFileName, string p_NewFileName)
         {
-            if (!metaData.fileByPath.ContainsKey(p_oldFileName))
-                throw new ArgumentException($"Unable to reanme {p_oldFileName}: file does not exists in {fileName}");
+            if (!MetaData.FileByPath.ContainsKey(p_OldFileName))
+                throw new ArgumentException($"Unable to reanme {p_OldFileName}: file does not exists in {FileName}");
 
-            PackedFileIndexData fileMetaData = metaData.fileByPath[p_oldFileName];
-            fileMetaData.FilePath = p_newFileName;
-            metaData.fileByPath.Remove(p_oldFileName);
-            metaData.fileByPath.Add(p_newFileName, fileMetaData);
+            PackedFileIndexData fileMetaData = MetaData.FileByPath[p_OldFileName];
+            fileMetaData.FilePath = p_NewFileName;
+            MetaData.FileByPath.Remove(p_OldFileName);
+            MetaData.FileByPath.Add(p_NewFileName, fileMetaData);
         }
-        
+
         // Remove
         private void RemoveDirectory(string p_Name)
         {
@@ -213,60 +213,60 @@ namespace ch.romibi.Scrap.Packed.PackerLib
 
             List<PackedFileIndexData> fileList = GetFolderContent(p_Name);
             if (fileList.Count == 0)
-                throw new ArgumentException($"Unable to remove {p_Name}: folder does not exists in {fileName}");
+                throw new ArgumentException($"Unable to remove {p_Name}: folder does not exists in {FileName}");
 
             foreach (PackedFileIndexData file in fileList)
                 RemoveFile(file.FilePath);
         }
         private void RemoveFile(string p_Name)
         {
-            if (!metaData.fileByPath.ContainsKey(p_Name))
-                throw new ArgumentException($"Unable to remove {p_Name}: file does not exists in {fileName}");
+            if (!MetaData.FileByPath.ContainsKey(p_Name))
+                throw new ArgumentException($"Unable to remove {p_Name}: file does not exists in {FileName}");
 
-            PackedFileIndexData oldFile = metaData.fileByPath[p_Name];
-            metaData.fileList.Remove(oldFile);
-            metaData.fileByPath.Remove(p_Name);
+            PackedFileIndexData oldFile = MetaData.FileByPath[p_Name];
+            MetaData.FileList.Remove(oldFile);
+            MetaData.FileByPath.Remove(p_Name);
         }
-        
-        // Extract
-        private void ExtractDirectory(string p_packedPath, string p_destinationPath)
-        {
-            List<PackedFileIndexData> fileList = GetFolderContent(p_packedPath);
-            if (fileList.Count == 0)
-                throw new ArgumentException($"Unable to extract {p_packedPath}: folder does not exists in {fileName}");
 
-            string destinationPath = p_destinationPath.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
-            FileStream fsPacked = new FileStream(fileName, FileMode.Open);
+        // Extract
+        private void ExtractDirectory(string p_PackedPath, string p_DestinationPath)
+        {
+            List<PackedFileIndexData> fileList = GetFolderContent(p_PackedPath);
+            if (fileList.Count == 0)
+                throw new ArgumentException($"Unable to extract {p_PackedPath}: folder does not exists in {FileName}");
+
+            string destinationPath = p_DestinationPath.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
+            FileStream fsPacked = new(FileName, FileMode.Open);
             try {
                 foreach (PackedFileIndexData file in fileList)
-                    ExtractFile(file.FilePath, destinationPath + file.FilePath.Substring(p_packedPath.Length), fsPacked);
+                    ExtractFile(file.FilePath, string.Concat(destinationPath, file.FilePath.AsSpan(p_PackedPath.Length)), fsPacked);
             }
             finally {
                 fsPacked.Close();
             }
         }
-        private void ExtractFile(string p_packedPath, string p_destinationPath, FileStream p_PackedFileStream = null)
+        private void ExtractFile(string p_PackedPath, string p_DestinationPath, FileStream p_PackedFileStream = null)
         {
-            if (!metaData.fileByPath.ContainsKey(p_packedPath))
-                throw new ArgumentException($"Unable to extract {p_packedPath}: file does not exists in {fileName}");
+            if (!MetaData.FileByPath.ContainsKey(p_PackedPath))
+                throw new ArgumentException($"Unable to extract {p_PackedPath}: file does not exists in {FileName}");
 
-            PackedFileIndexData fileMetaData = metaData.fileByPath[p_packedPath];
+            PackedFileIndexData fileMetaData = MetaData.FileByPath[p_PackedPath];
 
-            if (File.Exists(p_destinationPath))
-                MakeBackup(p_destinationPath, true);
+            if (File.Exists(p_DestinationPath))
+                MakeBackup(p_DestinationPath, true);
 
             // If user specified destination path as directory filename needs to be added
-            if (p_destinationPath.EndsWith(Path.DirectorySeparatorChar)) {
-                string[] path = p_packedPath.Split('/');
-                p_destinationPath = p_destinationPath + path[path.Length - 1];
+            if (p_DestinationPath.EndsWith(Path.DirectorySeparatorChar)) {
+                string[] path = p_PackedPath.Split('/');
+                p_DestinationPath += path[^1];
             }
 
             FileStream fsPacked = p_PackedFileStream;
             if (fsPacked == null)
-                fsPacked = new FileStream(fileName, FileMode.Open);
+                fsPacked = new FileStream(FileName, FileMode.Open);
 
             try {
-                FileStream fsExtractFile = TryMakeFile(p_destinationPath);
+                FileStream fsExtractFile = TryMakeFile(p_DestinationPath);
                 try {
                     byte[] readBytes = new byte[fileMetaData.FileSize];
 
@@ -275,67 +275,66 @@ namespace ch.romibi.Scrap.Packed.PackerLib
 
                     fsExtractFile.Write(readBytes);
                 }
-                catch (Exception ex) {
-                    if (backups.ContainsKey(p_destinationPath))
-                        RestoreBackup(p_destinationPath);
-                    throw ex;
+                catch {
+                    if (Backups.ContainsKey(p_DestinationPath))
+                        RestoreBackup(p_DestinationPath);
+                    throw;
                 }
                 finally {
                     fsExtractFile.Close();
                 }
             }
-            catch (Exception ex) {
-                if (backups.ContainsKey(p_destinationPath))
-                    RestoreBackup(p_destinationPath);
-                throw ex;
+            catch {
+                if (Backups.ContainsKey(p_DestinationPath))
+                    RestoreBackup(p_DestinationPath);
+                throw;
             }
             finally {
                 if (p_PackedFileStream == null)
                     fsPacked.Close();
             }
-            if (backups.ContainsKey(p_destinationPath))
-                DeleteBackup(p_destinationPath);
+            if (Backups.ContainsKey(p_DestinationPath))
+                DeleteBackup(p_DestinationPath);
         }
-        
+
         // Packed data reading
         private void ReadPackedMetaData()
         {
-            metaData = new PackedMetaData {
-                fileList = new List<PackedFileIndexData>(),
-                fileByPath = new Dictionary<string, PackedFileIndexData>()
+            MetaData = new PackedMetaData {
+                FileList = new List<PackedFileIndexData>(),
+                FileByPath = new Dictionary<string, PackedFileIndexData>()
             };
 
-            FileStream fsPacked = new FileStream(fileName, FileMode.Open);
+            FileStream fsPacked = new(FileName, FileMode.Open);
             try {
-
                 byte[] readBytes = new byte[4];
 
                 // read file header
                 fsPacked.Read(readBytes);
                 string readFileHeader = System.Text.Encoding.Default.GetString(readBytes);
 
-                if (readFileHeader != PackedMetaData.fileHeader) {
-                    throw new InvalidDataException($"Unable to open '{Path.GetFullPath(fileName)}': unsupported file type.");
+                if (readFileHeader != PackedMetaData.FileHeader) {
+                    throw new InvalidDataException($"Unable to open '{Path.GetFullPath(FileName)}': unsupported file type.");
                 }
 
                 // read version
                 fsPacked.Read(readBytes);
-                metaData.packedVersion = BitConverter.ToUInt32(readBytes);
+                MetaData.PackedVersion = BitConverter.ToUInt32(readBytes);
 
                 // read number of files
                 fsPacked.Read(readBytes);
                 uint numFiles = BitConverter.ToUInt32(readBytes);
                 for (int i = 0; i < numFiles; i++) {
                     PackedFileIndexData fileMetaData = ReadFileMetaData(fsPacked);
-                    metaData.fileList.Add(fileMetaData);
-                    metaData.fileByPath.Add(fileMetaData.FilePath, fileMetaData);
+                    MetaData.FileList.Add(fileMetaData);
+                    MetaData.FileByPath.Add(fileMetaData.FilePath, fileMetaData);
                 }
             }
             finally {
                 fsPacked.Close();
             }
         }
-        private PackedFileIndexData ReadFileMetaData(FileStream p_fsPacked)
+        private static PackedFileIndexData ReadFileMetaData(FileStream p_FsPacked)
         {
             string fileName;
             uint fileSize;
@@ -343,73 +342,72 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             byte[] readByte = new byte[4];
 
             // Read file name length
-            p_fsPacked.Read(readByte);
+            p_FsPacked.Read(readByte);
             uint fileNameLength = BitConverter.ToUInt32(readByte);
 
             // read file name
             byte[] fileNameBytes = new byte[fileNameLength];
-            p_fsPacked.Read(fileNameBytes);
+            p_FsPacked.Read(fileNameBytes);
 
             fileName = System.Text.Encoding.Default.GetString(fileNameBytes);
 
             // read file size
-            p_fsPacked.Read(readByte);
+            p_FsPacked.Read(readByte);
             fileSize = BitConverter.ToUInt32(readByte);
 
             // read file offset
-            p_fsPacked.Read(readByte);
+            p_FsPacked.Read(readByte);
             fileOffset = BitConverter.ToUInt32(readByte);
 
             return new PackedFileIndexData(fileName, fileSize, fileOffset);
         }
-       
+
         // Packed data writing 
-        private void CreateNewFile(FileStream fsPacked)
+        private static void CreateNewFile(FileStream p_FsPacked)
         {
             try {
-                byte[] fileHeader = System.Text.Encoding.Default.GetBytes(PackedMetaData.fileHeader);
+                byte[] fileHeader = System.Text.Encoding.Default.GetBytes(PackedMetaData.FileHeader);
                 byte[] nullBytes = new byte[8];
 
-                fsPacked.Write(fileHeader);
-                fsPacked.Write(nullBytes);
+                p_FsPacked.Write(fileHeader);
+                p_FsPacked.Write(nullBytes);
             }
             finally {
-                fsPacked.Close();
+                p_FsPacked.Close();
             }
         }
-        private void WriteFileMetaData(FileStream p_fsPackedNew)
+        private void WriteFileMetaData(FileStream p_FsPackedNew)
         {
-            foreach (PackedFileIndexData fileIndexEntry in metaData.fileList) {
+            foreach (PackedFileIndexData fileIndexEntry in MetaData.FileList) {
                 // write the filepath length
-                p_fsPackedNew.Write(BitConverter.GetBytes((uint)fileIndexEntry.FilePath.Length));
+                p_FsPackedNew.Write(BitConverter.GetBytes((uint)fileIndexEntry.FilePath.Length));
 
                 // write the filepath
-                byte[] writeBytes = new byte[fileIndexEntry.FilePath.Length];
-                writeBytes = System.Text.Encoding.Default.GetBytes(fileIndexEntry.FilePath);
-                p_fsPackedNew.Write(writeBytes);
+                byte[] writeBytes = System.Text.Encoding.Default.GetBytes(fileIndexEntry.FilePath);
+                p_FsPackedNew.Write(writeBytes);
 
                 // write the filesize
-                p_fsPackedNew.Write(BitConverter.GetBytes(fileIndexEntry.FileSize));
+                p_FsPackedNew.Write(BitConverter.GetBytes(fileIndexEntry.FileSize));
 
                 // write the file offset
-                p_fsPackedNew.Write(BitConverter.GetBytes(fileIndexEntry.Offset));
+                p_FsPackedNew.Write(BitConverter.GetBytes(fileIndexEntry.Offset));
             }
         }
-        private void WriteFileData(FileStream p_fsPackedNew)
+        private void WriteFileData(FileStream p_FsPackedNew)
         {
             FileStream fsPackedOrig = null;
             try {
-                foreach (PackedFileIndexData file in metaData.fileList) {
+                foreach (PackedFileIndexData file in MetaData.FileList) {
                     byte[] readBytes = new byte[file.FileSize];
                     if (file.UseExternalData)
                         ReadExternalFile(readBytes, file);
                     else {
                         if (fsPackedOrig == null)
-                            fsPackedOrig = new FileStream(fileName, FileMode.Open);
+                            fsPackedOrig = new FileStream(FileName, FileMode.Open);
                         fsPackedOrig.Seek(file.OriginalOffset, SeekOrigin.Begin);
                         fsPackedOrig.Read(readBytes, 0, (int)file.FileSize);
                     }
-                    p_fsPackedNew.Write(readBytes);
+                    p_FsPackedNew.Write(readBytes);
                 }
             }
             finally {
@@ -417,46 +415,46 @@ namespace ch.romibi.Scrap.Packed.PackerLib
                     fsPackedOrig.Close();
             }
         }
-        
-        // External files helpers
-        private FileStream TryMakeFile(string outputPath)
-        {
-            Debug.Assert(!outputPath.EndsWith(Path.DirectorySeparatorChar), "Output path cannot be only folder name.");
 
-            string dirName = Path.GetDirectoryName(outputPath);
+        // External files helpers
+        private static FileStream TryMakeFile(string p_OutputPath)
+        {
+            Debug.Assert(!p_OutputPath.EndsWith(Path.DirectorySeparatorChar), "Output path cannot be only folder name.");
+
+            string dirName = Path.GetDirectoryName(p_OutputPath);
             if (dirName == null)
-                throw new IOException($"Unable to create file {outputPath}: unexpected error.");
+                throw new IOException($"Unable to create file {p_OutputPath}: unexpected error.");
 
             else if (dirName != "") // if dirName is not the same dir as the working dir.
                 Directory.CreateDirectory(dirName);
 
-            return new FileStream(outputPath, FileMode.Create);
+            return new FileStream(p_OutputPath, FileMode.Create);
         }
-        private void ReadExternalFile(byte[] p_readByteBuffer, PackedFileIndexData fileIndexData)
+        private static void ReadExternalFile(byte[] p_ReadByteBuffer, PackedFileIndexData p_FileIndexData)
         {
-            FileStream externalFileStream = new FileStream(fileIndexData.ExternalFilePath, FileMode.Open);
+            FileStream externalFileStream = new(p_FileIndexData.ExternalFilePath, FileMode.Open);
             try {
-                externalFileStream.Seek(fileIndexData.OriginalOffset, SeekOrigin.Begin);
-                externalFileStream.Read(p_readByteBuffer, 0, (int)fileIndexData.FileSize);
+                externalFileStream.Seek(p_FileIndexData.OriginalOffset, SeekOrigin.Begin);
+                externalFileStream.Read(p_ReadByteBuffer, 0, (int)p_FileIndexData.FileSize);
             }
             finally {
                 externalFileStream.Close();
             }
         }
-        
+
         // Backup functionality
-        private readonly Dictionary<string, string> backups = new Dictionary<string, string>();
-        private void MakeBackup(string filePath, bool temp = false)
+        private readonly Dictionary<string, string> Backups = new();
+        private void MakeBackup(string p_FilePath, bool p_Temp = false)
         {
             // todo: test of this
-            if (!File.Exists(filePath))
-                throw new FileNotFoundException($"Unable to backup '{filePath}': file does not exists");
+            if (!File.Exists(p_FilePath))
+                throw new FileNotFoundException($"Unable to backup '{p_FilePath}': file does not exists");
 
-            string backupPath = filePath;
-            if (temp) {
+            string backupPath = p_FilePath;
+            if (p_Temp) {
                 string randomId;
                 do {
-                    randomId = $".{Guid.NewGuid().ToString().Substring(0, 5)}.tmp";
+                    randomId = $".{Guid.NewGuid().ToString()[..5]}.tmp";
                 }
                 while (File.Exists(backupPath + randomId + ".bak"));
                 backupPath += randomId;
@@ -464,46 +462,46 @@ namespace ch.romibi.Scrap.Packed.PackerLib
 
             backupPath += ".bak";
 
-            if (filePath == fileName)
-                fileName = backupPath;
+            if (p_FilePath == FileName)
+                FileName = backupPath;
 
-            backups.Add(filePath, backupPath);
-            File.Move(filePath, backupPath, true);
+            Backups.Add(p_FilePath, backupPath);
+            File.Move(p_FilePath, backupPath, true);
         }
-        private void RestoreBackup(string filePath)
+        private void RestoreBackup(string p_FilePath)
         {
             // todo: test of this
-            if (!backups.ContainsKey(filePath))
-                throw new FileNotFoundException($"File '{filePath}' does not have any backups to restore");
+            if (!Backups.ContainsKey(p_FilePath))
+                throw new FileNotFoundException($"File '{p_FilePath}' does not have any backups to restore");
 
-            string backupPath = backups[filePath];
+            string backupPath = Backups[p_FilePath];
 
             if (!File.Exists(backupPath))
-                throw new FileNotFoundException($"File '{filePath}' was previously backed up to `{backupPath}` but that backup does not exist anymore.\r\n" +
+                throw new FileNotFoundException($"File '{p_FilePath}' was previously backed up to `{backupPath}` but that backup does not exist anymore.\r\n" +
                     $"Is there a bug somwhere in `MakeBackup()` or was the file deleted externally?"); // unreachble?
 
-            if (filePath == fileName)
-                fileName = backupPath.Replace(".bak", "");
+            if (p_FilePath == FileName)
+                FileName = backupPath.Replace(".bak", "");
 
-            backups.Remove(filePath);
-            File.Move(backupPath, filePath, true);
+            Backups.Remove(p_FilePath);
+            File.Move(backupPath, p_FilePath, true);
         }
-        private void DeleteBackup(string filePath)
+        private void DeleteBackup(string p_FilePath)
         {
             // todo: test of this
-            if (!backups.ContainsKey(filePath))
-                throw new FileNotFoundException($"File '{filePath}' does not have any backups to delete");
+            if (!Backups.ContainsKey(p_FilePath))
+                throw new FileNotFoundException($"File '{p_FilePath}' does not have any backups to delete");
 
-            string backupPath = backups[filePath];
+            string backupPath = Backups[p_FilePath];
 
             if (!File.Exists(backupPath))
-                throw new FileNotFoundException($"File '{filePath}' have a record of backup `{backupPath}` but it is not exists as file.\r\n" +
+                throw new FileNotFoundException($"File '{p_FilePath}' have a record of backup `{backupPath}` but it is not exists as file.\r\n" +
                     $"There is a bug somwhere in `MakeBackup()`"); // unreachble
 
-            if (filePath == fileName)
-                fileName = backupPath.Replace(".bak", "");
+            if (p_FilePath == FileName)
+                FileName = backupPath.Replace(".bak", "");
 
-            backups.Remove(filePath);
+            Backups.Remove(p_FilePath);
             File.Delete(backupPath);
         }
     }

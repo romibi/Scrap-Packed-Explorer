@@ -42,10 +42,9 @@ People *love* thorough bug reports. I'm not even kidding.
 
 ### Naming Conventions
 * Every class and method should be named using **PascalCase** convention (example: `void ReadFile()`)
-* Every method argument should be named using **camelCase** convetion with prefix _p__ (example: `string p_filePath`)
+* Every method argument should be named using **PascalCase** convetion with prefix _p__ (example: `string p_FilePath`)
 * Every variable should be named using **camelCase** convention (example: `int maxLength`)
 * Every application's command line argument should be named using **camelCase** convention (example: `--keepBackup`)
-<!-- TODO: change args to kebab-case? (--keep-backup) -->
 
 ### Brackets and indentation
 Indentation must be done with 4 spaces. Lines should be ended with `\r\n` (Windows style)
@@ -81,7 +80,6 @@ Methods and properties in every class should be in this order:
 - private (same sub order as public)
 
 All mehods should be grouped by their functuanality. 
-<!-- TODO: XML documentation? -->
 
 **Example:**
 ```c#
@@ -92,17 +90,17 @@ Class SomeClass
     SomeClass() {...}
 
     // Files group
-    public File OpenFile(string p_filePath) {...}
-    public void WriteFile(File p_file, string p_message) {...}
-    public string ReadFile(File p_file) {...}
+    public File OpenFile(string p_FilePath) {...}
+    public void WriteFile(File p_File, string p_Message) {...}
+    public string ReadFile(File p_File) {...}
 
     // Console
-    public void PrintMessage(string p_message) {...}
+    public void PrintMessage(string p_Message) {...}
     
     //-----------------------------------------------------
 
     // Helper functions
-    private void GetFileProperties(File p_file) {...}
+    private void GetFileProperties(File p_File) {...}
     // ......Private methods and properties........
     // ............................................
 }
