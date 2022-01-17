@@ -89,9 +89,8 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
     [Flags]
     public enum OutputStyles
     {
-        None = 0x0,
         List = 0x1,
         Tree = 0x2,
-        Name = 0x3
+        Name = 0x4
     }
 }
