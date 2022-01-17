@@ -6,13 +6,13 @@ namespace ch.romibi.Scrap.Packed.PackerLib.DataTypes
 {
     public class PackedMetaData
     {
-        private const UInt32 DATA_LENGTH_STATIC = 12; // 4 bytes each: "PFBK", version (all 0s), number of files
-
+        // Fields
         public const string fileHeader = "BFPK";
         public UInt32 packedVersion { get; set; } // always 0 (not sure if really a version number)
         public List<PackedFileIndexData> fileList { get; set; }
         public Dictionary<string, PackedFileIndexData> fileByPath { get; set; }
 
+        // Methods
         public void RecalcFileOffsets()
         {
             UInt32 currentOffset = CalculateFirstFileOffset();
@@ -26,6 +26,10 @@ namespace ch.romibi.Scrap.Packed.PackerLib.DataTypes
             }
         }
 
+        //-------------------------------------------------------
+
+        // Why this is private? 
+        private const UInt32 DATA_LENGTH_STATIC = 12; // 4 bytes each: "PFBK", version (all 0s), number of files
         private UInt32 CalculateFirstFileOffset()
         {
             UInt32 result = DATA_LENGTH_STATIC;
@@ -39,10 +43,24 @@ namespace ch.romibi.Scrap.Packed.PackerLib.DataTypes
 
     public class PackedFileIndexData
     {
-        private const UInt32 DATA_LENGTH_STATIC = 12; // 4 bytes each: path length, file size, offset
+        // Fields
+        public string FilePath { get; set; }
+        public string OriginalFilePath { get; private set; }
+        public UInt32 FileSize { get; set; }
+        public UInt32 OriginalOffset { get; private set; }
+        public UInt32 Offset { get; set; }
+        public UInt32 IndexEntrySize {
+            get {
+                return (uint)(DATA_LENGTH_STATIC + FilePath.Length);
+            }
+        }
+        public bool UseExternalData { get {
+                return ExternalFilePath.Length != 0;
+        } }
+        public string ExternalFilePath { get; set; }
 
+        // Constructors
         public PackedFileIndexData(string p_FilePath, UInt32 p_FileSize, UInt32 p_Offset) : this("", p_FilePath, p_FileSize, p_Offset) { }
-
         public PackedFileIndexData(string p_ExternalFilePath, string p_FilePath, UInt32 p_FileSize, UInt32 p_Offset = 0)
         {
             FilePath = p_FilePath;
@@ -53,22 +71,9 @@ namespace ch.romibi.Scrap.Packed.PackerLib.DataTypes
             ExternalFilePath = p_ExternalFilePath;
         }
 
-        public string FilePath { get; set; }
-        public string OriginalFilePath { get; private set; }
-        public UInt32 FileSize { get; set; }
-        public UInt32 OriginalOffset { get; private set; }
-        public UInt32 Offset { get; set; }
+        //-------------------------------------------------------
 
-        public bool UseExternalData { get {
-                return ExternalFilePath.Length != 0;
-        } }
-
-        public string ExternalFilePath { get; set; }
-
-        public UInt32 IndexEntrySize {
-            get {
-                return (uint)(DATA_LENGTH_STATIC + FilePath.Length);
-            }
-        }
+        // Why this is private?
+        private const UInt32 DATA_LENGTH_STATIC = 12; // 4 bytes each: path length, file size, offset
     }
 }
