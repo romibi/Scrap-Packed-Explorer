@@ -31,8 +31,9 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
         }
 
 
+        // Test cases
         [TestMethod]
-            public void TestRunAddFile()
+        public void TestRunAddFile()
         {
             Directory.CreateDirectory(@"TestResults\TestAdd");
             File.Copy(@"TestData\empty.packed", @"TestResults\TestAdd\packedFile.packed", true);
@@ -624,6 +625,8 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
             // todo: find a way to test MakeBackup(), RestoreBackup() and DeleteBackup()
         }
 
+        
+        // Comapators
         private void CheckRunCompareFile(string[] p_Args, string p_ExpectedFilePath, string p_ActualFilePath, string p_Message = "", int p_ReturnCode = 0)
         {
             var cliApp = new CliApp();
@@ -676,7 +679,9 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
             Assert.AreEqual(0, returnValue, p_Message + ": wrong return value");
             Assert.IsTrue(!File.Exists(p_UnexpectedOutput), p_Message + ": file exists but should not");
         }
+        
 
+        // Asserts
         private void AssertFilesEqual(string p_FileExpected, string p_FileActual, string p_Message = "")
         {
             Assert.IsTrue(FilesEqual(p_FileExpected, p_FileActual), p_Message);
