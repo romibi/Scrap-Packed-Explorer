@@ -100,7 +100,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
         {
             try {
                 // TODO: sanitize input
-                ScrapPackedFile packedFile = new ScrapPackedFile(options.packedFile); 
+                ScrapPackedFile packedFile = new ScrapPackedFile(options.packedFile, true); 
                 packedFile.Add(options.sourcePath, options.packedPath);
                 packedFile.SaveToFile(options.outputPackedFile);
             }
