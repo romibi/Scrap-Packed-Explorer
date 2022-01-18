@@ -230,7 +230,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
                     fsPacked.Read(readBytes, 0, (Int32)fileData.FileSize);
 
                     if (p_Options.AsHex) 
-                        PrintAsHex(readBytes);
+                        PrintAsHex(readBytes, p_Options.ByteFormat, p_Options.LineFormat, p_Options.BytesPerGroup, p_Options.GroupsPerRow, p_Options.NoPrintLinesNum);
                     else {
                         String fileContnet = System.Text.Encoding.Default.GetString(readBytes);
                         Console.WriteLine(fileContnet);
@@ -281,17 +281,17 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
             return result;
         }
 
-        private static void PrintAsHex(Byte[] p_Bytes, String p_Format = "X", UInt16 p_BytesPerGroup = 2, UInt16 p_BytesPerLine = 16, Boolean p_PrintLinesNum = true) {
+        private static void PrintAsHex(Byte[] p_Bytes, String p_ByteFormat = "X2", String p_LineFormat = "X8", UInt16 p_BytesPerGroup = 2, UInt16 p_GroupsPerLine = 16, Boolean p_NoPrintLinesNum = false) {
             for (UInt32 i = 0; i < p_Bytes.Length; i++) {
-                if (p_PrintLinesNum && i % p_BytesPerLine == 0)
-                    Console.Write(i.ToString(p_Format + "8") + " ");
+                if (!p_NoPrintLinesNum && i % p_GroupsPerLine == 0)
+                    Console.Write(i.ToString(p_LineFormat) + " ");
 
-                Console.Write(p_Bytes[i].ToString(p_Format + p_BytesPerGroup));
+                Console.Write(p_Bytes[i].ToString(p_ByteFormat));
 
                 if ((i + 1) % p_BytesPerGroup == 0)
                     Console.Write(" ");
 
-                if ((i + 1) % p_BytesPerLine == 0)
+                if ((i + 1) % p_GroupsPerLine == 0)
                     Console.Write("\r\n");
             }
             Console.Write("\r\n");

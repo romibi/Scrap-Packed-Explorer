@@ -98,6 +98,22 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
 
         [Option('x', "asHex", Required = false, Default = false, HelpText = "Display file content as hex dump")]
         public Boolean AsHex { get; set; }
+
+        [Option('f', "byteFormat", Required = false, Default = "X2", HelpText = "Format of printed bytes")]
+        public String ByteFormat { get; set; }
+
+        [Option('l', "LineFormat", Required = false, Default = "X8", HelpText = "Format of lines numbers")]
+        public String LineFormat { get; set; }
+
+        [Option('g', "bytesPerGroup", Required = false, Default = (UInt16)2, HelpText = "How much bytes should print before printing space")]
+        public UInt16 BytesPerGroup { get; set; }
+
+        [Option('r', "groupsPerRow", Required = false, Default = (UInt16)16, HelpText = "How much gruops should print in one line")]
+        public UInt16 GroupsPerRow { get; set; }
+
+        [Option('p', "noPrintLinesNumbers", Required = false, Default = false, HelpText = "Do not print lines numbers")]
+        public Boolean NoPrintLinesNum { get; set; }
+
     }
 
     [Flags]
