@@ -10,7 +10,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
 {
     public class CliApp
     {
-        public static int Run(string[] p_Args)
+        public static Int32 Run(String[] p_Args)
         {
             Parser parser = new(p_With => {
                 p_With.HelpWriter = null;
@@ -19,7 +19,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
             });
 
             // Default parsing with verb as first arg
-            ParserResult<object> result = parser.ParseArguments<BaseOptions, AddOptions, RemoveOptions, RenameOptions, ExtractOptions, ListOptions>(p_Args);
+            ParserResult<Object> result = parser.ParseArguments<BaseOptions, AddOptions, RemoveOptions, RenameOptions, ExtractOptions, ListOptions>(p_Args);
             return result.MapResult(
                 (AddOptions p_Options) => RunAdd(p_Options),
                 (RemoveOptions p_Options) => RunRemove(p_Options),
@@ -36,7 +36,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
         }
 
         // Main functionality 
-        private static int RunAdd(AddOptions p_Options)
+        private static Int32 RunAdd(AddOptions p_Options)
         {
             try {
                 // TODO: sanitize input
@@ -51,7 +51,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
 
             return 0;
         }
-        private static int RunRemove(RemoveOptions p_Options)
+        private static Int32 RunRemove(RemoveOptions p_Options)
         {
             try {
                 ScrapPackedFile packedFile = new(p_Options.PackedFile);
@@ -65,7 +65,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
 
             return 0;
         }
-        private static int RunRename(RenameOptions p_Options)
+        private static Int32 RunRename(RenameOptions p_Options)
         {
             try {
                 ScrapPackedFile packedFile = new(p_Options.PackedFile);
@@ -79,7 +79,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
 
             return 0;
         }
-        private static int RunExtract(ExtractOptions p_Options)
+        private static Int32 RunExtract(ExtractOptions p_Options)
         {
             try {
                 ScrapPackedFile packedFile = new(p_Options.PackedFile);
@@ -92,17 +92,17 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
 
             return 0;
         }
-        private static int RunList(ListOptions p_Options)
+        private static Int32 RunList(ListOptions p_Options)
         {
             try {
                 ScrapPackedFile packedFile = new(p_Options.PackedFile);
-                List<string> FileList = packedFile.GetFileNames();
+                List<String> FileList = packedFile.GetFileNames();
                 FileList.Sort();
 
                 if (FileList.Count == 0)
                     Console.WriteLine($"'{p_Options.PackedFile}' is empty.");
                 else {
-                    string query = p_Options.SearchString;
+                    String query = p_Options.SearchString;
                     if (!p_Options.IsRegex)
                         query = Regex.Escape(query);
 
@@ -115,15 +115,15 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
 
                     Regex rg = new(query);
 
-                    bool found = false;
-                    foreach (string File in FileList) {
+                    Boolean found = false;
+                    foreach (String File in FileList) {
                         OutputStyles Styles = p_Options.OutputStyle;
 
-                        string[] FileData = File.Split("\t");
-                        string FilePath = Path.GetDirectoryName(FileData[0]).Replace("\\", "/");
-                        string FileName = Path.GetFileName(FileData[0]);
-                        string FileSize = FileData[1];
-                        string FileOffset = FileData[2];
+                        String[] FileData = File.Split("\t");
+                        String FilePath = Path.GetDirectoryName(FileData[0]).Replace("\\", "/");
+                        String FileName = Path.GetFileName(FileData[0]);
+                        String FileSize = FileData[1];
+                        String FileOffset = FileData[2];
 
                         if (FilePath != "")
                             FilePath += "/";
@@ -132,7 +132,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
                             continue;
                         found = true;
 
-                        string Output = FileName;
+                        String Output = FileName;
 
                         if (Styles != OutputStyles.Name)
                             Output = FilePath + Output;
@@ -164,24 +164,24 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
             else
                 return 1;
         };
-        private static int ParseFirstArgNotVerb(string[] p_Args, Parser p_Parser)
+        private static Int32 ParseFirstArgNotVerb(String[] p_Args, Parser p_Parser)
         {
             // if no verb specified print help message
             if (p_Args.Length == 1) {
-                List<string> _args = new(p_Args) {
+                List<String> _args = new(p_Args) {
                     "help"
                 };
                 p_Args = _args.ToArray();
             }
 
             // Just make verb firts lol
-            if (!new List<string>() { "help", "--help", "version", "--version" }.Contains(p_Args[0])) {
-                string temp = p_Args[0];
+            if (!new List<String>() { "help", "--help", "version", "--version" }.Contains(p_Args[0])) {
+                String temp = p_Args[0];
                 p_Args[0] = p_Args[1];
                 p_Args[1] = temp;
             }
 
-            ParserResult<object> result = p_Parser.ParseArguments<BaseOptions, AddOptions, RemoveOptions, RenameOptions, ExtractOptions, ListOptions>(p_Args);
+            ParserResult<Object> result = p_Parser.ParseArguments<BaseOptions, AddOptions, RemoveOptions, RenameOptions, ExtractOptions, ListOptions>(p_Args);
             return result.MapResult(
                 (AddOptions p_Options) => RunAdd(p_Options),
                 (RemoveOptions p_Options) => RunRemove(p_Options),
@@ -191,9 +191,9 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
                 p_Errors => DisplayHelp(result)
             );
         }
-        private static int DisplayHelp<T>(ParserResult<T> p_Result)
+        private static Int32 DisplayHelp<T>(ParserResult<T> p_Result)
         {
-            string usage = "USAGE: " +
+            String usage = "USAGE: " +
                 "\r\n  ScrapPackedExplorerCli.exe <path-to-packed-file> <subcommand> <options>\r\n" +
                 "EXAMPLE: " +
                 "\r\n  ScrapPackedExplorerCli.exe example.packed list -osq filename.txt -l tree";

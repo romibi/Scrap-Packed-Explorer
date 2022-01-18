@@ -1,90 +1,88 @@
 ﻿using CommandLine;
-using CommandLine.Text;
 using System;
-using System.Collections.Generic;
 
 namespace ch.romibi.Scrap.Packed.Explorer.Cli
 {
-    abstract class BaseOptions
+    internal abstract class BaseOptions
     {
         [Value(0, Required = true, MetaName = "Packed file", HelpText = "The .packed file to use as basis")]
-        public string PackedFile { get; set; }
+        public String PackedFile { get; set; }
     }
 
-    abstract class ModifyingOptions : BaseOptions
+    internal abstract class ModifyingOptions : BaseOptions
     {
         [Option('o', "outputPackedFile", Required = false, Default = "", HelpText = "Where to store the new .packed file. Modify input if not provided.")]
-        public string OutputPackedFile { get; set; }
+        public String OutputPackedFile { get; set; }
 
         [Option('k', "keepBackup", Required = false, Default = false, HelpText = "Keep the backup file that gets created during saving even after successful processing.")]
-        public bool KeepBackup { get; set; }
+        public Boolean KeepBackup { get; set; }
 
         [Option("overwriteOldBackup", Required = false, Default = false, HelpText = "Allow overwriting existing .bak files")]
-        public bool OverwriteOldBackup { get; set; }
+        public Boolean OverwriteOldBackup { get; set; }
     }
 
     [Verb("add", HelpText = "Add file to the container")]
-    class AddOptions : ModifyingOptions
+    internal class AddOptions : ModifyingOptions
     {
         [Option('s', "sourcePath", Required = true, HelpText = "What file or folder to add to the .packed file")]
-        public string SourcePath { get; set; }
+        public String SourcePath { get; set; }
 
         [Option('d', "packedPath", Required = false, Default = "", HelpText = "What path to put the source file(s) into")]
-        public string PackedPath { get; set; }
+        public String PackedPath { get; set; }
     }
 
     [Verb("remove", HelpText = "Remove a file from the container")]
-    class RemoveOptions : ModifyingOptions
+    internal class RemoveOptions : ModifyingOptions
     {
         [Option('d', "packedPath", Required = true, HelpText = "What path to remove from the container")]
-        public string PackedPath { get; set; }
+        public String PackedPath { get; set; }
     }
 
     [Verb("rename", HelpText = "rename a file or folder inside the container")]
-    class RenameOptions : ModifyingOptions
+    internal class RenameOptions : ModifyingOptions
     {
         [Option('s', "oldPackedPath", Required = true, Default = "/", HelpText = "What path to rename inside the container")]
-        public string OldPackedPath { get; set; }
+        public String OldPackedPath { get; set; }
 
         [Option('d', "newPackedPath", Required = true, HelpText = "The new path to use for the files to rename")]
-        public string NewPackedPath { get; set; }
+        public String NewPackedPath { get; set; }
     }
 
     [Verb("extract", HelpText = "Extract/unpack a file from the container")]
-    class ExtractOptions : BaseOptions
+    internal class ExtractOptions : BaseOptions
     {
         [Option('s', "packedPath", Required = false, Default = "", HelpText = "What path to extract from the container")]
-        public string PackedPath { get; set; }
+        public String PackedPath { get; set; }
 
         [Option('d', "destinationPath", Required = true, HelpText = "The path to extract the files from the container to")]
-        public string DestinationPath { get; set; }
+        public String DestinationPath { get; set; }
 
         // todo add overwrite options
     }
 
     [Verb("list", HelpText = "list or search files and folders in the container")]
-    class ListOptions : BaseOptions
+    internal class ListOptions : BaseOptions
     {
         [Option('l', "outputStyle", Required = false, Default = OutputStyles.List, HelpText = "Output list (default) or tree view")]
         public OutputStyles OutputStyle { get; set; }
 
         [Option('q', "searchString", Required = false, Default = "", HelpText = "A Search string to filter the output with")]
-        public string SearchString { get; set; }
+        public String SearchString { get; set; }
 
         [Option('r', "regex", Required = false, Default = false, HelpText = "Defines if the search string is a regular expression")]
-        public bool IsRegex { get; set; }
+        public Boolean IsRegex { get; set; }
 
         [Option('b', "matchBeginning", Required = false, Default = false, HelpText = "Apply search query only to beginnng of the files path. By default applies everywhere")]
-        public bool MatchBeginning { get; set; }
+        public Boolean MatchBeginning { get; set; }
 
         [Option('f', "matchFilename", Required = false, Default = false, HelpText = "Search only by files. By default search includes folders")]
-        public bool MatchFilename { get; set; }
+        public Boolean MatchFilename { get; set; }
 
         [Option('s', "showFileSize", Required = false, Default = false, HelpText = "Show files sizes")]
-        public bool ShowFileSize { get; set; }
+        public Boolean ShowFileSize { get; set; }
 
         [Option('o', "showFileOffset", Required = false, Default = false, HelpText = "Show files offsets")]
-        public bool ShowFileOffset { get; set; }
+        public Boolean ShowFileOffset { get; set; }
     }
 
     [Flags]
