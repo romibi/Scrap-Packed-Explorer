@@ -22,6 +22,22 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
         public bool overwriteOldBackup { get; set; }
     }
 
+    abstract class SearchOptions : BaseOptions {
+        [Option('q', "searchString", Required = false, Default = "", HelpText = "A Search string to filter the output with")]
+        public string searchString { get; set; }
+
+        [Option('r', "regex", Required = false, Default = false, HelpText = "Defines if the search string is a regular expression")]
+        public bool isRegex { get; set; }
+
+        // todo: come up with better description
+        // todo: change arguments style
+        [Option('b', "match-beginning", Required = false, Default = false, HelpText = "Apply search query only to beginnng of the files path. By default applies everywhere")]
+        public bool MatchBeginning { get; set; }
+
+        [Option('f', "match-filename", Required = false, Default = false, HelpText = "Search only by files. By default search includes folders")]
+        public bool MatchFilename { get; set; }
+    }
+
     [Verb("add", HelpText = "Add file to the archive")]
     class AddOptions : ModifyingOptions
     {
@@ -62,24 +78,10 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
     }
 
     [Verb("list", HelpText = "list or search files and folders in the archive")]
-    class ListOptions : BaseOptions
+    class ListOptions : SearchOptions
     {
         [Option('l', "outputStyle", Required = false, Default = OutputStyles.List, HelpText = "Output list (default) or tree view")]
         public OutputStyles outputStyle { get; set; }
-
-        [Option('q', "searchString", Required = false, Default = "", HelpText = "A Search string to filter the output with")]
-        public string searchString { get; set; }
-
-        [Option('r', "regex", Required = false, Default = false, HelpText = "Defines if the search string is a regular expression")]
-        public bool isRegex { get; set; }
-
-        // todo: come up with better description
-        // todo: change arguments style
-        [Option('b', "match-beginning", Required = false, Default = false, HelpText = "Apply search query only to beginnng of the files path. By default applies everywhere")]
-        public bool MatchBeginning { get; set; }
-
-        [Option('f', "match-filename", Required = false, Default = false, HelpText = "Search only by files. By default search includes folders")]
-        public bool MatchFilename { get; set; }
 
         // todo: change short arguments
         [Option('s', "show-file-size", Required = false, Default = false, HelpText = "Show files sizes")]
@@ -90,7 +92,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
     }
 
     [Verb("cat", HelpText = "Print content of file inside of container")]
-    class CatOptions : BaseOptions {
+    class CatOptions : SearchOptions {
         [Option('s', "packedPath", Required = true, Default = "", HelpText = "What file to print")]
         public String PackedPath { get; set; }
 
