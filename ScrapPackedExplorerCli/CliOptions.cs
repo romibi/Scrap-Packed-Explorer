@@ -89,6 +89,12 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
         public bool ShowFileOffset { get; set; }
     }
 
+    [Verb("cat", HelpText = "Print content of file inside of container")]
+    class CatOptions : BaseOptions {
+        [Option('s', "packedPath", Required = true, Default = "", HelpText = "What file to print")]
+        public string PackedPath { get; set; }
+    }
+
     [Flags]
     public enum OutputStyles
     {
