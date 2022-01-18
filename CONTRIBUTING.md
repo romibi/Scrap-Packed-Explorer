@@ -49,7 +49,7 @@ People *love* thorough bug reports. I'm not even kidding.
 ### Brackets and indentation
 Indentation must be done with 4 spaces. Lines should be ended with `\r\n` (Windows style)
 
-Brackets should **always** start on a new line. If brackets **can** be removed - they **should** be removed.
+Openig brackets should **always** start on a same line with keyword that opens a block. If brackets **can** be removed - they **should** be removed.
 
 `else`, `catch` and `finally` blocks should be on next line after closing bracket
 For control-flow blocks (`if`, `while`, `for`, etc.) the brackets containing the condition should be separated from keyword with a space.
