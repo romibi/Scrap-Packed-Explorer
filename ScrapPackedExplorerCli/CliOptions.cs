@@ -92,7 +92,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
     }
 
     [Verb("cat", HelpText = "Print content of file inside of container")]
-    class CatOptions : SearchOptions {
+    class CatOptions : BaseOptions {
         [Option('s', "packedPath", Required = true, Default = "", HelpText = "What file to print")]
         public String PackedPath { get; set; }
 
