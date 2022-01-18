@@ -229,14 +229,21 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
         private static Int32 RunCat(CatOptions p_Options) {
             try {
                 ScrapPackedFile packedFile = new(p_Options.packedFile);
-                PackedFileIndexData fileIndexData = packedFile.GetFileIndexDataForFile(p_Options.PackedPath);
+                PackedFileIndexData fileData = packedFile.GetFileIndexDataForFile(p_Options.PackedPath);
 
-                FileStream fsPacked = new FileStream(p_Options.packedFile, FileMode.Open);
+                FileStream fsPacked = new(p_Options.packedFile, FileMode.Open);
                 try {
-                    Byte[] readBytes = new byte[fileIndexData.FileSize];
-                    fsPacked.Seek(fileIndexData.OriginalOffset, SeekOrigin.Begin);
-                    fsPacked.Read(readBytes, 0, (int)fileIndexData.FileSize);   
-                    Console.WriteLine(System.Text.Encoding.Default.GetString(readBytes));
+                    Byte[] readBytes = new Byte[fileData.FileSize];
+
+                    fsPacked.Seek(fileData.OriginalOffset, SeekOrigin.Begin);
+                    fsPacked.Read(readBytes, 0, (Int32)fileData.FileSize);
+
+                    if (p_Options.AsHex) 
+                        PrintAsHex(readBytes);
+                    else {
+                        String fileContnet = System.Text.Encoding.Default.GetString(readBytes);
+                        Console.WriteLine(fileContnet);
+                    }
                 }
                 finally {
                     fsPacked.Close();
@@ -248,6 +255,22 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
             }
 
             return 0;
+        }
+
+        private static void PrintAsHex(Byte[] p_Bytes, String p_Format = "X", UInt16 p_BytesPerGroup = 2, UInt16 p_BytesPerLine = 16, Boolean p_PrintLinesNum = true) {
+            for (UInt32 i = 0; i < p_Bytes.Length; i++) {
+                if (p_PrintLinesNum && i % p_BytesPerLine == 0)
+                    Console.Write(i.ToString(p_Format + "8") + " ");
+
+                Console.Write(p_Bytes[i].ToString(p_Format + p_BytesPerGroup));
+
+                if ((i + 1) % p_BytesPerGroup == 0)
+                    Console.Write(" ");
+
+                if ((i + 1) % p_BytesPerLine == 0)
+                    Console.Write("\r\n");
+            }
+            Console.Write("\r\n");
         }
     }
 }
