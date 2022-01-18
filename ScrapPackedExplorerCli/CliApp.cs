@@ -1,6 +1,9 @@
 ﻿using ch.romibi.Scrap.Packed.PackerLib;
+using ch.romibi.Scrap.Packed.PackerLib.DataTypes;
 using CommandLine;
 using CommandLine.Text;
+using MS.WindowsAPICodePack.Internal;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,13 +22,14 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
             });
 
             // Default parsing with verb as first arg
-            var result = parser.ParseArguments<BaseOptions, AddOptions, RemoveOptions, RenameOptions, ExtractOptions, ListOptions>(args);
+            var result = parser.ParseArguments<BaseOptions, AddOptions, RemoveOptions, RenameOptions, ExtractOptions, ListOptions, CatOptions>(args);
             return result.MapResult(
                 (AddOptions     options) => RunAdd(options),
                 (RemoveOptions  options) => RunRemove(options),
                 (RenameOptions  options) => RunRename(options),
                 (ExtractOptions options) => RunExtract(options),
                 (ListOptions    options) => RunList(options),
+                (CatOptions     p_options) => RunCat(p_options),
                 errors => ParseFirstArgNotVerb(args, parser) // if first arg is not verb it is must be PackedPath
             );
         }
@@ -48,13 +52,14 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
                 args[1] = temp;
             }
 
-            var result = parser.ParseArguments<BaseOptions, AddOptions, RemoveOptions, RenameOptions, ExtractOptions, ListOptions>(args);
+            var result = parser.ParseArguments<BaseOptions, AddOptions, RemoveOptions, RenameOptions, ExtractOptions, ListOptions, CatOptions>(args);
             return result.MapResult(
                (AddOptions options) => RunAdd(options),
                (RemoveOptions options) => RunRemove(options),
                (RenameOptions options) => RunRename(options),
                (ExtractOptions options) => RunExtract(options),
                (ListOptions options) => RunList(options),
+               (CatOptions p_options) => RunCat(p_options),
                errors => DisplayHelp(result, errors)
            );
         }
@@ -219,6 +224,30 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
                 Console.Error.WriteLine($"Error: {ex.Message}");
                 return 1;
             }
+        }
+    
+        private static Int32 RunCat(CatOptions p_Options) {
+            try {
+                ScrapPackedFile packedFile = new(p_Options.packedFile);
+                PackedFileIndexData fileIndexData = packedFile.GetFileIndexDataForFile(p_Options.PackedPath);
+
+                FileStream fsPacked = new FileStream(p_Options.packedFile, FileMode.Open);
+                try {
+                    Byte[] readBytes = new byte[fileIndexData.FileSize];
+                    fsPacked.Seek(fileIndexData.OriginalOffset, SeekOrigin.Begin);
+                    fsPacked.Read(readBytes, 0, (int)fileIndexData.FileSize);   
+                    Console.WriteLine(System.Text.Encoding.Default.GetString(readBytes));
+                }
+                finally {
+                    fsPacked.Close();
+                }
+            }
+            catch (Exception ex) {
+                Console.Error.WriteLine($"Error: {ex.Message}");
+                return 1;
+            }
+
+            return 0;
         }
     }
 }
