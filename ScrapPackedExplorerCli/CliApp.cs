@@ -169,21 +169,12 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
                     Console.WriteLine($"'{options.packedFile}' is empty.");
                 else
                 {
-                    string query = options.searchString;
-                    if (!options.isRegex)
-                        query = Regex.Escape(query);
+                    List<String> SearchedList = Search(FileList, options.searchString, options.isRegex, options.MatchBeginning, options.MatchFilename);
 
-                    query = query.Replace("/", @"\/");
-                    query = query.Replace("\\*", ".*");
-                    query = query.Replace("\\?", ".");
+                    if (SearchedList.Count == 0)
+                        Console.WriteLine($"Could not find anything by query '{options.searchString}' in '{options.packedFile}'");
 
-                    if (options.MatchBeginning)
-                        query = "^" + query;
-
-                    Regex rg = new Regex(query);
-
-                    bool found = false;
-                    foreach (var File in FileList)
+                    foreach (var File in SearchedList)
                     {
                         OutputStyles Styles = options.outputStyle;
 
@@ -195,10 +186,6 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
 
                         if (FilePath != "")
                             FilePath += "/";
-
-                        if (!rg.IsMatch(options.MatchFilename ? FileName : FilePath + FileName))
-                            continue;
-                        found = true;
 
                         string Output = FileName;
 
@@ -214,8 +201,6 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
                         Console.WriteLine(Output);
                     }
 
-                    if (!found)
-                        Console.WriteLine($"Could not find anything by query '{options.searchString}' in '{options.packedFile}'");
                 }
                 return 0;
             }
@@ -261,6 +246,39 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
             }
 
             return 0;
+        }
+
+        private static List<String> Search(List<String> p_FileList, String p_Query, Boolean p_IsRegex, Boolean p_MatchBeginning, Boolean p_MatchFilename) {
+            List<String> result = new();
+
+            String query = p_Query;
+            if (!p_IsRegex)
+                query = Regex.Escape(query);
+
+            query = query.Replace("/", @"\/");
+            query = query.Replace("\\*", ".*");
+            query = query.Replace("\\?", ".");
+
+            if (p_MatchBeginning)
+                query = "^" + query;
+
+            Regex rg = new(query);
+
+            foreach (String File in p_FileList) {
+                String[] FileData = File.Split("\t");
+                String FilePath = Path.GetDirectoryName(FileData[0]).Replace("\\", "/");
+                String FileName = Path.GetFileName(FileData[0]);
+                String FileSize = FileData[1];
+                String FileOffset = FileData[2];
+
+                if (FilePath != "")
+                    FilePath += "/";
+
+                if (rg.IsMatch(p_MatchFilename ? FileName : FilePath + FileName))
+                    result.Add($"{FilePath}{FileName}\t{FileSize}\t{FileOffset}");
+            }
+
+            return result;
         }
 
         private static void PrintAsHex(Byte[] p_Bytes, String p_Format = "X", UInt16 p_BytesPerGroup = 2, UInt16 p_BytesPerLine = 16, Boolean p_PrintLinesNum = true) {
