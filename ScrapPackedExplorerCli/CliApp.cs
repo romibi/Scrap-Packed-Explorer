@@ -229,7 +229,13 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
         private static Int32 RunCat(CatOptions p_Options) {
             try {
                 ScrapPackedFile packedFile = new(p_Options.packedFile);
-                PackedFileIndexData fileData = packedFile.GetFileIndexDataForFile(p_Options.PackedPath);
+                PackedFileIndexData fileData = null;
+                try {
+                    fileData = packedFile.GetFileIndexDataForFile(p_Options.PackedPath);
+                }
+                catch {
+                    throw new FileNotFoundException($"File '{p_Options.PackedPath}' dose not exsits in '{p_Options.packedFile}'");
+                }
 
                 FileStream fsPacked = new(p_Options.packedFile, FileMode.Open);
                 try {
