@@ -624,6 +624,16 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
             // todo: find a way to test MakeBackup(), RestoreBackup() and DeleteBackup()
         }
 
+        [TestMethod]
+        public void TestCat() {
+            CheckRunCompareOutput(new[] {"cat", @"TestData\example.packed", 
+                "--packedPath", "file1.txt"},
+                "Begin of this first file in the example packed archive.\r\n" +
+                "Content not relevant. This is already the END\r\n",
+                "Cat expample.packed file1.txt"
+            );
+        }
+
         private void CheckRunCompareFile(string[] p_Args, string p_ExpectedFilePath, string p_ActualFilePath, string p_Message = "", int p_ReturnCode = 0)
         {
             var cliApp = new CliApp();
