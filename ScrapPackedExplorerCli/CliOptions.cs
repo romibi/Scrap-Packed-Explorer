@@ -108,7 +108,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
         [Option('g', "bytesPerGroup", Required = false, Default = (UInt16)2, HelpText = "How much bytes should print before printing space")]
         public UInt16 BytesPerGroup { get; set; }
 
-        [Option('r', "groupsPerRow", Required = false, Default = (UInt16)16, HelpText = "How much gruops should print in one line")]
+        [Option('r', "groupsPerRow", Required = false, Default = (UInt16)16, HelpText = "How much groups should print in one line")]
         public UInt16 GroupsPerRow { get; set; }
 
         [Option('p', "noPrintLinesNumbers", Required = false, Default = false, HelpText = "Do not print lines numbers")]
