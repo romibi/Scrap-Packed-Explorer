@@ -6,12 +6,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 
-namespace ch.romibi.Scrap.Packed.Explorer.Cli
-{
-    public class CliApp
-    {
-        public static Int32 Run(String[] p_Args)
-        {
+namespace ch.romibi.Scrap.Packed.Explorer.Cli {
+    public class CliApp {
+        public static Int32 Run(String[] p_Args) {
             Parser parser = new(p_With => {
                 p_With.HelpWriter = null;
                 p_With.CaseInsensitiveEnumValues = true;
@@ -36,64 +33,55 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
         }
 
         // Main functionality 
-        private static Int32 RunAdd(AddOptions p_Options)
-        {
+        private static Int32 RunAdd(AddOptions p_Options) {
             try {
                 // TODO: sanitize input
                 ScrapPackedFile packedFile = new(p_Options.PackedFile, true);
                 packedFile.Add(p_Options.SourcePath, p_Options.PackedPath);
                 packedFile.SaveToFile(p_Options.OutputPackedFile);
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 Console.Error.WriteLine($"Error: {ex.Message}");
                 return 1;
             }
 
             return 0;
         }
-        private static Int32 RunRemove(RemoveOptions p_Options)
-        {
+        private static Int32 RunRemove(RemoveOptions p_Options) {
             try {
                 ScrapPackedFile packedFile = new(p_Options.PackedFile);
                 packedFile.Remove(p_Options.PackedPath);
                 packedFile.SaveToFile(p_Options.OutputPackedFile);
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 Console.Error.WriteLine($"Error: {ex.Message}");
                 return 1;
             }
 
             return 0;
         }
-        private static Int32 RunRename(RenameOptions p_Options)
-        {
+        private static Int32 RunRename(RenameOptions p_Options) {
             try {
                 ScrapPackedFile packedFile = new(p_Options.PackedFile);
                 packedFile.Rename(p_Options.OldPackedPath, p_Options.NewPackedPath);
                 packedFile.SaveToFile(p_Options.OutputPackedFile);
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 Console.Error.WriteLine($"Error: {ex.Message}");
                 return 1;
             }
 
             return 0;
         }
-        private static Int32 RunExtract(ExtractOptions p_Options)
-        {
+        private static Int32 RunExtract(ExtractOptions p_Options) {
             try {
                 ScrapPackedFile packedFile = new(p_Options.PackedFile);
                 packedFile.Extract(p_Options.PackedPath, p_Options.DestinationPath);
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 Console.Error.WriteLine($"Error: {ex.Message}");
                 return 1;
             }
 
             return 0;
         }
-        private static Int32 RunList(ListOptions p_Options)
-        {
+        private static Int32 RunList(ListOptions p_Options) {
             try {
                 ScrapPackedFile packedFile = new(p_Options.PackedFile);
                 List<String> FileList = packedFile.GetFileNames();
@@ -150,8 +138,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
                         Console.WriteLine($"Could not find anything by query '{p_Options.SearchString}' in '{p_Options.PackedFile}'");
                 }
                 return 0;
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 Console.Error.WriteLine($"Error: {ex.Message}");
                 return 1;
             }
@@ -164,8 +151,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
             else
                 return 1;
         };
-        private static Int32 ParseFirstArgNotVerb(String[] p_Args, Parser p_Parser)
-        {
+        private static Int32 ParseFirstArgNotVerb(String[] p_Args, Parser p_Parser) {
             // if no verb specified print help message
             if (p_Args.Length == 1) {
                 List<String> _args = new(p_Args) {
@@ -191,8 +177,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
                 p_Errors => DisplayHelp(result)
             );
         }
-        private static Int32 DisplayHelp<T>(ParserResult<T> p_Result)
-        {
+        private static Int32 DisplayHelp<T>(ParserResult<T> p_Result) {
             String usage = "USAGE: " +
                 "\r\n  ScrapPackedExplorerCli.exe <path-to-packed-file> <subcommand> <options>\r\n" +
                 "EXAMPLE: " +

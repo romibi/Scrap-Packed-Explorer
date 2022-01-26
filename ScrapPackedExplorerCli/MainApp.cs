@@ -4,14 +4,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace ch.romibi.Scrap.Packed.Explorer
-{
-    internal class MainApp
-    {
+namespace ch.romibi.Scrap.Packed.Explorer {
+    internal class MainApp {
         [STAThread]
-        public static int Main(string[] p_Args)
-        {
-            if (p_Args != null && p_Args.Length > 0) 
+        public static int Main(string[] p_Args) {
+            if (p_Args != null && p_Args.Length > 0)
                 return CliApp.Run(p_Args);
             else {
                 HideConsoleWindow();
@@ -23,8 +20,7 @@ namespace ch.romibi.Scrap.Packed.Explorer
             }
         }
 
-        private static void HideConsoleWindow()
-        {
+        private static void HideConsoleWindow() {
             IntPtr ptr = GetForegroundWindow();
             uint v = GetWindowThreadProcessId(ptr, out int u);
             if (v == 0)

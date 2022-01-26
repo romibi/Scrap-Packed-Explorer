@@ -4,17 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace ch.romibi.Scrap.Packed.PackerLib.Tests
-{
+namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
     [TestClass]
-    public class TestCliApp
-    {
+    public class TestCliApp {
         // Note: if some tests fail for no reason cleanup TestData folder in the output folder
         // Todo: ensure that this is not needed
 
         [TestInitialize]
-        public void TestInitialize()
-        {
+        public void TestInitialize() {
             if (Directory.Exists("TestResults"))
                 Directory.Delete("TestResults", true);
             /*
@@ -32,8 +29,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
 
         // Test cases
         [TestMethod]
-        public void TestRunAddFile()
-        {
+        public void TestRunAddFile() {
             Directory.CreateDirectory(@"TestResults\TestAdd");
             File.Copy(@"TestData\empty.packed", @"TestResults\TestAdd\packedFile.packed", true);
 
@@ -84,8 +80,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
         }
 
         [TestMethod]
-        public void TestRunAddFolder()
-        {
+        public void TestRunAddFolder() {
             // add folder new
             CheckRunCompareFile(new[] { "add", @"TestResults\TestAdd\packedFile.packed",
                 "--sourcePath", @"TestData\exampleFolder1\" },
@@ -118,8 +113,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
         }
 
         [TestMethod]
-        public void TestRunAddFailed()
-        {
+        public void TestRunAddFailed() {
             // add file missing
             CheckRunFail(new[] { "add", @"TestResults\TestAddFail\packedFile.packed",
                 "--sourcePath", "exampleFile_missing.txt",
@@ -140,8 +134,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
                 "--sourcePath", "examplefile_readprotected.txt",
                 "--packedPath", "file.txt"},
                 1, "expected file not accessible");
-            }
-            finally {
+            } finally {
                 fsFile.Close();
             }
 
@@ -156,8 +149,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
                 "--sourcePath", "exampleFolder_readprotected/",
                 "--packedPath", "subfolder/"},
                     1, "expected some file not found");
-            }
-            finally {
+            } finally {
                 fsFile.Close();
             }
 
@@ -166,8 +158,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
         }
 
         [TestMethod]
-        public void TestRunRemove()
-        {
+        public void TestRunRemove() {
             Directory.CreateDirectory(@"TestResults\TestRemove");
             File.Copy(@"TestData\example.packed", @"TestResults\TestRemove\packedFile.packed", true);
 
@@ -189,8 +180,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
         }
 
         [TestMethod]
-        public void TestRunRemoveFailed()
-        {
+        public void TestRunRemoveFailed() {
             Directory.CreateDirectory(@"TestResults\TestRemove");
             File.Copy(@"TestData\example.packed", @"TestResults\TestRemove\packedFile.packed", true);
 
@@ -205,8 +195,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
         }
 
         [TestMethod]
-        public void TestRunRename()
-        {
+        public void TestRunRename() {
             Directory.CreateDirectory(@"TestResults\TestRename");
 
             File.Copy(@"TestData\example.packed", @"TestResults\TestRename\packedFile.packed", true);
@@ -235,8 +224,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
         }
 
         [TestMethod]
-        public void TestRunRenameFailed()
-        {
+        public void TestRunRenameFailed() {
             Directory.CreateDirectory(@"TestResults\TestRename");
 
             File.Copy(@"TestData\example.packed", @"TestResults\TestRename\packedFile.packed", true);
@@ -253,8 +241,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
         }
 
         [TestMethod]
-        public void TestRunExtract()
-        {
+        public void TestRunExtract() {
             CheckRunCompareFile(new[] { "extract", @"TestData\example.packed",
                 "--packedPath", "file1.txt",
                 "--destinationPath", @"TestResults\TestExtract\file.txt"},
@@ -284,8 +271,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
         }
 
         [TestMethod]
-        public void TestRunExtractFailed()
-        {
+        public void TestRunExtractFailed() {
             CheckRunFail(new[] { "extract", @"TestData\example.packed",
                 "--packedPath", "not_exsits.none",
                 "--destinationPath", @"TestResults\TestExtract\not_exists.none"},
@@ -303,15 +289,13 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
                 "--packedPath", "file1.txt",
                 "--destinationPath", @"TestResults\TestExtract\file.txt"},
                 1, "Destination path is unavilable");
-            }
-            finally {
+            } finally {
                 fsFile.Close();
             }
         }
 
         [TestMethod]
-        public void TestRunList()
-        {
+        public void TestRunList() {
             CheckRunCompareOutput(new[] { "list", @"TestData\empty.packed" },
                 "'TestData\\empty.packed' is empty.\r\n",
                 "List empty"
@@ -477,8 +461,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
         //}
 
         [TestMethod]
-        public void TestInputPackedFail()
-        {
+        public void TestInputPackedFail() {
             // check uncorrect input
             CheckRunFail(new[] {"add", "/.,*&^$Q*",
                     "--sourcePath", @"TestData\examplefile1.txt",
@@ -499,8 +482,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
                 CheckRunFail(new[] {"add", @"TestResults\TestInputPackedFail\packedFile.packed",
                     "--sourcePath", @"TestData\examplefile1.txt",
                     "--packedPath", "file.txt"}, 1, "Expected file to be inaccessible");
-            }
-            finally {
+            } finally {
                 Byte[] someContent = new[] { (Byte)'H', (Byte)'i' };
                 fsFile.Write(someContent);
                 fsFile.Close();
@@ -516,8 +498,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
         }
 
         [TestMethod]
-        public void TestOutputPackedFail()
-        {
+        public void TestOutputPackedFail() {
             Directory.CreateDirectory(@"TestResults\TestOutputPackedFail");
             File.Copy(@"TestData\empty.packed", @"TestResults\TestOutputPackedFail\packedFile.packed", true);
 
@@ -539,8 +520,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
                     "--packedPath", "file.txt",
                     "--outputPackedFile", @"TestResults\TestOutputPackedFail\packedOutFile.packed" },
                     1, "Expected output file to be inaccessible");
-            }
-            finally {
+            } finally {
                 fsFile.Close();
             }
 
@@ -549,8 +529,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
         }
 
         [TestMethod]
-        public void TestBackup()
-        {
+        public void TestBackup() {
             Directory.CreateDirectory(@"TestResults\TestBackup\");
             File.Copy(@"TestData\empty.packed", @"TestResults\TestBackup\packedFile.packed", true);
             File.Copy(@"TestData\examplefile1.txt", @"TestResults\TestBackup\examplefile1.txt", true);
@@ -616,8 +595,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
 
 
         // Comapators
-        private static void CheckRunCompareFile(String[] p_Args, String p_ExpectedFilePath, String p_ActualFilePath, String p_Message = "", Int32 p_ReturnCode = 0)
-        {
+        private static void CheckRunCompareFile(String[] p_Args, String p_ExpectedFilePath, String p_ActualFilePath, String p_Message = "", Int32 p_ReturnCode = 0) {
             Int32 returnValue = CliApp.Run(p_Args);
 
             Assert.AreEqual(p_ReturnCode, returnValue, p_Message + ": wrong return value");
@@ -625,8 +603,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
         }
 
         // todo: remove this method?
-        private static void CheckRunFail(String[] p_Args, Int32 p_ExpectedReturnValue, String p_Message = "")
-        {
+        private static void CheckRunFail(String[] p_Args, Int32 p_ExpectedReturnValue, String p_Message = "") {
             Int32 returnValue = CliApp.Run(p_Args);
 
             Assert.AreEqual(p_ExpectedReturnValue, returnValue, p_Message + ": wrong return value");
@@ -635,16 +612,14 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
             // todo check files not modified?
         }
 
-        private static void CheckRunCompareFolder(String[] p_Args, String p_ExpectedFolderPath, String p_ActualFolderPath, String p_Message = "")
-        {
+        private static void CheckRunCompareFolder(String[] p_Args, String p_ExpectedFolderPath, String p_ActualFolderPath, String p_Message = "") {
             Int32 returnValue = CliApp.Run(p_Args);
 
             Assert.AreEqual(0, returnValue, p_Message + ": wrong return value");
             AssertFoldersEqual(p_ExpectedFolderPath, p_ActualFolderPath, p_Message + ": folders differ");
         }
 
-        private static void CheckRunCompareOutput(String[] p_Args, String p_ExpectedOutput, String p_Message = "")
-        {
+        private static void CheckRunCompareOutput(String[] p_Args, String p_ExpectedOutput, String p_Message = "") {
             StringWriter stringWriter = new();
             Console.SetOut(stringWriter);
 
@@ -656,8 +631,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
             Assert.AreEqual("\r\n" + p_ExpectedOutput, "\r\n" + ActualOutput, p_Message + ": outputs are not equal");
         }
 
-        private static void CheckRunFileExists(String[] p_Args, String p_UnexpectedOutput, String p_Message)
-        {
+        private static void CheckRunFileExists(String[] p_Args, String p_UnexpectedOutput, String p_Message) {
             Int32 returnValue = CliApp.Run(p_Args);
 
             Assert.AreEqual(0, returnValue, p_Message + ": wrong return value");
@@ -666,13 +640,11 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
 
 
         // Asserts
-        private static void AssertFilesEqual(String p_FileExpected, String p_FileActual, String p_Message = "")
-        {
+        private static void AssertFilesEqual(String p_FileExpected, String p_FileActual, String p_Message = "") {
             Assert.IsTrue(FilesEqual(p_FileExpected, p_FileActual), p_Message);
         }
 
-        private static void AssertFoldersEqual(String p_FolderExpected, String p_FolderActual, String p_Message = "")
-        {
+        private static void AssertFoldersEqual(String p_FolderExpected, String p_FolderActual, String p_Message = "") {
             Assert.IsTrue(Directory.Exists(p_FolderExpected), p_Message + ": expected folder missing");
             Assert.IsTrue(Directory.Exists(p_FolderActual), p_Message + ": actual folder missing");
 
@@ -689,8 +661,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
             }
         }
 
-        private static Boolean FilesEqual(String p_FileA, String p_FileB)
-        {
+        private static Boolean FilesEqual(String p_FileA, String p_FileB) {
             Byte[] fileA = File.ReadAllBytes(p_FileA);
             Byte[] fileB = File.ReadAllBytes(p_FileB);
             if (fileA.Length == fileB.Length) {

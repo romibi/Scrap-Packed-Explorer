@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ch.romibi.Scrap.Packed.PackerLib.DataTypes
-{
-    public class PackedMetaData
-    {
+namespace ch.romibi.Scrap.Packed.PackerLib.DataTypes {
+    public class PackedMetaData {
         // Fields
         public const String FileHeader = "BFPK";
         public UInt32 PackedVersion { get; set; } // always 0 (not sure if really a version number)
@@ -12,8 +10,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.DataTypes
         public Dictionary<String, PackedFileIndexData> FileByPath { get; set; }
 
         // Methods
-        public void RecalcFileOffsets()
-        {
+        public void RecalcFileOffsets() {
             UInt32 currentOffset = CalculateFirstFileOffset();
             foreach (PackedFileIndexData file in FileList) {
                 file.Offset = currentOffset;
@@ -28,8 +25,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.DataTypes
 
         // Why this is private? 
         private const UInt32 DATA_LENGTH_STATIC = 12; // 4 bytes each: "PFBK", version (all 0s), number of files
-        private UInt32 CalculateFirstFileOffset()
-        {
+        private UInt32 CalculateFirstFileOffset() {
             UInt32 result = DATA_LENGTH_STATIC;
             foreach (PackedFileIndexData fileEntry in FileList) {
                 result += fileEntry.IndexEntrySize;
@@ -38,8 +34,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.DataTypes
         }
     }
 
-    public class PackedFileIndexData
-    {
+    public class PackedFileIndexData {
         // Fields
         public String FilePath { get; set; }
         public String OriginalFilePath { get; private set; }
@@ -52,8 +47,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.DataTypes
 
         // Constructors
         public PackedFileIndexData(String p_FilePath, UInt32 p_FileSize, UInt32 p_Offset) : this("", p_FilePath, p_FileSize, p_Offset) { }
-        public PackedFileIndexData(String p_ExternalFilePath, String p_FilePath, UInt32 p_FileSize, UInt32 p_Offset = 0)
-        {
+        public PackedFileIndexData(String p_ExternalFilePath, String p_FilePath, UInt32 p_FileSize, UInt32 p_Offset = 0) {
             FilePath = p_FilePath;
             OriginalFilePath = p_FilePath;
             FileSize = p_FileSize;

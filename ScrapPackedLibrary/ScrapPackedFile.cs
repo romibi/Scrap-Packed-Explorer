@@ -4,15 +4,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
-namespace ch.romibi.Scrap.Packed.PackerLib
-{
-    public class ScrapPackedFile
-    {
+namespace ch.romibi.Scrap.Packed.PackerLib {
+    public class ScrapPackedFile {
         public String FileName { get; private set; }
         public PackedMetaData MetaData;
 
-        public ScrapPackedFile(String p_FileName, Boolean p_CanCreate = false)
-        {
+        public ScrapPackedFile(String p_FileName, Boolean p_CanCreate = false) {
             FileName = p_FileName;
 
             if (!File.Exists(FileName) && p_CanCreate)
@@ -22,37 +19,32 @@ namespace ch.romibi.Scrap.Packed.PackerLib
         }
 
         // General functionality
-        public void Add(String p_ExternalPath, String p_PackedPath)
-        {
+        public void Add(String p_ExternalPath, String p_PackedPath) {
             FileAttributes fileAttributes = File.GetAttributes(p_ExternalPath);
             if (fileAttributes.HasFlag(FileAttributes.Directory))
                 AddDirectory(p_ExternalPath, p_PackedPath);
             else
                 AddFile(p_ExternalPath, p_PackedPath);
         }
-        public void Rename(String p_OldName, String p_NewName)
-        {
+        public void Rename(String p_OldName, String p_NewName) {
             if (p_OldName.EndsWith("/") || p_OldName.Length == 0)
                 RenameDirectory(p_OldName, p_NewName);
             else
                 RenameFile(p_OldName, p_NewName);
         }
-        public void Remove(String p_Name)
-        {
+        public void Remove(String p_Name) {
             if (p_Name.EndsWith("/"))
                 RemoveDirectory(p_Name);
             else
                 RemoveFile(p_Name);
         }
-        public void Extract(String p_PackedPath, String p_DestinationPath)
-        {
+        public void Extract(String p_PackedPath, String p_DestinationPath) {
             if (p_PackedPath.EndsWith("/") || p_PackedPath.Length == 0)
                 ExtractDirectory(p_PackedPath, p_DestinationPath);
             else
                 ExtractFile(p_PackedPath, p_DestinationPath);
         }
-        public void SaveToFile(String p_NewFileName)
-        {
+        public void SaveToFile(String p_NewFileName) {
             MetaData.RecalcFileOffsets();
 
             String newFileName = FileName;
@@ -83,17 +75,14 @@ namespace ch.romibi.Scrap.Packed.PackerLib
                     WriteFileData(fsPackedNew);
 
                     FileName = newFileName;
-                }
-                catch {
+                } catch {
                     if (FileName.EndsWith(".bak"))
                         RestoreBackup(newFileName);
                     throw;
-                }
-                finally {
+                } finally {
                     fsPackedNew.Close();
                 }
-            }
-            catch {
+            } catch {
                 if (FileName.EndsWith(".bak"))
                     RestoreBackup(newFileName);
                 throw;
@@ -102,8 +91,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
 
         // Getters
         // todo: deprecate this
-        public List<String> GetFileNames()
-        {
+        public List<String> GetFileNames() {
             // todo refactor list output
             List<String> list = new();
             foreach (PackedFileIndexData file in MetaData.FileList) {
@@ -111,8 +99,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             }
             return list;
         }
-        public List<IDictionary<String, String>> GetFileList()
-        {
+        public List<IDictionary<String, String>> GetFileList() {
             // todo refactor list output
             List<IDictionary<String, String>> list = new();
             foreach (PackedFileIndexData file in MetaData.FileList) {
@@ -128,17 +115,14 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             }
             return list;
         }
-        public List<PackedFileIndexData> GetFileIndexDataList()
-        {
+        public List<PackedFileIndexData> GetFileIndexDataList() {
             return MetaData.FileList;
         }
-        public PackedFileIndexData GetFileIndexDataForFile(String p_PackedPath)
-        {
+        public PackedFileIndexData GetFileIndexDataForFile(String p_PackedPath) {
             return MetaData.FileByPath[p_PackedPath];
         }
         // todo: this needs to be better
-        public List<PackedFileIndexData> GetFolderContent(String p_Path)
-        {
+        public List<PackedFileIndexData> GetFolderContent(String p_Path) {
             List<PackedFileIndexData> result = new();
             foreach (PackedFileIndexData file in MetaData.FileList) {
                 if (file.FilePath.StartsWith(p_Path))
@@ -150,8 +134,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
         // ---------------------------------------------------------------------------
 
         // Add
-        private void AddDirectory(String p_ExternalPath, String p_PackedPath)
-        {
+        private void AddDirectory(String p_ExternalPath, String p_PackedPath) {
             String externalPath = p_ExternalPath.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
             String packedPath = p_PackedPath.TrimEnd('/') + "/";
             if (packedPath == "/")
@@ -162,8 +145,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
                 AddFile(file, packedFilePath);
             }
         }
-        private void AddFile(String p_ExternalPath, String p_PackedPath)
-        {
+        private void AddFile(String p_ExternalPath, String p_PackedPath) {
             FileInfo newFile = new(p_ExternalPath);
 
             if (newFile.Length > UInt32.MaxValue)
@@ -182,8 +164,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
         }
 
         // Rename
-        private void RenameDirectory(String p_OldPath, String p_NewPath)
-        {
+        private void RenameDirectory(String p_OldPath, String p_NewPath) {
             if (p_OldPath == "/")
                 p_OldPath = "";
 
@@ -194,8 +175,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             foreach (PackedFileIndexData file in fileList)
                 RenameFile(file.FilePath, String.Concat(p_NewPath, file.FilePath.AsSpan(p_OldPath.Length)));
         }
-        private void RenameFile(String p_OldFileName, String p_NewFileName)
-        {
+        private void RenameFile(String p_OldFileName, String p_NewFileName) {
             if (!MetaData.FileByPath.ContainsKey(p_OldFileName))
                 throw new ArgumentException($"Unable to reanme {p_OldFileName}: file does not exists in {FileName}");
 
@@ -206,8 +186,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
         }
 
         // Remove
-        private void RemoveDirectory(String p_Name)
-        {
+        private void RemoveDirectory(String p_Name) {
             if (p_Name == "/")
                 p_Name = "";
 
@@ -218,8 +197,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             foreach (PackedFileIndexData file in fileList)
                 RemoveFile(file.FilePath);
         }
-        private void RemoveFile(String p_Name)
-        {
+        private void RemoveFile(String p_Name) {
             if (!MetaData.FileByPath.ContainsKey(p_Name))
                 throw new ArgumentException($"Unable to remove {p_Name}: file does not exists in {FileName}");
 
@@ -229,8 +207,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
         }
 
         // Extract
-        private void ExtractDirectory(String p_PackedPath, String p_DestinationPath)
-        {
+        private void ExtractDirectory(String p_PackedPath, String p_DestinationPath) {
             List<PackedFileIndexData> fileList = GetFolderContent(p_PackedPath);
             if (fileList.Count == 0)
                 throw new ArgumentException($"Unable to extract {p_PackedPath}: folder does not exists in {FileName}");
@@ -240,13 +217,11 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             try {
                 foreach (PackedFileIndexData file in fileList)
                     ExtractFile(file.FilePath, String.Concat(destinationPath, file.FilePath.AsSpan(p_PackedPath.Length)), fsPacked);
-            }
-            finally {
+            } finally {
                 fsPacked.Close();
             }
         }
-        private void ExtractFile(String p_PackedPath, String p_DestinationPath, FileStream p_PackedFileStream = null)
-        {
+        private void ExtractFile(String p_PackedPath, String p_DestinationPath, FileStream p_PackedFileStream = null) {
             if (!MetaData.FileByPath.ContainsKey(p_PackedPath))
                 throw new ArgumentException($"Unable to extract {p_PackedPath}: file does not exists in {FileName}");
 
@@ -274,22 +249,18 @@ namespace ch.romibi.Scrap.Packed.PackerLib
                     fsPacked.Read(readBytes, 0, (Int32)fileMetaData.FileSize);
 
                     fsExtractFile.Write(readBytes);
-                }
-                catch {
+                } catch {
                     if (Backups.ContainsKey(p_DestinationPath))
                         RestoreBackup(p_DestinationPath);
                     throw;
-                }
-                finally {
+                } finally {
                     fsExtractFile.Close();
                 }
-            }
-            catch {
+            } catch {
                 if (Backups.ContainsKey(p_DestinationPath))
                     RestoreBackup(p_DestinationPath);
                 throw;
-            }
-            finally {
+            } finally {
                 if (p_PackedFileStream == null)
                     fsPacked.Close();
             }
@@ -298,8 +269,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
         }
 
         // Packed data reading
-        private void ReadPackedMetaData()
-        {
+        private void ReadPackedMetaData() {
             MetaData = new PackedMetaData {
                 FileList = new List<PackedFileIndexData>(),
                 FileByPath = new Dictionary<String, PackedFileIndexData>()
@@ -329,13 +299,11 @@ namespace ch.romibi.Scrap.Packed.PackerLib
                     MetaData.FileList.Add(fileMetaData);
                     MetaData.FileByPath.Add(fileMetaData.FilePath, fileMetaData);
                 }
-            }
-            finally {
+            } finally {
                 fsPacked.Close();
             }
         }
-        private static PackedFileIndexData ReadFileMetaData(FileStream p_FsPacked)
-        {
+        private static PackedFileIndexData ReadFileMetaData(FileStream p_FsPacked) {
             String fileName;
             UInt32 fileSize;
             UInt32 fileOffset;
@@ -363,21 +331,18 @@ namespace ch.romibi.Scrap.Packed.PackerLib
         }
 
         // Packed data writing 
-        private static void CreateNewFile(FileStream p_FsPacked)
-        {
+        private static void CreateNewFile(FileStream p_FsPacked) {
             try {
                 Byte[] fileHeader = System.Text.Encoding.Default.GetBytes(PackedMetaData.FileHeader);
                 Byte[] nullBytes = new Byte[8];
 
                 p_FsPacked.Write(fileHeader);
                 p_FsPacked.Write(nullBytes);
-            }
-            finally {
+            } finally {
                 p_FsPacked.Close();
             }
         }
-        private void WriteFileMetaData(FileStream p_FsPackedNew)
-        {
+        private void WriteFileMetaData(FileStream p_FsPackedNew) {
             foreach (PackedFileIndexData fileIndexEntry in MetaData.FileList) {
                 // write the filepath length
                 p_FsPackedNew.Write(BitConverter.GetBytes((UInt32)fileIndexEntry.FilePath.Length));
@@ -393,8 +358,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
                 p_FsPackedNew.Write(BitConverter.GetBytes(fileIndexEntry.Offset));
             }
         }
-        private void WriteFileData(FileStream p_FsPackedNew)
-        {
+        private void WriteFileData(FileStream p_FsPackedNew) {
             FileStream fsPackedOrig = null;
             try {
                 foreach (PackedFileIndexData file in MetaData.FileList) {
@@ -409,16 +373,14 @@ namespace ch.romibi.Scrap.Packed.PackerLib
                     }
                     p_FsPackedNew.Write(readBytes);
                 }
-            }
-            finally {
+            } finally {
                 if (fsPackedOrig != null)
                     fsPackedOrig.Close();
             }
         }
 
         // External files helpers
-        private static FileStream TryMakeFile(String p_OutputPath)
-        {
+        private static FileStream TryMakeFile(String p_OutputPath) {
             Debug.Assert(!p_OutputPath.EndsWith(Path.DirectorySeparatorChar), "Output path cannot be only folder name.");
 
             String dirName = Path.GetDirectoryName(p_OutputPath);
@@ -430,22 +392,19 @@ namespace ch.romibi.Scrap.Packed.PackerLib
 
             return new FileStream(p_OutputPath, FileMode.Create);
         }
-        private static void ReadExternalFile(Byte[] p_ReadByteBuffer, PackedFileIndexData p_FileIndexData)
-        {
+        private static void ReadExternalFile(Byte[] p_ReadByteBuffer, PackedFileIndexData p_FileIndexData) {
             FileStream externalFileStream = new(p_FileIndexData.ExternalFilePath, FileMode.Open);
             try {
                 externalFileStream.Seek(p_FileIndexData.OriginalOffset, SeekOrigin.Begin);
                 externalFileStream.Read(p_ReadByteBuffer, 0, (Int32)p_FileIndexData.FileSize);
-            }
-            finally {
+            } finally {
                 externalFileStream.Close();
             }
         }
 
         // Backup functionality
         private readonly Dictionary<String, String> Backups = new();
-        private void MakeBackup(String p_FilePath, Boolean p_Temp = false)
-        {
+        private void MakeBackup(String p_FilePath, Boolean p_Temp = false) {
             // todo: test of this
             if (!File.Exists(p_FilePath))
                 throw new FileNotFoundException($"Unable to backup '{p_FilePath}': file does not exists");
@@ -468,8 +427,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             Backups.Add(p_FilePath, backupPath);
             File.Move(p_FilePath, backupPath, true);
         }
-        private void RestoreBackup(String p_FilePath)
-        {
+        private void RestoreBackup(String p_FilePath) {
             // todo: test of this
             if (!Backups.ContainsKey(p_FilePath))
                 throw new FileNotFoundException($"File '{p_FilePath}' does not have any backups to restore");
@@ -486,8 +444,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib
             Backups.Remove(p_FilePath);
             File.Move(backupPath, p_FilePath, true);
         }
-        private void DeleteBackup(String p_FilePath)
-        {
+        private void DeleteBackup(String p_FilePath) {
             // todo: test of this
             if (!Backups.ContainsKey(p_FilePath))
                 throw new FileNotFoundException($"File '{p_FilePath}' does not have any backups to delete");

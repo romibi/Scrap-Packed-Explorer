@@ -1,16 +1,13 @@
 ﻿using CommandLine;
 using System;
 
-namespace ch.romibi.Scrap.Packed.Explorer.Cli
-{
-    internal abstract class BaseOptions
-    {
+namespace ch.romibi.Scrap.Packed.Explorer.Cli {
+    internal abstract class BaseOptions {
         [Value(0, Required = true, MetaName = "Packed file", HelpText = "The .packed file to use as basis")]
         public String PackedFile { get; set; }
     }
 
-    internal abstract class ModifyingOptions : BaseOptions
-    {
+    internal abstract class ModifyingOptions : BaseOptions {
         [Option('o', "outputPackedFile", Required = false, Default = "", HelpText = "Where to store the new .packed file. Modify input if not provided.")]
         public String OutputPackedFile { get; set; }
 
@@ -22,8 +19,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
     }
 
     [Verb("add", HelpText = "Add file to the container")]
-    internal class AddOptions : ModifyingOptions
-    {
+    internal class AddOptions : ModifyingOptions {
         [Option('s', "sourcePath", Required = true, HelpText = "What file or folder to add to the .packed file")]
         public String SourcePath { get; set; }
 
@@ -32,15 +28,13 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
     }
 
     [Verb("remove", HelpText = "Remove a file from the container")]
-    internal class RemoveOptions : ModifyingOptions
-    {
+    internal class RemoveOptions : ModifyingOptions {
         [Option('d', "packedPath", Required = true, HelpText = "What path to remove from the container")]
         public String PackedPath { get; set; }
     }
 
     [Verb("rename", HelpText = "rename a file or folder inside the container")]
-    internal class RenameOptions : ModifyingOptions
-    {
+    internal class RenameOptions : ModifyingOptions {
         [Option('s', "oldPackedPath", Required = true, Default = "/", HelpText = "What path to rename inside the container")]
         public String OldPackedPath { get; set; }
 
@@ -49,8 +43,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
     }
 
     [Verb("extract", HelpText = "Extract/unpack a file from the container")]
-    internal class ExtractOptions : BaseOptions
-    {
+    internal class ExtractOptions : BaseOptions {
         [Option('s', "packedPath", Required = false, Default = "", HelpText = "What path to extract from the container")]
         public String PackedPath { get; set; }
 
@@ -61,8 +54,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
     }
 
     [Verb("list", HelpText = "list or search files and folders in the container")]
-    internal class ListOptions : BaseOptions
-    {
+    internal class ListOptions : BaseOptions {
         [Option('l', "outputStyle", Required = false, Default = OutputStyles.List, HelpText = "Output list (default) or tree view")]
         public OutputStyles OutputStyle { get; set; }
 
@@ -86,8 +78,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli
     }
 
     [Flags]
-    public enum OutputStyles
-    {
+    public enum OutputStyles {
         List = 0x1,
         Tree = 0x2,
         Name = 0x4
