@@ -92,7 +92,7 @@
                     </HierarchicalDataTemplate>
                 </TreeView.ItemTemplate>
             </TreeView>
-            <GridSplitter Grid.Column="1" Width="5"/>
+            <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
             <ListView Grid.Column="2"  Name="TreeContent" ItemsSource="{Binding Items}" MouseDoubleClick="TreeContent_MouseDoubleClick" SelectionChanged="TreeContent_SelectionChanged">
                 <ListView.View>
                     <GridView>
@@ -100,7 +100,7 @@
                     </GridView>
                 </ListView.View>
             </ListView>
-            <GridSplitter Grid.Column="3" Width="5"/>
+            <GridSplitter Grid.Column="3" Width="5" HorizontalAlignment="Stretch"/>
             <TextBlock Grid.Column="4" Text="Here File information will be displayed" TextWrapping="Wrap"></TextBlock>
         </Grid>
     </Grid>
