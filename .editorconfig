@@ -29,8 +29,8 @@ dotnet_style_qualification_for_method = false
 dotnet_style_qualification_for_property = false
 
 # Language keywords vs BCL types preferences
-dotnet_style_predefined_type_for_locals_parameters_members = false : suggestion 
-dotnet_style_predefined_type_for_member_access = false : suggestion
+dotnet_style_predefined_type_for_locals_parameters_members = true:suggestion 
+dotnet_style_predefined_type_for_member_access = true:suggestion
 
 # Parentheses preferences
 dotnet_style_parentheses_in_arithmetic_binary_operators = always_for_clarity:suggestion
@@ -116,7 +116,7 @@ csharp_style_inlined_variable_declaration =true:suggestion
 csharp_style_pattern_local_over_anonymous_function = true
 csharp_style_prefer_index_operator = true:silent
 csharp_style_prefer_null_check_over_type_check = true
-csharp_style_prefer_range_operator = true
+csharp_style_prefer_range_operator = true:silent
 csharp_style_throw_expression = true
 csharp_style_unused_value_assignment_preference = discard_variable
 csharp_style_unused_value_expression_statement_preference = discard_variable
@@ -212,6 +212,10 @@ dotnet_naming_rule.field_should_be_pascal_case.severity = suggestion
 dotnet_naming_rule.field_should_be_pascal_case.symbols = field
 dotnet_naming_rule.field_should_be_pascal_case.style = pascal_case
 
+dotnet_naming_rule.private_or_internal_field_should_be__field.severity = silent
+dotnet_naming_rule.private_or_internal_field_should_be__field.symbols = private_or_internal_field
+dotnet_naming_rule.private_or_internal_field_should_be__field.style = _field
+
 # Symbol specifications
 
 dotnet_naming_symbols.interface.applicable_kinds = interface
@@ -225,6 +229,10 @@ dotnet_naming_symbols.method.required_modifiers =
 dotnet_naming_symbols.property.applicable_kinds = property
 dotnet_naming_symbols.property.applicable_accessibilities = public, internal, private, protected, protected_internal, private_protected
 dotnet_naming_symbols.property.required_modifiers = 
+
+dotnet_naming_symbols.private_or_internal_field.applicable_kinds = field
+dotnet_naming_symbols.private_or_internal_field.applicable_accessibilities = internal, private, private_protected
+dotnet_naming_symbols.private_or_internal_field.required_modifiers = 
 
 dotnet_naming_symbols.types.applicable_kinds = class, struct, interface, enum
 dotnet_naming_symbols.types.applicable_accessibilities = public, internal, private, protected, protected_internal, private_protected
@@ -262,3 +270,8 @@ dotnet_naming_style.p_argument.required_prefix = p_
 dotnet_naming_style.p_argument.required_suffix = 
 dotnet_naming_style.p_argument.word_separator = 
 dotnet_naming_style.p_argument.capitalization = pascal_case
+
+dotnet_naming_style._field.required_prefix = _
+dotnet_naming_style._field.required_suffix = 
+dotnet_naming_style._field.word_separator = 
+dotnet_naming_style._field.capitalization = pascal_case

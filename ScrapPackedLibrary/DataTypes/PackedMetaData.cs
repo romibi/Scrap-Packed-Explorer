@@ -4,12 +4,14 @@ using System.Collections.Generic;
 namespace ch.romibi.Scrap.Packed.PackerLib.DataTypes {
     public class PackedMetaData {
         // Fields
-        public const String FileHeader = "BFPK";
+        public const string FileHeader = "BFPK";
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0049:Simplify Names", Justification = "UInt Values written on disk have to be 32bit")]
         public UInt32 PackedVersion { get; set; } // always 0 (not sure if really a version number)
         public List<PackedFileIndexData> FileList { get; set; }
-        public Dictionary<String, PackedFileIndexData> FileByPath { get; set; }
+        public Dictionary<string, PackedFileIndexData> FileByPath { get; set; }
 
         // Methods
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0049:Simplify Names", Justification = "UInt Values written on disk have to be 32bit")]
         public void RecalcFileOffsets() {
             UInt32 currentOffset = CalculateFirstFileOffset();
             foreach (PackedFileIndexData file in FileList) {
@@ -24,7 +26,9 @@ namespace ch.romibi.Scrap.Packed.PackerLib.DataTypes {
         //-------------------------------------------------------
 
         // Why this is private? 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0049:Simplify Names", Justification = "UInt Values written on disk have to be 32bit")]
         private const UInt32 DATA_LENGTH_STATIC = 12; // 4 bytes each: "PFBK", version (all 0s), number of files
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0049:Simplify Names", Justification = "UInt Values written on disk have to be 32bit")]
         private UInt32 CalculateFirstFileOffset() {
             UInt32 result = DATA_LENGTH_STATIC;
             foreach (PackedFileIndexData fileEntry in FileList) {
@@ -34,6 +38,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.DataTypes {
         }
     }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0049:Simplify Names", Justification = "UInt Values written on disk have to be 32bit")]
     public class PackedFileIndexData {
         // Fields
         public String FilePath { get; set; }

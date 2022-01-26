@@ -483,7 +483,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
                     "--sourcePath", @"TestData\examplefile1.txt",
                     "--packedPath", "file.txt"}, 1, "Expected file to be inaccessible");
             } finally {
-                Byte[] someContent = new[] { (Byte)'H', (Byte)'i' };
+                byte[] someContent = new[] { (byte)'H', (byte)'i' };
                 fsFile.Write(someContent);
                 fsFile.Close();
             }
@@ -595,16 +595,16 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
 
 
         // Comapators
-        private static void CheckRunCompareFile(String[] p_Args, String p_ExpectedFilePath, String p_ActualFilePath, String p_Message = "", Int32 p_ReturnCode = 0) {
-            Int32 returnValue = CliApp.Run(p_Args);
+        private static void CheckRunCompareFile(string[] p_Args, string p_ExpectedFilePath, string p_ActualFilePath, string p_Message = "", int p_ReturnCode = 0) {
+            int returnValue = CliApp.Run(p_Args);
 
             Assert.AreEqual(p_ReturnCode, returnValue, p_Message + ": wrong return value");
             AssertFilesEqual(p_ExpectedFilePath, p_ActualFilePath, p_Message + ": files differ");
         }
 
         // todo: remove this method?
-        private static void CheckRunFail(String[] p_Args, Int32 p_ExpectedReturnValue, String p_Message = "") {
-            Int32 returnValue = CliApp.Run(p_Args);
+        private static void CheckRunFail(string[] p_Args, int p_ExpectedReturnValue, string p_Message = "") {
+            int returnValue = CliApp.Run(p_Args);
 
             Assert.AreEqual(p_ExpectedReturnValue, returnValue, p_Message + ": wrong return value");
 
@@ -612,27 +612,27 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
             // todo check files not modified?
         }
 
-        private static void CheckRunCompareFolder(String[] p_Args, String p_ExpectedFolderPath, String p_ActualFolderPath, String p_Message = "") {
-            Int32 returnValue = CliApp.Run(p_Args);
+        private static void CheckRunCompareFolder(string[] p_Args, string p_ExpectedFolderPath, string p_ActualFolderPath, string p_Message = "") {
+            int returnValue = CliApp.Run(p_Args);
 
             Assert.AreEqual(0, returnValue, p_Message + ": wrong return value");
             AssertFoldersEqual(p_ExpectedFolderPath, p_ActualFolderPath, p_Message + ": folders differ");
         }
 
-        private static void CheckRunCompareOutput(String[] p_Args, String p_ExpectedOutput, String p_Message = "") {
+        private static void CheckRunCompareOutput(string[] p_Args, string p_ExpectedOutput, string p_Message = "") {
             StringWriter stringWriter = new();
             Console.SetOut(stringWriter);
 
-            Int32 returnValue = CliApp.Run(p_Args);
+            int returnValue = CliApp.Run(p_Args);
 
             Assert.AreEqual(0, returnValue, p_Message + ": wrong return value");
 
-            String ActualOutput = stringWriter.ToString();
+            string ActualOutput = stringWriter.ToString();
             Assert.AreEqual("\r\n" + p_ExpectedOutput, "\r\n" + ActualOutput, p_Message + ": outputs are not equal");
         }
 
-        private static void CheckRunFileExists(String[] p_Args, String p_UnexpectedOutput, String p_Message) {
-            Int32 returnValue = CliApp.Run(p_Args);
+        private static void CheckRunFileExists(string[] p_Args, string p_UnexpectedOutput, string p_Message) {
+            int returnValue = CliApp.Run(p_Args);
 
             Assert.AreEqual(0, returnValue, p_Message + ": wrong return value");
             Assert.IsTrue(!File.Exists(p_UnexpectedOutput), p_Message + ": file exists but should not");
@@ -640,32 +640,32 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
 
 
         // Asserts
-        private static void AssertFilesEqual(String p_FileExpected, String p_FileActual, String p_Message = "") {
+        private static void AssertFilesEqual(string p_FileExpected, string p_FileActual, string p_Message = "") {
             Assert.IsTrue(FilesEqual(p_FileExpected, p_FileActual), p_Message);
         }
 
-        private static void AssertFoldersEqual(String p_FolderExpected, String p_FolderActual, String p_Message = "") {
+        private static void AssertFoldersEqual(string p_FolderExpected, string p_FolderActual, string p_Message = "") {
             Assert.IsTrue(Directory.Exists(p_FolderExpected), p_Message + ": expected folder missing");
             Assert.IsTrue(Directory.Exists(p_FolderActual), p_Message + ": actual folder missing");
 
-            List<String> expectedFiles = new(Directory.GetFiles(p_FolderExpected, "", SearchOption.AllDirectories));
-            List<String> actualFiles = new(Directory.GetFiles(p_FolderActual, "", SearchOption.AllDirectories));
+            List<string> expectedFiles = new(Directory.GetFiles(p_FolderExpected, "", SearchOption.AllDirectories));
+            List<string> actualFiles = new(Directory.GetFiles(p_FolderActual, "", SearchOption.AllDirectories));
 
             Assert.AreEqual(expectedFiles.Count, actualFiles.Count, p_Message + ": different amount of files");
 
             expectedFiles.Sort();
             actualFiles.Sort();
 
-            for (Int32 i = 0; i < expectedFiles.Count; i++) {
+            for (int i = 0; i < expectedFiles.Count; i++) {
                 AssertFilesEqual(expectedFiles[i], actualFiles[i], p_Message + ": comparing " + expectedFiles[i] + " = " + actualFiles[i]);
             }
         }
 
-        private static Boolean FilesEqual(String p_FileA, String p_FileB) {
-            Byte[] fileA = File.ReadAllBytes(p_FileA);
-            Byte[] fileB = File.ReadAllBytes(p_FileB);
+        private static bool FilesEqual(string p_FileA, string p_FileB) {
+            byte[] fileA = File.ReadAllBytes(p_FileA);
+            byte[] fileB = File.ReadAllBytes(p_FileB);
             if (fileA.Length == fileB.Length) {
-                for (Int32 i = 0; i < fileA.Length; i++) {
+                for (int i = 0; i < fileA.Length; i++) {
                     if (fileA[i] != fileB[i]) {
                         return false;
                     }
