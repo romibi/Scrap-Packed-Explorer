@@ -27,7 +27,7 @@ See also the [Scrap Hacks Project by Earthnuker](https://gitdab.com/Earthnuker/S
 .packed Files are used by the Game Scrapland to have most of the game data merged into one big data container.
 The contents are neither encrypted nor compressed. Therefore modifying it is relatively straight forward.
 
-But before this project there was no real userfriendly way to do that and the goal of this project was to enable modding for users who do not want to really think about how this filetype is made.
+But before this project there was no real userfriendly way to do that and the goal of this project was to enable modding for users who do not really want to think about the details of this filetype.
 
 ---
 
@@ -45,11 +45,13 @@ The Version without Cli in its name supports only the GUI mode but also has no f
 
 ### GUI
 !TBD!
+GUI is nearly usuable but some key features are missing for fully functional usage.
+Updating this README chapter is part of the GUI issue (#2)
 
 ---
 
 ### CLI
-Basic call looks like this:
+A basic call looks like this:
 ```bash
 ScrapPackedExplorerCli.exe <path-to-the-packed-file> <subcommand> <options>
 ```

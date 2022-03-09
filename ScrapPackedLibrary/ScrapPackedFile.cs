@@ -133,8 +133,6 @@ namespace ch.romibi.Scrap.Packed.PackerLib {
             return result;
         }
 
-        // ---------------------------------------------------------------------------
-
         // Add
         private void AddDirectory(string p_ExternalPath, string p_PackedPath) {
             string externalPath = p_ExternalPath.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;

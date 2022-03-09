@@ -77,7 +77,7 @@ Methods and properties in every class should be in this order:
 - protected (same sub order as public)
 - private (same sub order as public)
 
-All mehods should be grouped by their functuanality. 
+All mehods should be grouped by their functuality.
 
 **Example:**
 ```c#
@@ -95,8 +95,6 @@ Class SomeClass
     // Console
     public void PrintMessage(string p_Message) {...}
     
-    //-----------------------------------------------------
-
     // Helper functions
     private void GetFileProperties(File p_File) {...}
     // ......Private methods and properties........

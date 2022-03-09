@@ -23,8 +23,6 @@ namespace ch.romibi.Scrap.Packed.PackerLib.DataTypes {
             }
         }
 
-        //-------------------------------------------------------
-
         // Why this is private? 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0049:Simplify Names", Justification = "UInt Values written on disk have to be 32bit")]
         private const UInt32 DATA_LENGTH_STATIC = 12; // 4 bytes each: "PFBK", version (all 0s), number of files
@@ -60,8 +58,6 @@ namespace ch.romibi.Scrap.Packed.PackerLib.DataTypes {
             Offset = p_Offset;
             ExternalFilePath = p_ExternalFilePath;
         }
-
-        //-------------------------------------------------------
 
         // Why this is private?
         private const UInt32 DATA_LENGTH_STATIC = 12; // 4 bytes each: path length, file size, offset
