@@ -1,22 +1,18 @@
-﻿using ch.romibi.Scrap.Packed.Explorer;
-using ch.romibi.Scrap.Packed.Explorer.Cli;
+﻿using ch.romibi.Scrap.Packed.Explorer.Cli;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace ch.romibi.Scrap.Packed.PackerLib.Tests
-{
+namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
     [TestClass]
-    public class TestCliApp
-    {
+    public class TestCliApp {
         // Note: if some tests fail for no reason cleanup TestData folder in the output folder
         // Todo: ensure that this is not needed
 
         [TestInitialize]
-        public void TestInitialize()
-        {
-            if(Directory.Exists("TestResults"))
+        public void TestInitialize() {
+            if (Directory.Exists("TestResults"))
                 Directory.Delete("TestResults", true);
             /*
             if (!Directory.Exists("TestResults") && false)
@@ -31,9 +27,9 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
         }
 
 
+        // Test cases
         [TestMethod]
-        public void TestRunAddFile()
-        {
+        public void TestRunAddFile() {
             Directory.CreateDirectory(@"TestResults\TestAdd");
             File.Copy(@"TestData\empty.packed", @"TestResults\TestAdd\packedFile.packed", true);
 
@@ -63,7 +59,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
                 "Add file to existing");
 
             // add file replace
-            CheckRunCompareFile(new[] { "add", @"TestResults\TestAdd\packedFile.packed", 
+            CheckRunCompareFile(new[] { "add", @"TestResults\TestAdd\packedFile.packed",
                 "--sourcePath", @"TestData\examplefile3.txt",
                 "--packedPath", "folder/file.txt" },
                 @"TestData\TestReferenceFiles\TestAdd\addFileReplace.packed",
@@ -84,8 +80,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
         }
 
         [TestMethod]
-        public void TestRunAddFolder()
-        {
+        public void TestRunAddFolder() {
             // add folder new
             CheckRunCompareFile(new[] { "add", @"TestResults\TestAdd\packedFile.packed",
                 "--sourcePath", @"TestData\exampleFolder1\" },
@@ -101,7 +96,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
                 "Add folder to existing to root");
 
             // add folder existing subfolder
-            CheckRunCompareFile(new[] { "add", @"TestResults\TestAdd\packedFile.packed", 
+            CheckRunCompareFile(new[] { "add", @"TestResults\TestAdd\packedFile.packed",
                 "--sourcePath", @"TestData\exampleFolder1\",
                 "--packedPath", "subfolder/" },
                 @"TestData\TestReferenceFiles\TestAdd\addFolderExistingToSubfolder.packed",
@@ -118,8 +113,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
         }
 
         [TestMethod]
-        public void TestRunAddFailed()
-        {
+        public void TestRunAddFailed() {
             // add file missing
             CheckRunFail(new[] { "add", @"TestResults\TestAddFail\packedFile.packed",
                 "--sourcePath", "exampleFile_missing.txt",
@@ -134,16 +128,13 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
 
             // add file, file not readable
             Directory.CreateDirectory(@"TestResults\TestAddFail");
-            var fsFile = new FileStream(@"TestResults\TestAddFail\examplefile_readprotected.txt", FileMode.OpenOrCreate);
-            try
-            {
+            FileStream fsFile = new(@"TestResults\TestAddFail\examplefile_readprotected.txt", FileMode.OpenOrCreate);
+            try {
                 CheckRunFail(new[] { "add", @"TestResults\TestAddFail\packedFile.packed",
                 "--sourcePath", "examplefile_readprotected.txt",
                 "--packedPath", "file.txt"},
                 1, "expected file not accessible");
-            }
-            finally
-            {
+            } finally {
                 fsFile.Close();
             }
 
@@ -153,15 +144,12 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
             File.Copy(@"TestData\examplefile1.txt", @"TestResults\TestAddFail\exampleFolder_readprotected\examplefile_notprotected.txt");
             fsFile = new FileStream(@"TestResults\TestAddFail\exampleFolder_readprotected\examplefile_readprotected.txt", FileMode.OpenOrCreate);
 
-            try
-            {
-            CheckRunFail(new[] { "add", @"TestResults\TestAddFail\packedFile.packed",
+            try {
+                CheckRunFail(new[] { "add", @"TestResults\TestAddFail\packedFile.packed",
                 "--sourcePath", "exampleFolder_readprotected/",
                 "--packedPath", "subfolder/"},
-                1, "expected some file not found");
-            }
-            finally
-            {
+                    1, "expected some file not found");
+            } finally {
                 fsFile.Close();
             }
 
@@ -170,8 +158,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
         }
 
         [TestMethod]
-        public void TestRunRemove()
-        {
+        public void TestRunRemove() {
             Directory.CreateDirectory(@"TestResults\TestRemove");
             File.Copy(@"TestData\example.packed", @"TestResults\TestRemove\packedFile.packed", true);
 
@@ -193,8 +180,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
         }
 
         [TestMethod]
-        public void TestRunRemoveFailed()
-        {
+        public void TestRunRemoveFailed() {
             Directory.CreateDirectory(@"TestResults\TestRemove");
             File.Copy(@"TestData\example.packed", @"TestResults\TestRemove\packedFile.packed", true);
 
@@ -209,8 +195,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
         }
 
         [TestMethod]
-        public void TestRunRename()
-        {
+        public void TestRunRename() {
             Directory.CreateDirectory(@"TestResults\TestRename");
 
             File.Copy(@"TestData\example.packed", @"TestResults\TestRename\packedFile.packed", true);
@@ -239,8 +224,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
         }
 
         [TestMethod]
-        public void TestRunRenameFailed()
-        {
+        public void TestRunRenameFailed() {
             Directory.CreateDirectory(@"TestResults\TestRename");
 
             File.Copy(@"TestData\example.packed", @"TestResults\TestRename\packedFile.packed", true);
@@ -257,8 +241,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
         }
 
         [TestMethod]
-        public void TestRunExtract()
-        {
+        public void TestRunExtract() {
             CheckRunCompareFile(new[] { "extract", @"TestData\example.packed",
                 "--packedPath", "file1.txt",
                 "--destinationPath", @"TestResults\TestExtract\file.txt"},
@@ -288,8 +271,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
         }
 
         [TestMethod]
-        public void TestRunExtractFailed()
-        {           
+        public void TestRunExtractFailed() {
             CheckRunFail(new[] { "extract", @"TestData\example.packed",
                 "--packedPath", "not_exsits.none",
                 "--destinationPath", @"TestResults\TestExtract\not_exists.none"},
@@ -301,23 +283,19 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
                 1, "Extract nonexisting folder");
 
             Directory.CreateDirectory(@"TestResults\TestExtract");
-            var fsFile = new FileStream(@"TestResults\TestExtract\file.txt", FileMode.OpenOrCreate);
-            try
-            {
+            FileStream fsFile = new(@"TestResults\TestExtract\file.txt", FileMode.OpenOrCreate);
+            try {
                 CheckRunFail(new[] { "extract", @"TestData\example.packed",
                 "--packedPath", "file1.txt",
                 "--destinationPath", @"TestResults\TestExtract\file.txt"},
                 1, "Destination path is unavilable");
-            }
-            finally
-            {
+            } finally {
                 fsFile.Close();
             }
         }
 
         [TestMethod]
-        public void TestRunList()
-        {
+        public void TestRunList() {
             CheckRunCompareOutput(new[] { "list", @"TestData\empty.packed" },
                 "'TestData\\empty.packed' is empty.\r\n",
                 "List empty"
@@ -336,41 +314,41 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
             );
 
             CheckRunCompareOutput(new[] { "list", @"TestData\example.packed",
-                "--show-file-size"},
-                "file1.txt\tSize: 102\r\n" +
-                "file2.txt\tSize: 169\r\n" +
-                "folder1/file1.txt\tSize: 454\r\n" +
+                "--showFileSize"},
+                "file1.txt\tSize: 104\r\n" +
+                "file2.txt\tSize: 171\r\n" +
+                "folder1/file1.txt\tSize: 456\r\n" +
                 "folder1/file2.png\tSize: 500\r\n" +
-                "folder2/file1.txt\tSize: 247\r\n" +
-                "folder2/file2.txt\tSize: 165\r\n" +
-                "folder2/folder1/file1.txt\tSize: 280\r\n" +
-                "folder2/folder1/file2.txt\tSize: 83\r\n",
+                "folder2/file1.txt\tSize: 249\r\n" +
+                "folder2/file2.txt\tSize: 167\r\n" +
+                "folder2/folder1/file1.txt\tSize: 282\r\n" +
+                "folder2/folder1/file2.txt\tSize: 85\r\n",
                 "List full filesizes"
             );
 
             CheckRunCompareOutput(new[] { "list", @"TestData\example.packed",
-                "--show-file-offset"},
+                "--showFileOffset"},
                 "file1.txt\tOffset: 244\r\n" +
-                "file2.txt\tOffset: 346\r\n" +
-                "folder1/file1.txt\tOffset: 515\r\n" +
-                "folder1/file2.png\tOffset: 1216\r\n" +
-                "folder2/file1.txt\tOffset: 969\r\n" +
-                "folder2/file2.txt\tOffset: 1716\r\n" +
-                "folder2/folder1/file1.txt\tOffset: 1881\r\n" +
-                "folder2/folder1/file2.txt\tOffset: 2161\r\n" ,
+                "file2.txt\tOffset: 348\r\n" +
+                "folder1/file1.txt\tOffset: 519\r\n" +
+                "folder1/file2.png\tOffset: 975\r\n" +
+                "folder2/file1.txt\tOffset: 1475\r\n" +
+                "folder2/file2.txt\tOffset: 1724\r\n" +
+                "folder2/folder1/file1.txt\tOffset: 1891\r\n" +
+                "folder2/folder1/file2.txt\tOffset: 2173\r\n",
                 "List full offsets"
             );
 
             CheckRunCompareOutput(new[] { "list", @"TestData\example.packed",
-                "--show-file-size", "--show-file-offset"},
-                "file1.txt\tSize: 102\tOffset: 244\r\n" +
-                "file2.txt\tSize: 169\tOffset: 346\r\n" +
-                "folder1/file1.txt\tSize: 454\tOffset: 515\r\n" +
-                "folder1/file2.png\tSize: 500\tOffset: 1216\r\n" +
-                "folder2/file1.txt\tSize: 247\tOffset: 969\r\n" +
-                "folder2/file2.txt\tSize: 165\tOffset: 1716\r\n" +
-                "folder2/folder1/file1.txt\tSize: 280\tOffset: 1881\r\n" +
-                "folder2/folder1/file2.txt\tSize: 83\tOffset: 2161\r\n",
+                "--showFileSize", "--showFileOffset"},
+                "file1.txt\tSize: 104\tOffset: 244\r\n" +
+                "file2.txt\tSize: 171\tOffset: 348\r\n" +
+                "folder1/file1.txt\tSize: 456\tOffset: 519\r\n" +
+                "folder1/file2.png\tSize: 500\tOffset: 975\r\n" +
+                "folder2/file1.txt\tSize: 249\tOffset: 1475\r\n" +
+                "folder2/file2.txt\tSize: 167\tOffset: 1724\r\n" +
+                "folder2/folder1/file1.txt\tSize: 282\tOffset: 1891\r\n" +
+                "folder2/folder1/file2.txt\tSize: 85\tOffset: 2173\r\n",
                 "List full filesizes + offsets"
             );
 
@@ -392,17 +370,17 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
             );
 
             CheckRunCompareOutput(new[] { "list", @"TestData\example.packed",
-                "--searchString", "file", "--match-beginning" },
+                "--searchString", "file", "--matchBeginning" },
                 "file1.txt\r\n" +
                 "file2.txt\r\n",
-                "List file match-beginning"
+                "List file matchBeginning"
             );
 
             CheckRunCompareOutput(new[] { "list", @"TestData\TestReferenceFiles\TestList\listMatchFile.packed",
-                "--searchString", "file1", "--match-filename" },
+                "--searchString", "file1", "--matchFilename" },
                 "file1.txt\r\n" +
                 "folder1/file1.txt\r\n",
-                "List match-filename"
+                "List matchFilename"
             );
 
             CheckRunCompareOutput(new[] { "list", @"TestData\example.packed",
@@ -464,11 +442,11 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
             CheckRunCompareOutput(new[] { "list", @"TestData\example.packed",
                 "--outputStyle", "Name",
                 "--searchString", "folder2/",
-                "--show-file-size", "--show-file-offset"},
-                "file1.txt\tSize: 247\tOffset: 969\r\n" +
-                "file2.txt\tSize: 165\tOffset: 1716\r\n" +
-                "file1.txt\tSize: 280\tOffset: 1881\r\n" +
-                "file2.txt\tSize: 83\tOffset: 2161\r\n",
+                "--showFileSize", "--showFileOffset"},
+                "file1.txt\tSize: 249\tOffset: 1475\r\n" +
+                "file2.txt\tSize: 167\tOffset: 1724\r\n" +
+                "file1.txt\tSize: 282\tOffset: 1891\r\n" +
+                "file2.txt\tSize: 85\tOffset: 2173\r\n",
                 "List files with only filename from folder2 + sizes + offsets");
         }
 
@@ -483,8 +461,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
         //}
 
         [TestMethod]
-        public void TestInputPackedFail()
-        {
+        public void TestInputPackedFail() {
             // check uncorrect input
             CheckRunFail(new[] {"add", "/.,*&^$Q*",
                     "--sourcePath", @"TestData\examplefile1.txt",
@@ -500,15 +477,12 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
                 File.Delete(@"TestResults\TestInputPackedFail\packedFile.packed");
 
             // check inaccessable packed
-            var fsFile = new FileStream(@"TestResults\TestInputPackedFail\packedFile.packed", FileMode.OpenOrCreate);
-            try
-            {
+            FileStream fsFile = new(@"TestResults\TestInputPackedFail\packedFile.packed", FileMode.OpenOrCreate);
+            try {
                 CheckRunFail(new[] {"add", @"TestResults\TestInputPackedFail\packedFile.packed",
                     "--sourcePath", @"TestData\examplefile1.txt",
                     "--packedPath", "file.txt"}, 1, "Expected file to be inaccessible");
-            }
-            finally
-            {
+            } finally {
                 byte[] someContent = new[] { (byte)'H', (byte)'i' };
                 fsFile.Write(someContent);
                 fsFile.Close();
@@ -522,10 +496,9 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
             if (File.Exists(@"TestResults\TestInputPackedFail\packedFile.packed"))
                 File.Delete(@"TestResults\TestInputPackedFail\packedFile.packed");
         }
-                
+
         [TestMethod]
-        public void TestOutputPackedFail()
-        {
+        public void TestOutputPackedFail() {
             Directory.CreateDirectory(@"TestResults\TestOutputPackedFail");
             File.Copy(@"TestData\empty.packed", @"TestResults\TestOutputPackedFail\packedFile.packed", true);
 
@@ -540,17 +513,14 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
             Directory.Delete(@"TestResults\TestOutputPackedFail\filenameWasTaken");
 
             // check inaccessable output packed
-            var fsFile = new FileStream(@"TestResults\TestOutputPackedFail\packedOutFile.packed", FileMode.OpenOrCreate);
-            try
-            {
+            FileStream fsFile = new(@"TestResults\TestOutputPackedFail\packedOutFile.packed", FileMode.OpenOrCreate);
+            try {
                 CheckRunFail(new[] {"add", @"TestResults\TestOutputPackedFail\packedFile.packed",
                     "--sourcePath", @"TestData\examplefile1.txt",
                     "--packedPath", "file.txt",
                     "--outputPackedFile", @"TestResults\TestOutputPackedFail\packedOutFile.packed" },
                     1, "Expected output file to be inaccessible");
-            }
-            finally
-            {
+            } finally {
                 fsFile.Close();
             }
 
@@ -559,8 +529,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
         }
 
         [TestMethod]
-        public void TestBackup()
-        {
+        public void TestBackup() {
             Directory.CreateDirectory(@"TestResults\TestBackup\");
             File.Copy(@"TestData\empty.packed", @"TestResults\TestBackup\packedFile.packed", true);
             File.Copy(@"TestData\examplefile1.txt", @"TestResults\TestBackup\examplefile1.txt", true);
@@ -624,20 +593,18 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
             // todo: find a way to test MakeBackup(), RestoreBackup() and DeleteBackup()
         }
 
-        private void CheckRunCompareFile(string[] p_Args, string p_ExpectedFilePath, string p_ActualFilePath, string p_Message = "", int p_ReturnCode = 0)
-        {
-            var cliApp = new CliApp();
-            var returnValue = cliApp.Run(p_Args);
 
-            Assert.AreEqual(p_ReturnCode, returnValue, p_Message+": wrong return value");
+        // Comapators
+        private static void CheckRunCompareFile(string[] p_Args, string p_ExpectedFilePath, string p_ActualFilePath, string p_Message = "", int p_ReturnCode = 0) {
+            int returnValue = CliApp.Run(p_Args);
+
+            Assert.AreEqual(p_ReturnCode, returnValue, p_Message + ": wrong return value");
             AssertFilesEqual(p_ExpectedFilePath, p_ActualFilePath, p_Message + ": files differ");
         }
 
         // todo: remove this method?
-        private void CheckRunFail(string[] p_Args, int p_ExpectedReturnValue, string p_Message = "")
-        {
-            var cliApp = new CliApp();
-            var returnValue = cliApp.Run(p_Args);
+        private static void CheckRunFail(string[] p_Args, int p_ExpectedReturnValue, string p_Message = "") {
+            int returnValue = CliApp.Run(p_Args);
 
             Assert.AreEqual(p_ExpectedReturnValue, returnValue, p_Message + ": wrong return value");
 
@@ -645,72 +612,61 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests
             // todo check files not modified?
         }
 
-        private void CheckRunCompareFolder(string[] p_Args, string p_ExpectedFolderPath, string p_ActualFolderPath, string p_Message = "")
-        {
-            var cliApp = new CliApp();
-            var returnValue = cliApp.Run(p_Args);
+        private static void CheckRunCompareFolder(string[] p_Args, string p_ExpectedFolderPath, string p_ActualFolderPath, string p_Message = "") {
+            int returnValue = CliApp.Run(p_Args);
 
             Assert.AreEqual(0, returnValue, p_Message + ": wrong return value");
             AssertFoldersEqual(p_ExpectedFolderPath, p_ActualFolderPath, p_Message + ": folders differ");
         }
 
-        private void CheckRunCompareOutput(string[] p_Args, string p_ExpectedOutput, string p_Message="")
-        {
-            var stringWriter = new StringWriter();
+        private static void CheckRunCompareOutput(string[] p_Args, string p_ExpectedOutput, string p_Message = "") {
+            StringWriter stringWriter = new();
             Console.SetOut(stringWriter);
 
-            var cliApp = new CliApp();
-            var returnValue = cliApp.Run(p_Args);
+            int returnValue = CliApp.Run(p_Args);
 
             Assert.AreEqual(0, returnValue, p_Message + ": wrong return value");
 
-            var ActualOutput = stringWriter.ToString();
+            string ActualOutput = stringWriter.ToString();
             Assert.AreEqual("\r\n" + p_ExpectedOutput, "\r\n" + ActualOutput, p_Message + ": outputs are not equal");
         }
 
-        private void CheckRunFileExists(string[] p_Args, string p_UnexpectedOutput, string p_Message)
-        {
-            var cliApp = new CliApp();
-            var returnValue = cliApp.Run(p_Args);
+        private static void CheckRunFileExists(string[] p_Args, string p_UnexpectedOutput, string p_Message) {
+            int returnValue = CliApp.Run(p_Args);
 
             Assert.AreEqual(0, returnValue, p_Message + ": wrong return value");
             Assert.IsTrue(!File.Exists(p_UnexpectedOutput), p_Message + ": file exists but should not");
         }
 
-        private void AssertFilesEqual(string p_FileExpected, string p_FileActual, string p_Message = "")
-        {
+
+        // Asserts
+        private static void AssertFilesEqual(string p_FileExpected, string p_FileActual, string p_Message = "") {
             Assert.IsTrue(FilesEqual(p_FileExpected, p_FileActual), p_Message);
         }
 
-        private void AssertFoldersEqual(string p_FolderExpected, string p_FolderActual, string p_Message = "")
-        {
+        private static void AssertFoldersEqual(string p_FolderExpected, string p_FolderActual, string p_Message = "") {
             Assert.IsTrue(Directory.Exists(p_FolderExpected), p_Message + ": expected folder missing");
             Assert.IsTrue(Directory.Exists(p_FolderActual), p_Message + ": actual folder missing");
 
-            var expectedFiles = new List<string>(Directory.GetFiles(p_FolderExpected, "", SearchOption.AllDirectories));
-            var actualFiles = new List<string>(Directory.GetFiles(p_FolderActual, "", SearchOption.AllDirectories));
+            List<string> expectedFiles = new(Directory.GetFiles(p_FolderExpected, "", SearchOption.AllDirectories));
+            List<string> actualFiles = new(Directory.GetFiles(p_FolderActual, "", SearchOption.AllDirectories));
 
             Assert.AreEqual(expectedFiles.Count, actualFiles.Count, p_Message + ": different amount of files");
 
             expectedFiles.Sort();
             actualFiles.Sort();
 
-            for (int i = 0; i < expectedFiles.Count; i++)
-            {
+            for (int i = 0; i < expectedFiles.Count; i++) {
                 AssertFilesEqual(expectedFiles[i], actualFiles[i], p_Message + ": comparing " + expectedFiles[i] + " = " + actualFiles[i]);
             }
         }
 
-        private bool FilesEqual(string p_FileA, string p_FileB)
-        {
+        private static bool FilesEqual(string p_FileA, string p_FileB) {
             byte[] fileA = File.ReadAllBytes(p_FileA);
             byte[] fileB = File.ReadAllBytes(p_FileB);
-            if (fileA.Length == fileB.Length)
-            {
-                for (int i = 0; i < fileA.Length; i++)
-                {
-                    if (fileA[i] != fileB[i])
-                    {
+            if (fileA.Length == fileB.Length) {
+                for (int i = 0; i < fileA.Length; i++) {
+                    if (fileA[i] != fileB[i]) {
                         return false;
                     }
                 }
