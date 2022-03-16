@@ -596,7 +596,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
 
         [TestMethod]
         public void TestCat() {
-            CheckRunCompareOutput(new[] {"cat", @"TestData\example.packed", 
+            CheckRunCompareOutput(new[] {"cat", @"TestData\example.packed",
                 "--packedPath", "file1.txt"},
                 "Begin of this first file in the example packed archive.\r\n" +
                 "Content not relevant. This is already the END\r\n",

@@ -35,8 +35,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli {
     }
 
     [Verb("add", HelpText = "Add file to the archive")]
-    class AddOptions : ModifyingOptions
-    {
+    class AddOptions : ModifyingOptions {
         [Option('s', "sourcePath", Required = true, HelpText = "What file or folder to add to the .packed file")]
         public string SourcePath { get; set; }
 
@@ -85,16 +84,16 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli {
     [Verb("cat", HelpText = "Print content of file inside of container")]
     class CatOptions : BaseOptions {
         [Option('s', "packedPath", Required = true, Default = "", HelpText = "What file to print")]
-        public String PackedPath { get; set; }
+        public string PackedPath { get; set; }
 
         [Option('x', "asHex", Required = false, Default = false, HelpText = "Display file content as hex dump")]
-        public Boolean AsHex { get; set; }
+        public bool AsHex { get; set; }
 
         [Option('f', "byteFormat", Required = false, Default = "X2", HelpText = "Format of printed bytes")]
-        public String ByteFormat { get; set; }
+        public string ByteFormat { get; set; }
 
         [Option('l', "LineFormat", Required = false, Default = "X8", HelpText = "Format of lines numbers")]
-        public String LineFormat { get; set; }
+        public string LineFormat { get; set; }
 
         [Option('g', "bytesPerGroup", Required = false, Default = (UInt16)2, HelpText = "How much bytes should print before printing space")]
         public UInt16 BytesPerGroup { get; set; }
@@ -103,8 +102,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli {
         public UInt16 GroupsPerRow { get; set; }
 
         [Option('p', "noPrintLinesNumbers", Required = false, Default = false, HelpText = "Do not print lines numbers")]
-        public Boolean NoPrintLinesNum { get; set; }
-
+        public bool NoPrintLinesNum { get; set; }
     }
 
     [Flags]

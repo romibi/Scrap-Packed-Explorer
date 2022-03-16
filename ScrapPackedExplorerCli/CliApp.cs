@@ -26,7 +26,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli {
                 (RenameOptions p_Options) => RunRename(p_Options),
                 (ExtractOptions p_Options) => RunExtract(p_Options),
                 (ListOptions p_Options) => RunList(p_Options),
-                (CatOptions     p_options) => RunCat(p_options),
+                (CatOptions p_Options) => RunCat(p_Options),
                 p_Errors => {
                     foreach (Error error in p_Errors)
                         if (error.Tag == ErrorType.BadVerbSelectedError)
@@ -94,13 +94,12 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli {
                 if (FileList.Count == 0)
                     Console.WriteLine($"'{p_Options.PackedFile}' is empty.");
                 else {
-                    List<String> SearchedList = Search(FileList, p_Options.SearchString, p_Options.IsRegex, p_Options.MatchBeginning, p_Options.MatchFilename);
+                    List<string> SearchedList = Search(FileList, p_Options.SearchString, p_Options.IsRegex, p_Options.MatchBeginning, p_Options.MatchFilename);
 
                     if (SearchedList.Count == 0)
                         Console.WriteLine($"Could not find anything by query '{p_Options.SearchString}' in '{p_Options.PackedFile}'");
 
-                    foreach (var File in SearchedList)
-                    {
+                    foreach (var File in SearchedList) {
                         OutputStyles Styles = p_Options.OutputStyle;
 
                         string[] FileData = File.Split("\t");
@@ -125,7 +124,6 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli {
 
                         Console.WriteLine(Output);
                     }
-
                 }
                 return 0;
             } catch (Exception ex) {
@@ -133,37 +131,34 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli {
                 return 1;
             }
         }
-    
-        private static Int32 RunCat(CatOptions p_Options) {
+
+        private static int RunCat(CatOptions p_Options) {
             try {
                 ScrapPackedFile packedFile = new(p_Options.PackedFile);
                 PackedFileIndexData fileData = null;
                 try {
                     fileData = packedFile.GetFileIndexDataForFile(p_Options.PackedPath);
-                }
-                catch {
+                } catch {
                     throw new FileNotFoundException($"File '{p_Options.PackedPath}' dose not exsits in '{p_Options.PackedFile}'");
                 }
 
                 FileStream fsPacked = new(p_Options.PackedFile, FileMode.Open);
                 try {
-                    Byte[] readBytes = new Byte[fileData.FileSize];
+                    byte[] readBytes = new byte[fileData.FileSize];
 
                     fsPacked.Seek(fileData.OriginalOffset, SeekOrigin.Begin);
                     fsPacked.Read(readBytes, 0, (Int32)fileData.FileSize);
 
-                    if (p_Options.AsHex) 
+                    if (p_Options.AsHex)
                         PrintAsHex(readBytes, p_Options.ByteFormat, p_Options.LineFormat, p_Options.BytesPerGroup, p_Options.GroupsPerRow, p_Options.NoPrintLinesNum);
                     else {
-                        String fileContnet = System.Text.Encoding.Default.GetString(readBytes);
+                        var fileContnet = System.Text.Encoding.Default.GetString(readBytes);
                         Console.WriteLine(fileContnet);
                     }
-                }
-                finally {
+                } finally {
                     fsPacked.Close();
                 }
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 Console.Error.WriteLine($"Error: {ex.Message}");
                 return 1;
             }
@@ -171,10 +166,10 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli {
             return 0;
         }
 
-        private static List<String> Search(List<String> p_FileList, String p_Query, Boolean p_IsRegex, Boolean p_MatchBeginning, Boolean p_MatchFilename) {
-            List<String> result = new();
+        private static List<string> Search(List<string> p_FileList, string p_Query, bool p_IsRegex, bool p_MatchBeginning, bool p_MatchFilename) {
+            List<string> result = new();
 
-            String query = p_Query;
+            var query = p_Query;
             if (!p_IsRegex)
                 query = Regex.Escape(query);
 
@@ -187,12 +182,12 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli {
 
             Regex rg = new(query);
 
-            foreach (String File in p_FileList) {
-                String[] FileData = File.Split("\t");
-                String FilePath = Path.GetDirectoryName(FileData[0]).Replace("\\", "/");
-                String FileName = Path.GetFileName(FileData[0]);
-                String FileSize = FileData[1];
-                String FileOffset = FileData[2];
+            foreach (var File in p_FileList) {
+                string[] FileData = File.Split("\t");
+                var FilePath = Path.GetDirectoryName(FileData[0]).Replace("\\", "/");
+                var FileName = Path.GetFileName(FileData[0]);
+                var FileSize = FileData[1];
+                var FileOffset = FileData[2];
 
                 if (FilePath != "")
                     FilePath += "/";
@@ -204,7 +199,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli {
             return result;
         }
 
-        private static void PrintAsHex(Byte[] p_Bytes, String p_ByteFormat = "X2", String p_LineFormat = "X8", UInt16 p_BytesPerGroup = 2, UInt16 p_GroupsPerLine = 16, Boolean p_NoPrintLinesNum = false) {
+        private static void PrintAsHex(byte[] p_Bytes, string p_ByteFormat = "X2", string p_LineFormat = "X8", UInt16 p_BytesPerGroup = 2, UInt16 p_GroupsPerLine = 16, bool p_NoPrintLinesNum = false) {
             for (UInt32 i = 0; i < p_Bytes.Length; i++) {
                 if (!p_NoPrintLinesNum && i % p_GroupsPerLine == 0)
                     Console.Write(i.ToString(p_LineFormat) + " ");
