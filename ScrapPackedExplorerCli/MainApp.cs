@@ -4,22 +4,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace ch.romibi.Scrap.Packed.Explorer
-{
-    class MainApp
-    {
+namespace ch.romibi.Scrap.Packed.Explorer {
+    internal class MainApp {
         [STAThread]
-        public static int Main(string[] args)
-        {
-            if (args != null && args.Length > 0)
-            {
-                var cliApp = new CliApp();
-                return cliApp.Run(args);
-            }
-            else
-            {
+        public static int Main(string[] p_Args) {
+            if (p_Args != null && p_Args.Length > 0)
+                return CliApp.Run(p_Args);
+            else {
                 HideConsoleWindow();
-                var guiApp = new GuiApp();
+                GuiApp guiApp = new();
                 guiApp.InitializeComponent();
                 guiApp.Run();
 
@@ -27,32 +20,32 @@ namespace ch.romibi.Scrap.Packed.Explorer
             }
         }
 
-        private static void HideConsoleWindow()
-        {
+        private static void HideConsoleWindow() {
             IntPtr ptr = GetForegroundWindow();
-            GetWindowThreadProcessId(ptr, out int u);
+            uint v = GetWindowThreadProcessId(ptr, out int u);
+            if (v == 0)
+                throw new Exception("Error: unable get process ID");
             Process process = Process.GetProcessById(u);
 
             // Check if it is console?
-            var consoleApplications = new List<String>(new string[] { "cmd", "wt", "powershell" });
-            if (!consoleApplications.Contains(process.ProcessName))
-            {
-                var handle = GetConsoleWindow();
+            List<string> consoleApplications = new(new string[] { "cmd", "wt", "powershell" });
+            if (!consoleApplications.Contains(process.ProcessName)) {
+                IntPtr handle = GetConsoleWindow();
                 ShowWindow(handle, 0);
             }
         }
 
         [DllImport("kernel32.dll")]
-        static extern IntPtr GetConsoleWindow();
+        private static extern IntPtr GetConsoleWindow();
 
         [DllImport("user32.dll")]
-        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+        private static extern bool ShowWindow(IntPtr p_HWnd, int p_NCmdShow);
 
         [DllImport("user32.dll")]
-        static extern IntPtr GetForegroundWindow();
+        private static extern IntPtr GetForegroundWindow();
 
         [DllImport("user32.dll", SetLastError = true)]
-        static extern uint GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
+        private static extern uint GetWindowThreadProcessId(IntPtr p_HWnd, out int p_LpdwProcessId);
 
 
     }

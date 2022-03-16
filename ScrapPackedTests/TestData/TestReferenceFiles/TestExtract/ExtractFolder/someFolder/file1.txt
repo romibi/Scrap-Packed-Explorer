@@ -1,4 +1,4 @@
-Begin of 3rd file in the archive.
+Begin of 3rd file in the container.
 Its offset already needs 2 bytes because the first 2 files are bigger than 255 bytes together.
 It is inside a folder called folder1 and called file1.
 This is a good test to figure out if the offset value in the index is read correctly.

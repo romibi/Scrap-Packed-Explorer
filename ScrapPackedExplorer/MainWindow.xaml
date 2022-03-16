@@ -26,7 +26,7 @@
                     <TextBlock Text="Save"/>
                 </StackPanel>
             </Button>
-            <Button Name="SaveAsButton" Width="64" Click="SaveAsButton_Click" IsEnabled="{Binding Path=ArchiveLoaded, RelativeSource={RelativeSource AncestorType=Window}}">
+            <Button Name="SaveAsButton" Width="64" Click="SaveAsButton_Click" IsEnabled="{Binding Path=ContainerLoaded, RelativeSource={RelativeSource AncestorType=Window}}">
                 <StackPanel>
                     <Image Source="/Icons/MissingIcon.png" Height="42" />
                     <TextBlock Text="Save as …"/>
@@ -37,13 +37,13 @@
                 <TextBlock>v</TextBlock>
             </Button> -->
             <Separator Width="5"></Separator>
-            <Button Name="AddButton" Width="64" Click="AddButton_Click" IsEnabled="{Binding Path=ArchiveLoaded, RelativeSource={RelativeSource AncestorType=Window}}">
+            <Button Name="AddButton" Width="64" Click="AddButton_Click" IsEnabled="{Binding Path=ContainerLoaded, RelativeSource={RelativeSource AncestorType=Window}}">
                 <StackPanel>
                     <Image Source="/Icons/MissingIcon.png" Height="42" />
                     <TextBlock Text="Add File"/>
                 </StackPanel>
             </Button>
-            <Button Name="AddFolderButton" Width="64" Click="AddFolderButton_Click" IsEnabled="{Binding Path=ArchiveLoaded, RelativeSource={RelativeSource AncestorType=Window}}">
+            <Button Name="AddFolderButton" Width="64" Click="AddFolderButton_Click" IsEnabled="{Binding Path=ContainerLoaded, RelativeSource={RelativeSource AncestorType=Window}}">
                 <StackPanel>
                     <Image Source="/Icons/MissingIcon.png" Height="42" />
                     <TextBlock Text="Add Folder"/>
@@ -63,14 +63,14 @@
             </Button>
             <Separator Width="5"></Separator>
             <Button Name="SearchButton" Width="64" Click="SearchButton_Click" IsEnabled="False">
-                <!-- IsEnabled="{Binding Path=ArchiveLoaded, RelativeSource={RelativeSource AncestorType=Window}}" -->
+                <!-- IsEnabled="{Binding Path=ContainerLoaded, RelativeSource={RelativeSource AncestorType=Window}}" -->
                 <StackPanel>
                     <Image Source="/Icons/MissingIcon.png" Height="42" />
                     <TextBlock Text="Search"/>
                 </StackPanel>
             </Button>
             <Button Name="OptionsButton" Width="64" Click="OptionsButton_Click" IsEnabled="False">
-                <!-- IsEnabled="{Binding Path=ArchiveLoaded, RelativeSource={RelativeSource AncestorType=Window}}" -->
+                <!-- IsEnabled="{Binding Path=ContainerLoaded, RelativeSource={RelativeSource AncestorType=Window}}" -->
                 <StackPanel>
                     <Image Source="/Icons/MissingIcon.png" Height="42" />
                     <TextBlock Text="Options"/>
@@ -92,7 +92,7 @@
                     </HierarchicalDataTemplate>
                 </TreeView.ItemTemplate>
             </TreeView>
-            <GridSplitter Grid.Column="1" Width="5"/>
+            <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
             <ListView Grid.Column="2"  Name="TreeContent" ItemsSource="{Binding Items}" MouseDoubleClick="TreeContent_MouseDoubleClick" SelectionChanged="TreeContent_SelectionChanged">
                 <ListView.View>
                     <GridView>
@@ -100,7 +100,7 @@
                     </GridView>
                 </ListView.View>
             </ListView>
-            <GridSplitter Grid.Column="3" Width="5"/>
+            <GridSplitter Grid.Column="3" Width="5" HorizontalAlignment="Stretch"/>
             <TextBlock Grid.Column="4" Text="Here File information will be displayed" TextWrapping="Wrap"></TextBlock>
         </Grid>
     </Grid>
