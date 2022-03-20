@@ -147,7 +147,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli {
                     byte[] readBytes = new byte[fileData.FileSize];
 
                     fsPacked.Seek(fileData.OriginalOffset, SeekOrigin.Begin);
-                    fsPacked.Read(readBytes, 0, (Int32)fileData.FileSize);
+                    fsPacked.Read(readBytes, 0, (int)fileData.FileSize);
 
                     if (p_Options.AsHex)
                         PrintAsHex(readBytes, p_Options.ByteFormat, p_Options.LineFormat, p_Options.BytesPerGroup, p_Options.GroupsPerRow, p_Options.NoPrintLinesNum);
@@ -199,8 +199,8 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli {
             return result;
         }
 
-        private static void PrintAsHex(byte[] p_Bytes, string p_ByteFormat = "X2", string p_LineFormat = "X8", UInt16 p_BytesPerGroup = 2, UInt16 p_GroupsPerLine = 16, bool p_NoPrintLinesNum = false) {
-            for (UInt32 i = 0; i < p_Bytes.Length; i++) {
+        private static void PrintAsHex(byte[] p_Bytes, string p_ByteFormat = "X2", string p_LineFormat = "X8", ushort p_BytesPerGroup = 2, ushort p_GroupsPerLine = 16, bool p_NoPrintLinesNum = false) {
+            for (ushort i = 0; i < p_Bytes.Length; i++) {
                 if (!p_NoPrintLinesNum && i % p_GroupsPerLine == 0)
                     Console.Write(i.ToString(p_LineFormat) + " ");
 
