@@ -18,8 +18,24 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli {
         public bool OverwriteOldBackup { get; set; }
     }
 
-    [Verb("add", HelpText = "Add file to the container")]
-    internal class AddOptions : ModifyingOptions {
+    abstract class SearchOptions : BaseOptions {
+        [Option('q', "searchString", Required = false, Default = "", HelpText = "A Search string to filter the output with")]
+        public string SearchString { get; set; }
+
+        [Option('r', "regex", Required = false, Default = false, HelpText = "Defines if the search string is a regular expression")]
+        public bool IsRegex { get; set; }
+
+        // todo: come up with better description
+        // todo: change arguments style
+        [Option('b', "matchBeginning", Required = false, Default = false, HelpText = "Apply search query only to beginnng of the files path. By default applies everywhere")]
+        public bool MatchBeginning { get; set; }
+
+        [Option('f', "matchFilename", Required = false, Default = false, HelpText = "Search only by files. By default search includes folders")]
+        public bool MatchFilename { get; set; }
+    }
+
+    [Verb("add", HelpText = "Add file to the archive")]
+    class AddOptions : ModifyingOptions {
         [Option('s', "sourcePath", Required = true, HelpText = "What file or folder to add to the .packed file")]
         public string SourcePath { get; set; }
 
@@ -54,27 +70,39 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli {
     }
 
     [Verb("list", HelpText = "list or search files and folders in the container")]
-    internal class ListOptions : BaseOptions {
+    internal class ListOptions : SearchOptions {
         [Option('l', "outputStyle", Required = false, Default = OutputStyles.List, HelpText = "Output list (default) or tree view")]
         public OutputStyles OutputStyle { get; set; }
-
-        [Option('q', "searchString", Required = false, Default = "", HelpText = "A Search string to filter the output with")]
-        public string SearchString { get; set; }
-
-        [Option('r', "regex", Required = false, Default = false, HelpText = "Defines if the search string is a regular expression")]
-        public bool IsRegex { get; set; }
-
-        [Option('b', "matchBeginning", Required = false, Default = false, HelpText = "Apply search query only to beginnng of the files path. By default applies everywhere")]
-        public bool MatchBeginning { get; set; }
-
-        [Option('f', "matchFilename", Required = false, Default = false, HelpText = "Search only by files. By default search includes folders")]
-        public bool MatchFilename { get; set; }
 
         [Option('s', "showFileSize", Required = false, Default = false, HelpText = "Show files sizes")]
         public bool ShowFileSize { get; set; }
 
         [Option('o', "showFileOffset", Required = false, Default = false, HelpText = "Show files offsets")]
         public bool ShowFileOffset { get; set; }
+    }
+
+    [Verb("cat", HelpText = "Print content of file inside of container")]
+    class CatOptions : BaseOptions {
+        [Option('s', "packedPath", Required = true, Default = "", HelpText = "What file to print")]
+        public string PackedPath { get; set; }
+
+        [Option('x', "asHex", Required = false, Default = false, HelpText = "Display file content as hex dump")]
+        public bool AsHex { get; set; }
+
+        [Option('f', "byteFormat", Required = false, Default = "X2", HelpText = "Format of printed bytes")]
+        public string ByteFormat { get; set; }
+
+        [Option('l', "LineFormat", Required = false, Default = "X8", HelpText = "Format of lines numbers")]
+        public string LineFormat { get; set; }
+
+        [Option('g', "bytesPerGroup", Required = false, Default = (UInt16)2, HelpText = "How much bytes should print before printing space")]
+        public UInt16 BytesPerGroup { get; set; }
+
+        [Option('r', "groupsPerRow", Required = false, Default = (UInt16)16, HelpText = "How much groups should print in one line")]
+        public UInt16 GroupsPerRow { get; set; }
+
+        [Option('p', "noPrintLinesNumbers", Required = false, Default = false, HelpText = "Do not print lines numbers")]
+        public bool NoPrintLinesNum { get; set; }
     }
 
     [Flags]
