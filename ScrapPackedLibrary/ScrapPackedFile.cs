@@ -46,7 +46,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib {
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0049:Simplify Names", Justification = "UInt Values written on disk have to be 32bit")]
-        public void SaveToFile(string p_NewFileName) {
+        public void SaveToFile(string p_NewFileName, bool p_KeepBackup = false, bool p_OverrideOldBackup = true) {
             MetaData.RecalcFileOffsets();
 
             string newFileName = FileName;
@@ -88,6 +88,10 @@ namespace ch.romibi.Scrap.Packed.PackerLib {
                 if (FileName.EndsWith(".bak"))
                     RestoreBackup(newFileName);
                 throw;
+            } finally { 
+                if (!p_KeepBackup) {
+                    DeleteBackup(newFileName);
+                }
             }
         }
 
@@ -460,7 +464,10 @@ namespace ch.romibi.Scrap.Packed.PackerLib {
         private void DeleteBackup(string p_FilePath) {
             // todo: test of this
             if (!Backups.ContainsKey(p_FilePath))
-                throw new FileNotFoundException($"File '{p_FilePath}' does not have any backups to delete");
+                // todo: we probably shouldn't throw this exception.
+                //       I am not sure how to handle this so I just return from this function from now
+                // throw new FileNotFoundException($"File '{p_FilePath}' does not have any backups to delete");
+                return;
 
             string backupPath = Backups[p_FilePath];
 
