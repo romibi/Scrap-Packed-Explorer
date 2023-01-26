@@ -21,6 +21,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib {
         // General functionality
         public void Add(string p_ExternalPath, string p_PackedPath) {
             FileAttributes fileAttributes = File.GetAttributes(p_ExternalPath);
+            p_PackedPath = CorrectPath(p_PackedPath);
             if (fileAttributes.HasFlag(FileAttributes.Directory))
                 AddDirectory(p_ExternalPath, p_PackedPath);
             else
@@ -141,7 +142,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib {
                 packedPath = "";
 
             foreach (string file in Directory.EnumerateFiles(externalPath, "*", SearchOption.AllDirectories)) {
-                string packedFilePath = string.Concat(packedPath, file.AsSpan(externalPath.Length));
+                string packedFilePath = CorrectPath(string.Concat(packedPath, file.AsSpan(externalPath.Length)));
                 AddFile(file, packedFilePath);
             }
         }
@@ -155,7 +156,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib {
 
             string packedPath = p_PackedPath;
             if (packedPath.Length == 0)
-                packedPath = Path.GetFileName(p_ExternalPath);
+                packedPath = CorrectPath(Path.GetFileName(p_ExternalPath));
 
             if (MetaData.FileByPath.ContainsKey(packedPath))
                 RemoveFile(packedPath);
@@ -473,6 +474,18 @@ namespace ch.romibi.Scrap.Packed.PackerLib {
 
             Backups.Remove(p_FilePath);
             File.Delete(backupPath);
+        }
+
+        public string CorrectPath(string p_FilePath) {
+            if (p_FilePath == "")
+                return p_FilePath;
+
+            p_FilePath = p_FilePath.Replace("\\", "/");
+
+            if (p_FilePath[0] == '/')
+                p_FilePath = p_FilePath.Remove(0, 1);
+
+            return p_FilePath;
         }
     }
 }
