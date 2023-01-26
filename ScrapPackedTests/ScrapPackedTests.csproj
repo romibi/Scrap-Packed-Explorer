@@ -22,10 +22,6 @@
   </ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="TestData\" />
-	</ItemGroup>
-
-	<ItemGroup>
     <ProjectReference Include="..\ScrapPackedExplorerCli\ScrapPackedExplorerCli.csproj" />
     <ProjectReference Include="..\ScrapPackedExplorer\ScrapPackedExplorer.csproj" />
   </ItemGroup>
@@ -70,6 +66,18 @@
     <None Update="TestData\exampleFolder2\examplefile_2.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="TestData\exampleFolder4\examplefile_1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestData\exampleFolder4\subfolder1\examplefile_2.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestData\exampleFolder4\subfolder1\subfolder2\examplefile_3-1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestData\exampleFolder4\subfolder1\subfolder2\examplefile_3-2.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="TestData\exampleFolder3\examplefile_1.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -110,6 +118,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="TestData\TestReferenceFiles\TestAdd\addFolderExistingToSubfolder.packed">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestData\TestReferenceFiles\TestAdd\addFolderNestedSubfolders.packed">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="TestData\TestReferenceFiles\TestAdd\addFolderNew.packed">
