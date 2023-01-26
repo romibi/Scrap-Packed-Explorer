@@ -537,7 +537,8 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
 
             CheckRunCompareFile(new[] {"add", @"TestResults\TestBackup\packedFile.packed",
                 "--sourcePath", @"TestData\examplefile1.txt",
-                "--packedPath", @"file.txt" },
+                "--packedPath", @"file.txt",
+                "--keepBackup"},
                 @"TestResults\TestBackup\packedFile.packed.bak",
                 @"TestData\empty.packed",
                 "Backup after adding file to new"
@@ -545,15 +546,24 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
 
             CheckRunCompareFile(new[] {"add", @"TestResults\TestBackup\packedFile.packed",
                 "--sourcePath", @"TestData\examplefile1.txt",
-                "--packedPath", @"file.txt" },
+                "--packedPath", @"file.txt",
+                "--keepBackup"},
                 @"TestResults\TestBackup\packedFile.packed.bak",
                 @"TestResults\TestBackup\packedFile.packed",
                 "Backup after re-adding file"
             );
 
+            CheckRunFileExists(new[] {"add", @"TestResults\TestBackup\packedFile.packed",
+                "--sourcePath", @"TestData\examplefile1.txt",
+                "--packedPath", @"file.txt" },
+                @"TestResults\TestBackup\packedFile.packed.bak",
+                "No backup because flag '--keepBackup' is not specified"
+            );
+
             // todo: this test is not working because app even can't make backup. 
             //       Need to find way to open file/make folder with name "examplefile1.txt" 
             //       after making backup but before tying to extract.
+
 
             //File.Copy(@"TestData\examplefile3.txt", @"TestResults\TestBackup\examplefile1.txt", true);
             //var fsFile = new FileStream(@"TestResults\TestBackup\examplefile1.txt", FileMode.Open);
@@ -572,14 +582,16 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
             //    fsFile.Close();
             //}
 
-            CheckRunFileExists(new[] {"extract", @"TestResults\TestBackup\packedFile.packed",
-                "--destinationPath", @"TestResults\TestBackup\examplefile1.txt",
-                "--packedPath", @"file.txt" },
-                @"TestResults\TestBackup\examplefile1.txt.bak",
-                "Backup of alredy extracted file after extraction"
-            );
+            //NOTE: Becaouse of change in ScrapPackedFile.cs:469 this test is not correct.
+            //CheckRunFileExists(new[] {"extract", @"TestResults\TestBackup\packedFile.packed",
+            //    "--destinationPath", @"TestResults\TestBackup\examplefile1.txt",
+            //    "--packedPath", @"file.txt",
+            //    "--keepBackup"},
+            //    @"TestResults\TestBackup\examplefile1.txt.bak",
+            //    "Backup of alredy extracted file after extraction"
+            //);
 
-            // todo: keepBackup & overwriteOldBackup
+            // todo: overwriteOldBackup
             // Todo: implement check later
             /* // add file keep backup
             // (create dummy packedFile.packed.bak before call, expect to be unchanged)
@@ -732,13 +744,13 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
             Assert.AreEqual("\r\n" + p_ExpectedOutput, "\r\n" + ActualOutput, p_Message + ": outputs are not equal");
         }
 
+        // TODO :CheckRunFile**Not**Exsits?
         private static void CheckRunFileExists(string[] p_Args, string p_UnexpectedOutput, string p_Message) {
             int returnValue = CliApp.Run(p_Args);
 
             Assert.AreEqual(0, returnValue, p_Message + ": wrong return value");
             Assert.IsTrue(!File.Exists(p_UnexpectedOutput), p_Message + ": file exists but should not");
         }
-
 
         // Asserts
         private static void AssertFilesEqual(string p_FileExpected, string p_FileActual, string p_Message = "") {
