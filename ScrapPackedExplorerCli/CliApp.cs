@@ -42,7 +42,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli {
                 // TODO: sanitize input
                 ScrapPackedFile packedFile = new(p_Options.PackedFile, true);
                 packedFile.Add(p_Options.SourcePath, p_Options.PackedPath);
-                packedFile.SaveToFile(p_Options.OutputPackedFile);
+                packedFile.SaveToFile(p_Options.OutputPackedFile, p_Options.KeepBackup, p_Options.OverwriteOldBackup);
             } catch (Exception ex) {
                 Console.Error.WriteLine($"Error: {ex.Message}");
                 return 1;
@@ -54,7 +54,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli {
             try {
                 ScrapPackedFile packedFile = new(p_Options.PackedFile);
                 packedFile.Remove(p_Options.PackedPath);
-                packedFile.SaveToFile(p_Options.OutputPackedFile);
+                packedFile.SaveToFile(p_Options.OutputPackedFile, p_Options.KeepBackup, p_Options.OverwriteOldBackup);
             } catch (Exception ex) {
                 Console.Error.WriteLine($"Error: {ex.Message}");
                 return 1;
@@ -66,7 +66,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli {
             try {
                 ScrapPackedFile packedFile = new(p_Options.PackedFile);
                 packedFile.Rename(p_Options.OldPackedPath, p_Options.NewPackedPath);
-                packedFile.SaveToFile(p_Options.OutputPackedFile);
+                packedFile.SaveToFile(p_Options.OutputPackedFile, p_Options.KeepBackup, p_Options.OverwriteOldBackup);
             } catch (Exception ex) {
                 Console.Error.WriteLine($"Error: {ex.Message}");
                 return 1;
