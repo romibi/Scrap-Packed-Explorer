@@ -1,0 +1,2 @@
+This is file named "examplefile_3-1.txt" and it is inside folder "subfolder2", which is inside folder "subfolder1".
+Inside folder "subfolder1" should lies file "example_2.jpg"

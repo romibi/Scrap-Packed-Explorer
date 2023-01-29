@@ -70,7 +70,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
             // add file different output
             CheckRunCompareFile(new[] { "add", @"TestResults\TestAdd\packedFile.packed",
                 "--sourcePath", @"TestData\examplefile1.txt",
-                "--packedPath", "folder/file.txt",
+                "--packedPath", "folder\\file.txt",
                 "--outputPackedFile", @"TestResults\TestAdd\newPackedFile.packed" },
                 @"TestData\TestReferenceFiles\TestAdd\addFileExisting.packed",
                 @"TestResults\TestAdd\newPackedFile.packed",
@@ -111,6 +111,16 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
                 @"TestData\TestReferenceFiles\TestAdd\addFolderReplaceSome.packed",
                 @"TestResults\TestAdd\packedFile.packed",
                 "Add folder to existing to subfolder, replace some");
+
+            // Reset packedFile.packed
+            File.Copy(@"TestData\empty.packed", @"TestResults\TestAdd\packedFile.packed", true);
+
+            // add folder nested sub-folders
+            CheckRunCompareFile(new[] { "add", @"TestResults\TestAdd\packedFile.packed",
+                "--sourcePath", @"TestData\exampleFolder4\" },
+                @"TestData\TestReferenceFiles\TestAdd\addFolderNestedSubfolders.packed",
+                @"TestResults\TestAdd\packedFile.packed",
+                "Add folder with nested sub-folders to new");
         }
 
         [TestMethod]
