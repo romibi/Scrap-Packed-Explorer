@@ -307,7 +307,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
 
         [TestMethod]
         public void TestRunList() {
-            CheckRunCompareOutput(new[] { "list", @"TestData\empty.packed" },
+            CheckRunCompareErrorOutput(new[] { "list", @"TestData\empty.packed" },
                 "'TestData\\empty.packed' is empty.\r\n",
                 "List empty"
             );
@@ -363,10 +363,16 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
                 "List full filesizes + offsets"
             );
 
-            CheckRunCompareOutput(new[] { "list", @"TestData\example.packed",
+            CheckRunCompareErrorOutput(new[] { "list", @"TestData\example.packed",
                 "--searchString", "nothing"},
                 "Could not find anything by query 'nothing' in 'TestData\\example.packed'\r\n",
                 "List could not find"
+            );
+
+            CheckRunCompareErrorOutput(new[] { "list", @"TestData\example.packed",
+                "--noErrors", "--searchString", "nothing"},
+                "",
+                "List could not find no errors"
             );
 
             CheckRunCompareOutput(new[] { "list", @"TestData\example.packed",
@@ -749,6 +755,17 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
             int returnValue = CliApp.Run(p_Args);
 
             Assert.AreEqual(0, returnValue, p_Message + ": wrong return value");
+
+            string ActualOutput = stringWriter.ToString();
+            Assert.AreEqual("\r\n" + p_ExpectedOutput, "\r\n" + ActualOutput, p_Message + ": outputs are not equal");
+        }
+        private static void CheckRunCompareErrorOutput(string[] p_Args, string p_ExpectedOutput, string p_Message = "") {
+            StringWriter stringWriter = new();
+            Console.SetError(stringWriter);
+
+            int returnValue = CliApp.Run(p_Args);
+
+            Assert.AreEqual(1, returnValue, p_Message + ": wrong return value");
 
             string ActualOutput = stringWriter.ToString();
             Assert.AreEqual("\r\n" + p_ExpectedOutput, "\r\n" + ActualOutput, p_Message + ": outputs are not equal");

@@ -91,43 +91,52 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli {
                 List<string> FileList = packedFile.GetFileNames();
                 FileList.Sort();
 
-                if (FileList.Count == 0)
-                    Console.WriteLine($"'{p_Options.PackedFile}' is empty.");
-                else {
-                    List<string> SearchedList = Search(FileList, p_Options.SearchString, p_Options.IsRegex, p_Options.MatchBeginning, p_Options.MatchFilename);
-
-                    if (SearchedList.Count == 0)
-                        Console.WriteLine($"Could not find anything by query '{p_Options.SearchString}' in '{p_Options.PackedFile}'");
-
-                    foreach (var File in SearchedList) {
-                        OutputStyles Styles = p_Options.OutputStyle;
-
-                        string[] FileData = File.Split("\t");
-                        string FilePath = Path.GetDirectoryName(FileData[0]).Replace("\\", "/");
-                        string FileName = Path.GetFileName(FileData[0]);
-                        string FileSize = FileData[1];
-                        string FileOffset = FileData[2];
-
-                        if (FilePath != "")
-                            FilePath += "/";
-
-                        string Output = FileName;
-
-                        if (Styles != OutputStyles.Name)
-                            Output = FilePath + Output;
-
-                        if (p_Options.ShowFileSize)
-                            Output += "\t" + FileSize;
-
-                        if (p_Options.ShowFileOffset)
-                            Output += "\t" + FileOffset;
-
-                        Console.WriteLine(Output);
+                if (FileList.Count == 0) {
+                    if (!p_Options.NoErrors) {
+                        Console.Error.WriteLine($"'{p_Options.PackedFile}' is empty.");
                     }
+                    return 1;
+                }
+
+                List<string> SearchedList = Search(FileList, p_Options.SearchString, p_Options.IsRegex, p_Options.MatchBeginning, p_Options.MatchFilename);
+
+                if (SearchedList.Count == 0) {
+                    if (!p_Options.NoErrors) {
+                        Console.Error.WriteLine($"Could not find anything by query '{p_Options.SearchString}' in '{p_Options.PackedFile}'");
+                    }
+                    return 1;
+                }
+
+                foreach (var File in SearchedList) {
+                    OutputStyles Styles = p_Options.OutputStyle;
+
+                    string[] FileData = File.Split("\t");
+                    string FilePath = Path.GetDirectoryName(FileData[0]).Replace("\\", "/");
+                    string FileName = Path.GetFileName(FileData[0]);
+                    string FileSize = FileData[1];
+                    string FileOffset = FileData[2];
+
+                    if (FilePath != "")
+                        FilePath += "/";
+
+                    string Output = FileName;
+
+                    if (Styles != OutputStyles.Name)
+                        Output = FilePath + Output;
+
+                    if (p_Options.ShowFileSize)
+                        Output += "\t" + FileSize;
+
+                    if (p_Options.ShowFileOffset)
+                        Output += "\t" + FileOffset;
+
+                    Console.WriteLine(Output);
                 }
                 return 0;
             } catch (Exception ex) {
-                Console.Error.WriteLine($"Error: {ex.Message}");
+                if (!p_Options.NoErrors) {
+                    Console.Error.WriteLine($"Error: {ex.Message}");
+                }
                 return 1;
             }
         }
