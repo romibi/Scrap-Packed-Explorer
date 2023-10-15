@@ -92,14 +92,18 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli {
                 FileList.Sort();
 
                 if (FileList.Count == 0) {
-                    Console.Error.WriteLine($"'{p_Options.PackedFile}' is empty.");
+                    if (!p_Options.NoErrors) {
+                        Console.Error.WriteLine($"'{p_Options.PackedFile}' is empty.");
+                    }
                     return 1;
                 }
 
                 List<string> SearchedList = Search(FileList, p_Options.SearchString, p_Options.IsRegex, p_Options.MatchBeginning, p_Options.MatchFilename);
 
                 if (SearchedList.Count == 0) {
-                    Console.Error.WriteLine($"Could not find anything by query '{p_Options.SearchString}' in '{p_Options.PackedFile}'");
+                    if (!p_Options.NoErrors) {
+                        Console.Error.WriteLine($"Could not find anything by query '{p_Options.SearchString}' in '{p_Options.PackedFile}'");
+                    }
                     return 1;
                 }
 
@@ -130,7 +134,9 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli {
                 }
                 return 0;
             } catch (Exception ex) {
-                Console.Error.WriteLine($"Error: {ex.Message}");
+                if (!p_Options.NoErrors) {
+                    Console.Error.WriteLine($"Error: {ex.Message}");
+                }
                 return 1;
             }
         }
