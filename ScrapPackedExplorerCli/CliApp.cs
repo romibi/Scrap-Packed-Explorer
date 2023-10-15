@@ -91,39 +91,42 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli {
                 List<string> FileList = packedFile.GetFileNames();
                 FileList.Sort();
 
-                if (FileList.Count == 0)
-                    Console.WriteLine($"'{p_Options.PackedFile}' is empty.");
-                else {
-                    List<string> SearchedList = Search(FileList, p_Options.SearchString, p_Options.IsRegex, p_Options.MatchBeginning, p_Options.MatchFilename);
+                if (FileList.Count == 0) {
+                    Console.Error.WriteLine($"'{p_Options.PackedFile}' is empty.");
+                    return 1;
+                }
 
-                    if (SearchedList.Count == 0)
-                        Console.WriteLine($"Could not find anything by query '{p_Options.SearchString}' in '{p_Options.PackedFile}'");
+                List<string> SearchedList = Search(FileList, p_Options.SearchString, p_Options.IsRegex, p_Options.MatchBeginning, p_Options.MatchFilename);
 
-                    foreach (var File in SearchedList) {
-                        OutputStyles Styles = p_Options.OutputStyle;
+                if (SearchedList.Count == 0) {
+                    Console.Error.WriteLine($"Could not find anything by query '{p_Options.SearchString}' in '{p_Options.PackedFile}'");
+                    return 1;
+                }
 
-                        string[] FileData = File.Split("\t");
-                        string FilePath = Path.GetDirectoryName(FileData[0]).Replace("\\", "/");
-                        string FileName = Path.GetFileName(FileData[0]);
-                        string FileSize = FileData[1];
-                        string FileOffset = FileData[2];
+                foreach (var File in SearchedList) {
+                    OutputStyles Styles = p_Options.OutputStyle;
 
-                        if (FilePath != "")
-                            FilePath += "/";
+                    string[] FileData = File.Split("\t");
+                    string FilePath = Path.GetDirectoryName(FileData[0]).Replace("\\", "/");
+                    string FileName = Path.GetFileName(FileData[0]);
+                    string FileSize = FileData[1];
+                    string FileOffset = FileData[2];
 
-                        string Output = FileName;
+                    if (FilePath != "")
+                        FilePath += "/";
 
-                        if (Styles != OutputStyles.Name)
-                            Output = FilePath + Output;
+                    string Output = FileName;
 
-                        if (p_Options.ShowFileSize)
-                            Output += "\t" + FileSize;
+                    if (Styles != OutputStyles.Name)
+                        Output = FilePath + Output;
 
-                        if (p_Options.ShowFileOffset)
-                            Output += "\t" + FileOffset;
+                    if (p_Options.ShowFileSize)
+                        Output += "\t" + FileSize;
 
-                        Console.WriteLine(Output);
-                    }
+                    if (p_Options.ShowFileOffset)
+                        Output += "\t" + FileOffset;
+
+                    Console.WriteLine(Output);
                 }
                 return 0;
             } catch (Exception ex) {
