@@ -370,7 +370,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
             );
 
             CheckRunCompareErrorOutput(new[] { "list", @"TestData\example.packed",
-                "--no-errors", "--searchString", "nothing"},
+                "--noErrors", "--searchString", "nothing"},
                 "",
                 "List could not find no errors"
             );

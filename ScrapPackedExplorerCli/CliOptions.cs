@@ -79,7 +79,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli {
 
         [Option('o', "showFileOffset", Required = false, Default = false, HelpText = "Show files offsets")]
         public bool ShowFileOffset { get; set; }
-        [Option('n', "no-errors", Required = false, Default = false, HelpText = "Disable error messages")]
+        [Option("noErrors", Required = false, Default = false, HelpText = "Disable error messages")]
         public bool NoErrors { get; set; }
     }
 
