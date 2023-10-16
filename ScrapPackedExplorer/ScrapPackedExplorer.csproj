@@ -15,6 +15,16 @@
 
   <ItemGroup>
     <None Remove="Icons\MissingIcon.png" />
+    <None Remove="Icons\Variety Duotone Filled Icons\add-file-3.png" />
+    <None Remove="Icons\Variety Duotone Filled Icons\copy.png" />
+    <None Remove="Icons\Variety Duotone Filled Icons\curve-arrow-down-5.png" />
+    <None Remove="Icons\Variety Duotone Filled Icons\delete-file.png" />
+    <None Remove="Icons\Variety Duotone Filled Icons\diskette-save.png" />
+    <None Remove="Icons\Variety Duotone Filled Icons\file-edit.png" />
+    <None Remove="Icons\Variety Duotone Filled Icons\file-new.png" />
+    <None Remove="Icons\Variety Duotone Filled Icons\file-search.png" />
+    <None Remove="Icons\Variety Duotone Filled Icons\folder-add.png" />
+    <None Remove="Icons\Variety Duotone Filled Icons\settings.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -40,6 +50,16 @@
 
   <ItemGroup>
     <Resource Include="Icons\MissingIcon.png" />
+    <Resource Include="Icons\Variety Duotone Filled Icons\add-file-3.png" />
+    <Resource Include="Icons\Variety Duotone Filled Icons\copy.png" />
+    <Resource Include="Icons\Variety Duotone Filled Icons\curve-arrow-down-5.png" />
+    <Resource Include="Icons\Variety Duotone Filled Icons\delete-file.png" />
+    <Resource Include="Icons\Variety Duotone Filled Icons\diskette-save.png" />
+    <Resource Include="Icons\Variety Duotone Filled Icons\file-edit.png" />
+    <Resource Include="Icons\Variety Duotone Filled Icons\file-new.png" />
+    <Resource Include="Icons\Variety Duotone Filled Icons\file-search.png" />
+    <Resource Include="Icons\Variety Duotone Filled Icons\folder-add.png" />
+    <Resource Include="Icons\Variety Duotone Filled Icons\settings.png" />
   </ItemGroup>
 
 </Project>

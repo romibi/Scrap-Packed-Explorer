@@ -10,25 +10,25 @@
         <DockPanel HorizontalAlignment="Left" Height="64" LastChildFill="False" VerticalAlignment="Top">
             <Button Name="CreateButton" Width="64" Click="CreateButton_Click">
                 <StackPanel>
-                    <Image Source="/Icons/MissingIcon.png" Height="42" />
+                    <Image Source="/Icons/Variety Duotone Filled Icons/file-new.png" Height="42" />
                     <TextBlock Text="Create"/>
                 </StackPanel>
             </Button>
             <Button Name="OpenButton" Width="64" Click="OpenButton_Click">
                 <StackPanel>
-                    <Image Source="/Icons/MissingIcon.png" Height="42" />
+                    <Image Source="/Icons/Variety Duotone Filled Icons/file-edit.png" Height="42" />
                     <TextBlock Text="Open"/>
                 </StackPanel>
             </Button>
             <Button Name="SaveButton" Width="64" Click="SaveButton_Click" IsEnabled="{Binding Path=PendingChanges, RelativeSource={RelativeSource AncestorType=Window}}">
                 <StackPanel>
-                    <Image Source="/Icons/MissingIcon.png" Height="42" />
+                    <Image Source="/Icons/Variety Duotone Filled Icons/diskette-save.png" Height="42" />
                     <TextBlock Text="Save"/>
                 </StackPanel>
             </Button>
             <Button Name="SaveAsButton" Width="64" Click="SaveAsButton_Click" IsEnabled="{Binding Path=ContainerLoaded, RelativeSource={RelativeSource AncestorType=Window}}">
                 <StackPanel>
-                    <Image Source="/Icons/MissingIcon.png" Height="42" />
+                    <Image Source="/Icons/Variety Duotone Filled Icons/copy.png" Height="42" />
                     <TextBlock Text="Save as …"/>
                 </StackPanel>
             </Button>
@@ -39,25 +39,25 @@
             <Separator Width="5"></Separator>
             <Button Name="AddButton" Width="64" Click="AddButton_Click" IsEnabled="{Binding Path=ContainerLoaded, RelativeSource={RelativeSource AncestorType=Window}}">
                 <StackPanel>
-                    <Image Source="/Icons/MissingIcon.png" Height="42" />
+                    <Image Source="/Icons/Variety Duotone Filled Icons/add-file-3.png" Height="42" />
                     <TextBlock Text="Add File"/>
                 </StackPanel>
             </Button>
             <Button Name="AddFolderButton" Width="64" Click="AddFolderButton_Click" IsEnabled="{Binding Path=ContainerLoaded, RelativeSource={RelativeSource AncestorType=Window}}">
                 <StackPanel>
-                    <Image Source="/Icons/MissingIcon.png" Height="42" />
+                    <Image Source="/Icons/Variety Duotone Filled Icons/folder-add.png" Height="42" />
                     <TextBlock Text="Add Folder"/>
                 </StackPanel>
             </Button>
             <Button Name="ExtractToButton" Width="64" Click="ExtractToButton_Click" IsEnabled="{Binding Path=ContentSelected, RelativeSource={RelativeSource AncestorType=Window}}">
                 <StackPanel>
-                    <Image Source="/Icons/MissingIcon.png" Height="42" />
+                    <Image Source="/Icons/Variety Duotone Filled Icons/curve-arrow-down-5.png" Height="42" />
                     <TextBlock Text="Extract to"/>
                 </StackPanel>
             </Button>
             <Button Name="DeleteButton" Width="64" Click="DeleteButton_Click" IsEnabled="{Binding Path=ContentSelected, RelativeSource={RelativeSource AncestorType=Window}}">
                 <StackPanel>
-                    <Image Source="/Icons/MissingIcon.png" Height="42" />
+                    <Image Source="/Icons/Variety Duotone Filled Icons/delete-file.png" Height="42" />
                     <TextBlock Text="Delete"/>
                 </StackPanel>
             </Button>
@@ -65,14 +65,14 @@
             <Button Name="SearchButton" Width="64" Click="SearchButton_Click" IsEnabled="False">
                 <!-- IsEnabled="{Binding Path=ContainerLoaded, RelativeSource={RelativeSource AncestorType=Window}}" -->
                 <StackPanel>
-                    <Image Source="/Icons/MissingIcon.png" Height="42" />
+                    <Image Source="/Icons/Variety Duotone Filled Icons/file-search.png" Height="42" />
                     <TextBlock Text="Search"/>
                 </StackPanel>
             </Button>
             <Button Name="OptionsButton" Width="64" Click="OptionsButton_Click" IsEnabled="False">
                 <!-- IsEnabled="{Binding Path=ContainerLoaded, RelativeSource={RelativeSource AncestorType=Window}}" -->
                 <StackPanel>
-                    <Image Source="/Icons/MissingIcon.png" Height="42" />
+                    <Image Source="/Icons/Variety Duotone Filled Icons/settings.png" Height="42" />
                     <TextBlock Text="Options"/>
                 </StackPanel>
             </Button>
