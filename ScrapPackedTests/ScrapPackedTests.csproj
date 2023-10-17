@@ -8,6 +8,7 @@
     <Company>romibi</Company>
     <Product>Scrap Packed Explorer</Product>
     <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
+    <StartupObject></StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
