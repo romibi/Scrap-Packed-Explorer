@@ -44,7 +44,7 @@ People *love* thorough bug reports. I'm not even kidding.
 * Every class and method should be named using **PascalCase** convention (example: `void ReadFile()`)
 * Every method argument should be named using **PascalCase** convetion with prefix _p__ (example: `string p_FilePath`)
 * Every variable should be named using **camelCase** convention (example: `int maxLength`)
-* Every application's command line argument should be named using **camelCase** convention (example: `--keepBackup`)
+* Every application's command line argument should be named using **kebab-case** convention (example: `--keep-backup`)
 
 ### Brackets and indentation
 Indentation must be done with 4 spaces. Lines should be ended with `\r\n` (Windows style)
@@ -94,7 +94,7 @@ Class SomeClass
 
     // Console
     public void PrintMessage(string p_Message) {...}
-    
+
     // Helper functions
     private void GetFileProperties(File p_File) {...}
     // ......Private methods and properties........
