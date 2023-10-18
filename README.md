@@ -33,13 +33,13 @@ But before this project there was no real userfriendly way to do that and the go
 
 ## How to use
 The App can work in 2 different modes: GUI and CLI. (`Graphical User Interface` vs `Command Line Interface`)
-To run App with GUI you just simply should run any of the distributed *.exe files.
-To run App with CLI you must run ScrapPackedExplorerCli.exe (or ScrapPackedExplorerCli32.exe) with command line arguments.
+To run App with GUI you run ScrapPackedExplorer.exe or ScrapPackedExplorerCombined.exe (or their 32-Bit variants).
+To run App with CLI you must run ScrapPackedExplorerCli.exe or ScrapPackedExplorerCombined.exe (or their 32-Bit variants) with command line arguments.
 
-Although the CLI version also contains the whole GUI, a separate CLI version is distributed, because when you launch the GUI (by not providing any command line arguments) a cmd window flashes for a split second.
-If you are ok with this you can use Cli version for both GUI and CLi mode.
+Although the Combined version also contains the whole GUI, a separate GUI-only version is distributed, because when you launch the GUI from the Combinded-Version (by not providing any command line arguments) a cmd window flashes for a split second.
+If you are ok with this you can use the Combined version for both GUI and CLI mode.
 
-The Version without Cli in its name supports only the GUI mode but also has no flashing cmd window on startup.
+The Version without Cli or Combined in its name supports only the GUI mode but also has no flashing cmd window on startup.
 
 ---
 
