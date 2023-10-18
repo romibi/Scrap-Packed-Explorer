@@ -69,7 +69,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli {
         // todo add overwrite options
     }
 
-    [Verb("list", HelpText = "list or search files and folders in the container")]
+    [Verb("list", HelpText = "List or search files and folders in the container")]
     internal class ListOptions : SearchOptions {
         [Option('l', "output-style", Required = false, Default = OutputStyles.List, HelpText = "Output list (default) or tree view")]
         public OutputStyles OutputStyle { get; set; }
