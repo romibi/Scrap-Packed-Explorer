@@ -1,13 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0-windows10.0.22000.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>ch.romibi.Scrap.Packed.PackerLib.Tests</RootNamespace>
     <IsPackable>false</IsPackable>
     <Authors>romibi, Strongleong</Authors>
     <Company>romibi</Company>
     <Product>Scrap Packed Explorer</Product>
-    <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
     <StartupObject></StartupObject>
   </PropertyGroup>
 
@@ -24,7 +23,6 @@
 
 	<ItemGroup>
     <ProjectReference Include="..\ScrapPackedExplorerCli\ScrapPackedExplorerCli.csproj" />
-    <ProjectReference Include="..\ScrapPackedExplorer\ScrapPackedExplorer.csproj" />
   </ItemGroup>
 
   <ItemGroup>
