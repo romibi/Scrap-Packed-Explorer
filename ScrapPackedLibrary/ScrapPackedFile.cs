@@ -89,7 +89,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib {
                 if (FileName.EndsWith(".bak"))
                     RestoreBackup(newFileName);
                 throw;
-            } finally { 
+            } finally {
                 if (!p_KeepBackup) {
                     DeleteBackup(newFileName);
                 }
@@ -240,7 +240,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib {
                 MakeBackup(p_DestinationPath, true);
 
             // If user specified destination path as directory filename needs to be added
-            if (p_DestinationPath.EndsWith(Path.DirectorySeparatorChar)) {
+            if (Path.GetFileName(p_DestinationPath) == "") {
                 string[] path = p_PackedPath.Split('/');
                 p_DestinationPath += path[^1];
             }
@@ -342,7 +342,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib {
             return new PackedFileIndexData(fileName, fileSize, fileOffset);
         }
 
-        // Packed data writing 
+        // Packed data writing
         private static void CreateNewFile(FileStream p_FsPacked) {
             try {
                 byte[] fileHeader = System.Text.Encoding.Default.GetBytes(PackedMetaData.FileHeader);
