@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace ch.romibi.Scrap.Packed.PackerLib {
     public class ScrapPackedFile {
@@ -140,14 +141,20 @@ namespace ch.romibi.Scrap.Packed.PackerLib {
 
         // Add
         private void AddDirectory(string p_ExternalPath, string p_PackedPath) {
-            string externalPath = p_ExternalPath.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
+            string externalPath = p_ExternalPath.TrimEnd(Path.DirectorySeparatorChar).TrimEnd(Path.AltDirectorySeparatorChar) + Path.DirectorySeparatorChar;
             string packedPath = p_PackedPath.TrimEnd('/') + "/";
             if (packedPath == "/")
                 packedPath = "";
 
+            Dictionary<string, string> filesToAdd = new();
             foreach (string file in Directory.EnumerateFiles(externalPath, "*", SearchOption.AllDirectories)) {
                 string packedFilePath = CorrectPath(string.Concat(packedPath, file.AsSpan(externalPath.Length)));
-                AddFile(file, packedFilePath);
+                filesToAdd.Add(file, packedFilePath);
+            }
+
+            filesToAdd = filesToAdd.OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
+            foreach (KeyValuePair<string, string> file in filesToAdd) {
+                AddFile(file.Key, file.Value);
             }
         }
 
