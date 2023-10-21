@@ -14,7 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\GlobalAssemblyInfo.cs" Link="GlobalAssemblyInfo.cs" />
+    <Compile Include="..\GlobalAssemblyInfo.cs" Link="Properties\GlobalAssemblyInfo.cs" />
     <Compile Include="..\ScrapPackedExplorer\GuiApp.xaml.cs" Link="Gui\GuiApp.xaml.cs" />
     <Compile Include="..\ScrapPackedExplorer\MainWindow.xaml.cs" Link="Gui\MainWindow.xaml.cs" />
     <Compile Include="..\ScrapPackedExplorerCli\CliApp.cs" Link="Cli\CliApp.cs" />

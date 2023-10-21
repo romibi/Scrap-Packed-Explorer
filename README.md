@@ -224,26 +224,33 @@ No other dependencies are needed.
 
 ---
 ## Todo (not strictly ordered by priority)
-- [x] Create Project structure
 - Command Line Interface
 	- [x] mostly done, see issue [#1](/../../issues/1)
 - Graphical User Interface _(see also issue [#2](/../../issues/2))_
 	- [x] directory tree
 	- [x] folder content view
 	- [x] add file/folder
-	- [ ] replace warning
 	- [x] remove file/folder
 	- [x] extract file/folder
-	- [ ] rename file/folder
-	- [ ] search name
-	- [ ] search content (maybe)
-	- [ ] drag & drop
-	- [ ] drag & drop between 2 packed (maybe)
-	- [ ] icon
-	- [ ] nice loading animation
-	- [ ] direct vs prepare modes
-    	_Re-create container on each change or prepare changes and then save_
-	- [ ] "modding" mode (maybe)
-    	_Have huge gaps between files edited to not move around bits much inside container while constantly editing_
-	- [ ] file preview (maybe)
+	- GUI Milestone 1 "[Minimal Usable GUI](/../../milestone/2)"
+		- [x] icons
+		- [ ] add empty folder for adding file
+		- [ ] replace warning
+		- [ ] rename file/folder
+		- [ ] Open file with ScrapPackedExplorer [#4](/../../issues/4)
+		- [ ] Update README.MD GUI chapter
+	- GUI Milestone 2 "[Basic GUI finished](/../../milestone/3)"
+		- [ ] search name
+		- [ ] drag & drop
+	- GUI Milestone 2 or later
+		- [ ] dark theme
+		- [ ] nice loading animation
+		- [ ] direct vs prepare modes
+		    _Re-create container on each change or prepare changes and then save_
+		- [ ] drag & drop between 2 packed (maybe)
+		- [ ] search content (maybe)
+	- Later
+		- [ ] "modding" mode (maybe)
+		    _Have huge gaps between files edited to not move around bits much inside container while constantly editing_
+		- [ ] file preview (maybe)
 - Misc: see [other issues](/../../issues/)
