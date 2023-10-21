@@ -6,8 +6,21 @@
         xmlns:local="clr-namespace:ch.romibi.Scrap.Packed.Explorer"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Style.Resources>
+                <Style TargetType="Image">
+                    <Style.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.5" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Style.Resources>
+        </Style>
+    </Window.Resources>
     <Grid>
-        <DockPanel HorizontalAlignment="Left" Height="64" LastChildFill="False" VerticalAlignment="Top">
+        <DockPanel HorizontalAlignment="Left" Height="64" LastChildFill="False" VerticalAlignment="Top">            
             <Button Name="CreateButton" Width="64" Click="CreateButton_Click">
                 <StackPanel>
                     <Image Source="/Icons/Variety Duotone Filled Icons/file-new.png" Height="42" />
