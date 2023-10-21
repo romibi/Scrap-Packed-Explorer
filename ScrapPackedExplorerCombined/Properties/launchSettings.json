@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "ScrapPackedExplorerAsGUI": {
+      "commandName": "Project"
+    },
+    "ScrapPackedExplorerAsCLI": {
+      "commandName": "Project",
+      "commandLineArgs": "--help"
+    }
+  }
+}

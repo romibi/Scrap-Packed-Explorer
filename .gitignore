@@ -134,6 +134,7 @@ DocProject/Help/html
 # Click-Once directory
 [Pp]ublish/
 [Pp]ublish (32bit)/
+[Pp]ublish (linux-x86_64)/
 
 # Publish Web Output
 *.[Pp]ublish.xml

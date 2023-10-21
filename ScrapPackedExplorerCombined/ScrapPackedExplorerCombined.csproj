@@ -1,0 +1,52 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0-windows10.0.22000.0</TargetFramework>
+    <RootNamespace>ch.romibi.Scrap.Packed.Explorer.Combined</RootNamespace>
+    <UseWPF>true</UseWPF>
+    <AssemblyName>ScrapPackedExplorerCombined</AssemblyName>
+    <Authors>romibi, Strongleong</Authors>
+    <Company>romibi</Company>
+    <Product>Scrap Packed Explorer</Product>
+    <StartupObject>ch.romibi.Scrap.Packed.Explorer.Combined.MainApp</StartupObject>
+    <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\GlobalAssemblyInfo.cs" Link="GlobalAssemblyInfo.cs" />
+    <Compile Include="..\ScrapPackedExplorer\GuiApp.xaml.cs" Link="Gui\GuiApp.xaml.cs" />
+    <Compile Include="..\ScrapPackedExplorer\MainWindow.xaml.cs" Link="Gui\MainWindow.xaml.cs" />
+    <Compile Include="..\ScrapPackedExplorerCli\CliApp.cs" Link="Cli\CliApp.cs" />
+    <Compile Include="..\ScrapPackedExplorerCli\CliOptions.cs" Link="Cli\CliOptions.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="..\ScrapPackedExplorer\Icons\MissingIcon.png" Link="Icons\MissingIcon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommandLineParser" Version="2.8.0" />
+    <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ScrapPackedLibrary\ScrapPackedLibrary.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\ScrapPackedExplorer\Icons\MissingIcon.svg" Link="Icons\MissingIcon.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Include="..\ScrapPackedExplorer\GuiApp.xaml" Link="Gui\GuiApp.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="..\ScrapPackedExplorer\MainWindow.xaml" Link="Gui\MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties properties_4launchsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
+
+</Project>

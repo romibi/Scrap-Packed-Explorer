@@ -8,6 +8,9 @@ using System.Security.Cryptography;
 namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
     [TestClass]
     public class TestCliApp {
+        // Writing Environment.NewLine every time is just tedious and unreadable
+        private readonly string nl = Environment.NewLine;
+
         // Note: if some tests fail for no reason cleanup TestData folder in the output folder
         // Todo: ensure that this is not needed
 
@@ -31,134 +34,135 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
         // Test cases
         [TestMethod]
         public void TestRunAddFile() {
-            Directory.CreateDirectory(@"TestResults\TestAdd");
-            File.Copy(@"TestData\empty.packed", @"TestResults\TestAdd\packedFile.packed", true);
+            Directory.CreateDirectory(@"TestResults/TestAdd");
+            File.Copy(@"TestData/empty.packed", @"TestResults/TestAdd/packedFile.packed", true);
 
             // add file new
-            CheckRunCompareFile(new[] {"add", @"TestResults\TestAdd\packedFile.packed",
-                "--sourcePath", @"TestData\examplefile1.txt",
-                "--packedPath", @"file.txt" },
-                @"TestData\TestReferenceFiles\TestAdd\addFileNew.packed",
-                @"TestResults\TestAdd\packedFile.packed",
+            CheckRunCompareFile(new[] {"add", @"TestResults/TestAdd/packedFile.packed",
+                "--source-path", @"TestData/examplefile1.txt",
+                "--packed-path", @"file.txt" },
+                @"TestData/TestReferenceFiles/TestAdd/addFileNew.packed",
+                @"TestResults/TestAdd/packedFile.packed",
                 "Add file to new"
             );
 
             // add file existing to root
-            CheckRunCompareFile(new[] { "add", @"TestResults\TestAdd\packedFile.packed",
-                "--sourcePath", @"TestData\examplefile1.txt" },
-                @"TestData\TestReferenceFiles\TestAdd\addFileExistingToRoot.packed",
-                @"TestResults\TestAdd\packedFile.packed",
+            CheckRunCompareFile(new[] { "add", @"TestResults/TestAdd/packedFile.packed",
+                "--source-path", @"TestData/examplefile1.txt" },
+                @"TestData/TestReferenceFiles/TestAdd/addFileExistingToRoot.packed",
+                @"TestResults/TestAdd/packedFile.packed",
                 "Add file to existing to root"
             );
 
             // add file existing
-            CheckRunCompareFile(new[] { "add", @"TestResults\TestAdd\packedFile.packed",
-                "--sourcePath", @"TestData\examplefile1.txt",
-                "--packedPath", "folder/file.txt" },
-                @"TestData\TestReferenceFiles\TestAdd\addFileExisting.packed",
-                @"TestResults\TestAdd\packedFile.packed",
+            CheckRunCompareFile(new[] { "add", @"TestResults/TestAdd/packedFile.packed",
+                "--source-path", @"TestData/examplefile1.txt",
+                "--packed-path", "folder/file.txt" },
+                @"TestData/TestReferenceFiles/TestAdd/addFileExisting.packed",
+                @"TestResults/TestAdd/packedFile.packed",
                 "Add file to existing");
 
             // add file replace
-            CheckRunCompareFile(new[] { "add", @"TestResults\TestAdd\packedFile.packed",
-                "--sourcePath", @"TestData\examplefile3.txt",
-                "--packedPath", "folder/file.txt" },
-                @"TestData\TestReferenceFiles\TestAdd\addFileReplace.packed",
-                @"TestResults\TestAdd\packedFile.packed",
+            CheckRunCompareFile(new[] { "add", @"TestResults/TestAdd/packedFile.packed",
+                "--source-path", @"TestData/examplefile3.txt",
+                "--packed-path", "folder/file.txt" },
+                @"TestData/TestReferenceFiles/TestAdd/addFileReplace.packed",
+                @"TestResults/TestAdd/packedFile.packed",
                 "Add file to existing and replace");
 
             // add file different output
-            CheckRunCompareFile(new[] { "add", @"TestResults\TestAdd\packedFile.packed",
-                "--sourcePath", @"TestData\examplefile1.txt",
-                "--packedPath", "folder\\file.txt",
-                "--outputPackedFile", @"TestResults\TestAdd\newPackedFile.packed" },
-                @"TestData\TestReferenceFiles\TestAdd\addFileExisting.packed",
-                @"TestResults\TestAdd\newPackedFile.packed",
+            CheckRunCompareFile(new[] { "add", @"TestResults/TestAdd/packedFile.packed",
+                "--source-path", @"TestData/examplefile1.txt",
+                "--packed-path", "folder/file.txt",
+                "--output-packed-file", @"TestResults/TestAdd/newPackedFile.packed" },
+                @"TestData/TestReferenceFiles/TestAdd/addFileExisting.packed",
+                @"TestResults/TestAdd/newPackedFile.packed",
                 "Store to different output");
-            AssertFilesEqual(@"TestData\TestReferenceFiles\TestAdd\addFileReplace.packed",
-                @"TestResults\TestAdd\packedFile.packed",
+
+            AssertFilesEqual(@"TestData/TestReferenceFiles/TestAdd/addFileReplace.packed",
+                @"TestResults/TestAdd/packedFile.packed",
                 "Store to different output: previous file modified");
         }
 
         [TestMethod]
         public void TestRunAddFolder() {
             // add folder new
-            CheckRunCompareFile(new[] { "add", @"TestResults\TestAdd\packedFile.packed",
-                "--sourcePath", @"TestData\exampleFolder1\" },
-                @"TestData\TestReferenceFiles\TestAdd\addFolderNew.packed",
-                @"TestResults\TestAdd\packedFile.packed",
+            CheckRunCompareFile(new[] { "add", @"TestResults/TestAdd/packedFile.packed",
+                "--source-path", @"TestData/exampleFolder1/" },
+                @"TestData/TestReferenceFiles/TestAdd/addFolderNew.packed",
+                @"TestResults/TestAdd/packedFile.packed",
                 "Add folder to new");
 
             // add folder existing root
-            CheckRunCompareFile(new[] { "add", @"TestResults\TestAdd\packedFile.packed",
-                "--sourcePath", @"TestData\exampleFolder2\" },
-                @"TestData\TestReferenceFiles\TestAdd\addFolderExistingToRoot.packed",
-                @"TestResults\TestAdd\packedFile.packed",
+            CheckRunCompareFile(new[] { "add", @"TestResults/TestAdd/packedFile.packed",
+                "--source-path", @"TestData/exampleFolder2/" },
+                @"TestData/TestReferenceFiles/TestAdd/addFolderExistingToRoot.packed",
+                @"TestResults/TestAdd/packedFile.packed",
                 "Add folder to existing to root");
 
             // add folder existing subfolder
-            CheckRunCompareFile(new[] { "add", @"TestResults\TestAdd\packedFile.packed",
-                "--sourcePath", @"TestData\exampleFolder1\",
-                "--packedPath", "subfolder/" },
-                @"TestData\TestReferenceFiles\TestAdd\addFolderExistingToSubfolder.packed",
-                @"TestResults\TestAdd\packedFile.packed",
+            CheckRunCompareFile(new[] { "add", @"TestResults/TestAdd/packedFile.packed",
+                "--source-path", @"TestData/exampleFolder1/",
+                "--packed-path", "subfolder/" },
+                @"TestData/TestReferenceFiles/TestAdd/addFolderExistingToSubfolder.packed",
+                @"TestResults/TestAdd/packedFile.packed",
                 "Add folder to existing to subfolder");
 
             // add folder replace some
-            CheckRunCompareFile(new[] { "add", @"TestResults\TestAdd\packedFile.packed",
-                "--sourcePath", @"TestData\exampleFolder2\",
-                "--packedPath", "subfolder/" },
-                @"TestData\TestReferenceFiles\TestAdd\addFolderReplaceSome.packed",
-                @"TestResults\TestAdd\packedFile.packed",
+            CheckRunCompareFile(new[] { "add", @"TestResults/TestAdd/packedFile.packed",
+                "--source-path", @"TestData/exampleFolder2/",
+                "--packed-path", "subfolder/" },
+                @"TestData/TestReferenceFiles/TestAdd/addFolderReplaceSome.packed",
+                @"TestResults/TestAdd/packedFile.packed",
                 "Add folder to existing to subfolder, replace some");
 
             // Reset packedFile.packed
-            File.Copy(@"TestData\empty.packed", @"TestResults\TestAdd\packedFile.packed", true);
+            File.Copy(@"TestData/empty.packed", @"TestResults/TestAdd/packedFile.packed", true);
 
             // add folder nested sub-folders
-            CheckRunCompareFile(new[] { "add", @"TestResults\TestAdd\packedFile.packed",
-                "--sourcePath", @"TestData\exampleFolder4\" },
-                @"TestData\TestReferenceFiles\TestAdd\addFolderNestedSubfolders.packed",
-                @"TestResults\TestAdd\packedFile.packed",
+            CheckRunCompareFile(new[] { "add", @"TestResults/TestAdd/packedFile.packed",
+                "--source-path", @"TestData/exampleFolder4/" },
+                @"TestData/TestReferenceFiles/TestAdd/addFolderNestedSubfolders.packed",
+                @"TestResults/TestAdd/packedFile.packed",
                 "Add folder with nested sub-folders to new");
         }
 
         [TestMethod]
         public void TestRunAddFailed() {
             // add file missing
-            CheckRunFail(new[] { "add", @"TestResults\TestAddFail\packedFile.packed",
-                "--sourcePath", "exampleFile_missing.txt",
-                "--packedPath", "file.txt"},
+            CheckRunFail(new[] { "add", @"TestResults/TestAddFail/packedFile.packed",
+                "--source-path", "exampleFile_missing.txt",
+                "--packed-path", "file.txt"},
                 1, "Expected file not found");
 
             // add folder, folder not found
-            CheckRunFail(new[] { "add", @"TestResults\TestAddFail\packedFile.packed",
-                "--sourcePath", "exampleFolder_missing/",
-                "--packedPath", "subfolder/"},
+            CheckRunFail(new[] { "add", @"TestResults/TestAddFail/packedFile.packed",
+                "--source-path", "exampleFolder_missing/",
+                "--packed-path", "subfolder/"},
                 1, "Expected file not found");
 
             // add file, file not readable
-            Directory.CreateDirectory(@"TestResults\TestAddFail");
-            FileStream fsFile = new(@"TestResults\TestAddFail\examplefile_readprotected.txt", FileMode.OpenOrCreate);
+            Directory.CreateDirectory(@"TestResults/TestAddFail");
+            FileStream fsFile = new(@"TestResults/TestAddFail/examplefile_readprotected.txt", FileMode.OpenOrCreate);
             try {
-                CheckRunFail(new[] { "add", @"TestResults\TestAddFail\packedFile.packed",
-                "--sourcePath", "examplefile_readprotected.txt",
-                "--packedPath", "file.txt"},
+                CheckRunFail(new[] { "add", @"TestResults/TestAddFail/packedFile.packed",
+                "--source-path", "examplefile_readprotected.txt",
+                "--packed-path", "file.txt"},
                 1, "expected file not accessible");
             } finally {
                 fsFile.Close();
             }
 
             // add folder, some files not readable
-            Directory.CreateDirectory(@"TestResults\TestAddFail\exampleFolder_readprotected");
+            Directory.CreateDirectory(@"TestResults/TestAddFail/exampleFolder_readprotected");
 
-            File.Copy(@"TestData\examplefile1.txt", @"TestResults\TestAddFail\exampleFolder_readprotected\examplefile_notprotected.txt");
-            fsFile = new FileStream(@"TestResults\TestAddFail\exampleFolder_readprotected\examplefile_readprotected.txt", FileMode.OpenOrCreate);
+            File.Copy(@"TestData/examplefile1.txt", @"TestResults/TestAddFail/exampleFolder_readprotected/examplefile_notprotected.txt");
+            fsFile = new FileStream(@"TestResults/TestAddFail/exampleFolder_readprotected/examplefile_readprotected.txt", FileMode.OpenOrCreate);
 
             try {
-                CheckRunFail(new[] { "add", @"TestResults\TestAddFail\packedFile.packed",
-                "--sourcePath", "exampleFolder_readprotected/",
-                "--packedPath", "subfolder/"},
+                CheckRunFail(new[] { "add", @"TestResults/TestAddFail/packedFile.packed",
+                "--source-path", "exampleFolder_readprotected/",
+                "--packed-path", "subfolder/"},
                     1, "expected some file not found");
             } finally {
                 fsFile.Close();
@@ -170,20 +174,20 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
 
         [TestMethod]
         public void TestRunRemove() {
-            Directory.CreateDirectory(@"TestResults\TestRemove");
-            File.Copy(@"TestData\example.packed", @"TestResults\TestRemove\packedFile.packed", true);
+            Directory.CreateDirectory(@"TestResults/TestRemove");
+            File.Copy(@"TestData/example.packed", @"TestResults/TestRemove/packedFile.packed", true);
 
-            CheckRunCompareFile(new[] { "remove", @"TestResults\TestRemove\packedFile.packed",
-                "--packedPath", "file1.txt"},
-                @"TestData\TestReferenceFiles\TestRemove\removedFile.packed",
-                @"TestResults\TestRemove\packedFile.packed",
+            CheckRunCompareFile(new[] { "remove", @"TestResults/TestRemove/packedFile.packed",
+                "--packed-path", "file1.txt"},
+                @"TestData/TestReferenceFiles/TestRemove/removedFile.packed",
+                @"TestResults/TestRemove/packedFile.packed",
                 "Remove file");
 
-            File.Copy(@"TestData\example.packed", @"TestResults\TestRemove\packedFile.packed", true);
-            CheckRunCompareFile(new[] { "remove", @"TestResults\TestRemove\packedFile.packed",
-                "--packedPath", "folder1/"},
-                @"TestData\TestReferenceFiles\TestRemove\removedFolder.packed",
-                @"TestResults\TestRemove\packedFile.packed",
+            File.Copy(@"TestData/example.packed", @"TestResults/TestRemove/packedFile.packed", true);
+            CheckRunCompareFile(new[] { "remove", @"TestResults/TestRemove/packedFile.packed",
+                "--packed-path", "folder1/"},
+                @"TestData/TestReferenceFiles/TestRemove/removedFolder.packed",
+                @"TestResults/TestRemove/packedFile.packed",
                 "Remove folder");
 
             // Note: remove root does not work and will not be made to work, just create a new packed
@@ -192,113 +196,116 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
 
         [TestMethod]
         public void TestRunRemoveFailed() {
-            Directory.CreateDirectory(@"TestResults\TestRemove");
-            File.Copy(@"TestData\example.packed", @"TestResults\TestRemove\packedFile.packed", true);
+            Directory.CreateDirectory(@"TestResults/TestRemove");
+            File.Copy(@"TestData/example.packed", @"TestResults/TestRemove/packedFile.packed", true);
 
-            CheckRunFail(new[] { "remove", @"TestResults\TestRemove\packedFile.packed",
-                "--packedPath", "file_missing.txt"},
+            CheckRunFail(new[] { "remove", @"TestResults/TestRemove/packedFile.packed",
+                "--packed-path", "file_missing.txt"},
                 1, "Remove file does not exist");
 
-            File.Copy(@"TestData\example.packed", @"TestResults\TestRemove\packedFile.packed", true);
-            CheckRunFail(new[] { "remove", @"TestResults\TestRemove\packedFile.packed",
-                "--packedPath", "folder_missing/"},
+            File.Copy(@"TestData/example.packed", @"TestResults/TestRemove/packedFile.packed", true);
+            CheckRunFail(new[] { "remove", @"TestResults/TestRemove/packedFile.packed",
+                "--packed-path", "folder_missing/"},
                 1, "Remove folder does not exist");
         }
 
         [TestMethod]
         public void TestRunRename() {
-            Directory.CreateDirectory(@"TestResults\TestRename");
+            Directory.CreateDirectory(@"TestResults/TestRename");
 
-            File.Copy(@"TestData\example.packed", @"TestResults\TestRename\packedFile.packed", true);
-            CheckRunCompareFile(new[] { "rename", @"TestResults\TestRename\packedFile.packed",
-                "--oldPackedPath", "file1.txt",
-                "--newPackedPath", "file_renamed.txt"},
-                @"TestData\TestReferenceFiles\TestRename\renameFile.packed",
-                @"TestResults\TestRename\packedFile.packed",
+            File.Copy(@"TestData/example.packed", @"TestResults/TestRename/packedFile.packed", true);
+            CheckRunCompareFile(new[] { "rename", @"TestResults/TestRename/packedFile.packed",
+                "--old-packed-path", "file1.txt",
+                "--new-packed-path", "file_renamed.txt"},
+                @"TestData/TestReferenceFiles/TestRename/renameFile.packed",
+                @"TestResults/TestRename/packedFile.packed",
                 "Rename file");
 
-            File.Copy(@"TestData\example.packed", @"TestResults\TestRename\packedFile.packed", true);
-            CheckRunCompareFile(new[] { "rename", @"TestResults\TestRename\packedFile.packed",
-                "--oldPackedPath", "folder1/",
-                "--newPackedPath", "directory/"},
-                @"TestData\TestReferenceFiles\TestRename\renameFolder.packed",
-                @"TestResults\TestRename\packedFile.packed",
+            File.Copy(@"TestData/example.packed", @"TestResults/TestRename/packedFile.packed", true);
+            CheckRunCompareFile(new[] { "rename", @"TestResults/TestRename/packedFile.packed",
+                "--old-packed-path", "folder1/",
+                "--new-packed-path", "directory/"},
+                @"TestData/TestReferenceFiles/TestRename/renameFolder.packed",
+                @"TestResults/TestRename/packedFile.packed",
                 "Rename folder");
 
-            File.Copy(@"TestData\example.packed", @"TestResults\TestRename\packedFile.packed", true);
-            CheckRunCompareFile(new[] { "rename", @"TestResults\TestRename\packedFile.packed",
-                "--oldPackedPath", "/",
-                "--newPackedPath", "sub/"},
-                @"TestData\TestReferenceFiles\TestRename\renameRoot.packed",
-                @"TestResults\TestRename\packedFile.packed",
+            File.Copy(@"TestData/example.packed", @"TestResults/TestRename/packedFile.packed", true);
+            CheckRunCompareFile(new[] { "rename", @"TestResults/TestRename/packedFile.packed",
+                "--old-packed-path", "/",
+                "--new-packed-path", "sub/"},
+                @"TestData/TestReferenceFiles/TestRename/renameRoot.packed",
+                @"TestResults/TestRename/packedFile.packed",
                 "Rename root");
         }
 
         [TestMethod]
         public void TestRunRenameFailed() {
-            Directory.CreateDirectory(@"TestResults\TestRename");
+            Directory.CreateDirectory(@"TestResults/TestRename");
 
-            File.Copy(@"TestData\example.packed", @"TestResults\TestRename\packedFile.packed", true);
-            CheckRunFail(new[] { "rename", @"TestResults\TestRename\packedFile.packed",
-                "--oldPackedPath", "file_missing.txt",
-                "--newPackedPath", "file_renamed.txt"},
+            File.Copy(@"TestData/example.packed", @"TestResults/TestRename/packedFile.packed", true);
+            CheckRunFail(new[] { "rename", @"TestResults/TestRename/packedFile.packed",
+                "--old-packed-path", "file_missing.txt",
+                "--new-packed-path", "file_renamed.txt"},
                 1, "Rename missing file");
 
-            File.Copy(@"TestData\example.packed", @"TestResults\TestRename\packedFile.packed", true);
-            CheckRunFail(new[] { "rename", @"TestResults\TestRename\packedFile.packed",
-                "--oldPackedPath", "folder_missing/",
-                "--newPackedPath", "directory/"},
+            File.Copy(@"TestData/example.packed", @"TestResults/TestRename/packedFile.packed", true);
+            CheckRunFail(new[] { "rename", @"TestResults/TestRename/packedFile.packed",
+                "--old-packed-path", "folder_missing/",
+                "--new-packed-path", "directory/"},
                 1, "Rename missing folder");
         }
 
         [TestMethod]
         public void TestRunExtract() {
-            CheckRunCompareFile(new[] { "extract", @"TestData\example.packed",
-                "--packedPath", "file1.txt",
-                "--destinationPath", @"TestResults\TestExtract\file.txt"},
-                @"TestData\TestReferenceFiles\TestExtract\ExtractFile\file.txt",
-                @"TestResults\TestExtract\file.txt",
+            CheckRunCompareFile(new[] { "extract", @"TestData/example.packed",
+                "--packed-path", "file1.txt",
+                "--destination-path", @"TestResults/TestExtract/file.txt"},
+                @"TestData/TestReferenceFiles/TestExtract/ExtractFile/file.txt",
+                @"TestResults/TestExtract/file.txt",
                 "Extract file");
 
-            CheckRunCompareFolder(new[] { "extract", @"TestData\example.packed",
-                "--packedPath", "folder1/",
-                "--destinationPath", @"TestResults\TestExtract\someFolder\"},
-                @"TestData\TestReferenceFiles\TestExtract\ExtractFolder\someFolder\",
-                @"TestResults\TestExtract\someFolder\",
+            CheckRunCompareFolder(new[] { "extract", @"TestData/example.packed",
+                "--packed-path", "folder1/",
+                "--destination-path", @"TestResults/TestExtract/someFolder/"},
+                @"TestData/TestReferenceFiles/TestExtract/ExtractFolder/someFolder/",
+                @"TestResults/TestExtract/someFolder/",
                 "Extract folder");
 
-            CheckRunCompareFolder(new[] { "extract", @"TestData\example.packed",
-                "--packedPath", "folder2/folder1/file1.txt",
-                "--destinationPath", @"TestResults\TestExtract\ExtractFileToFolder\Output\"},
-                @"TestData\TestReferenceFiles\TestExtract\ExtractFileToFolder\Output\",
-                @"TestResults\TestExtract\ExtractFileToFolder\Output\",
+            CheckRunCompareFolder(new[] { "extract", @"TestData/example.packed",
+                "--packed-path", "folder2/folder1/file1.txt",
+                "--destination-path", @"TestResults/TestExtract/ExtractFileToFolder/Output/"},
+                @"TestData/TestReferenceFiles/TestExtract/ExtractFileToFolder/Output/",
+                @"TestResults/TestExtract/ExtractFileToFolder/Output/",
                 "Extract file from folder to folder");
 
-            CheckRunCompareFolder(new[] { "extract", @"TestData\example.packed",
-                "--destinationPath", @"TestResults\TestExtract\all\"},
-                @"TestData\TestReferenceFiles\TestExtract\ExtractAll\",
-                @"TestResults\TestExtract\all\",
+            CheckRunCompareFolder(new[] { "extract", @"TestData/example.packed",
+                "--destination-path", @"TestResults/TestExtract/all/"},
+                @"TestData/TestReferenceFiles/TestExtract/ExtractAll/",
+                @"TestResults/TestExtract/all/",
                 "Extract all");
         }
 
+#if OS_LINUX
+        [Ignore]
+#endif
         [TestMethod]
         public void TestRunExtractFailed() {
-            CheckRunFail(new[] { "extract", @"TestData\example.packed",
-                "--packedPath", "not_exsits.none",
-                "--destinationPath", @"TestResults\TestExtract\not_exists.none"},
+            CheckRunFail(new[] { "extract", @"TestData/example.packed",
+                "--packed-path", "not_exsits.none",
+                "--destination-path", @"TestResults/TestExtract/not_exists.none"},
                 1, "Extract nonexisting file");
 
-            CheckRunFail(new[] { "extract", @"TestData\example.packed",
-                "--packedPath", "not_exsits/",
-                "--destinationPath", @"TestResults\TestExtract\all\"},
+            CheckRunFail(new[] { "extract", @"TestData/example.packed",
+                "--packed-path", "not_exsits/",
+                "--destination-path", @"TestResults/TestExtract/all/"},
                 1, "Extract nonexisting folder");
 
-            Directory.CreateDirectory(@"TestResults\TestExtract");
-            FileStream fsFile = new(@"TestResults\TestExtract\file.txt", FileMode.OpenOrCreate);
+            Directory.CreateDirectory(@"TestResults/TestExtract");
+            FileStream fsFile = new(@"TestResults/TestExtract/file.txt", FileMode.OpenOrCreate, FileAccess.Read, FileShare.None);
             try {
-                CheckRunFail(new[] { "extract", @"TestData\example.packed",
-                "--packedPath", "file1.txt",
-                "--destinationPath", @"TestResults\TestExtract\file.txt"},
+                CheckRunFail(new[] { "extract", @"TestData/example.packed",
+                "--packed-path", "file1.txt",
+                "--destination-path", @"TestResults/TestExtract/file.txt"},
                 1, "Destination path is unavilable");
             } finally {
                 fsFile.Close();
@@ -307,163 +314,163 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
 
         [TestMethod]
         public void TestRunList() {
-            CheckRunCompareErrorOutput(new[] { "list", @"TestData\empty.packed" },
-                "'TestData\\empty.packed' is empty.\r\n",
+            CheckRunCompareErrorOutput(new[] { "list", @"TestData/empty.packed" },
+                "'TestData/empty.packed' is empty." + nl,
                 "List empty"
             );
 
-            CheckRunCompareOutput(new[] { "list", @"TestData\example.packed" },
-                "file1.txt\r\n" +
-                "file2.txt\r\n" +
-                "folder1/file1.txt\r\n" +
-                "folder1/file2.png\r\n" +
-                "folder2/file1.txt\r\n" +
-                "folder2/file2.txt\r\n" +
-                "folder2/folder1/file1.txt\r\n" +
-                "folder2/folder1/file2.txt\r\n",
+            CheckRunCompareOutput(new[] { "list", @"TestData/example.packed" },
+                "file1.txt" + nl +
+                "file2.txt" + nl +
+                "folder1/file1.txt" + nl +
+                "folder1/file2.png" + nl +
+                "folder2/file1.txt" + nl +
+                "folder2/file2.txt" + nl +
+                "folder2/folder1/file1.txt" + nl +
+                "folder2/folder1/file2.txt" + nl,
                 "List full"
             );
 
-            CheckRunCompareOutput(new[] { "list", @"TestData\example.packed",
-                "--showFileSize"},
-                "file1.txt\tSize: 104\r\n" +
-                "file2.txt\tSize: 171\r\n" +
-                "folder1/file1.txt\tSize: 456\r\n" +
-                "folder1/file2.png\tSize: 500\r\n" +
-                "folder2/file1.txt\tSize: 249\r\n" +
-                "folder2/file2.txt\tSize: 167\r\n" +
-                "folder2/folder1/file1.txt\tSize: 282\r\n" +
-                "folder2/folder1/file2.txt\tSize: 85\r\n",
+            CheckRunCompareOutput(new[] { "list", @"TestData/example.packed",
+                "--show-file-size"},
+                "file1.txt\tSize: 104" + nl +
+                "file2.txt\tSize: 171" + nl +
+                "folder1/file1.txt\tSize: 456" + nl +
+                "folder1/file2.png\tSize: 500" + nl +
+                "folder2/file1.txt\tSize: 249" + nl +
+                "folder2/file2.txt\tSize: 167" + nl +
+                "folder2/folder1/file1.txt\tSize: 282" + nl +
+                "folder2/folder1/file2.txt\tSize: 85" + nl,
                 "List full filesizes"
             );
 
-            CheckRunCompareOutput(new[] { "list", @"TestData\example.packed",
-                "--showFileOffset"},
-                "file1.txt\tOffset: 244\r\n" +
-                "file2.txt\tOffset: 348\r\n" +
-                "folder1/file1.txt\tOffset: 519\r\n" +
-                "folder1/file2.png\tOffset: 975\r\n" +
-                "folder2/file1.txt\tOffset: 1475\r\n" +
-                "folder2/file2.txt\tOffset: 1724\r\n" +
-                "folder2/folder1/file1.txt\tOffset: 1891\r\n" +
-                "folder2/folder1/file2.txt\tOffset: 2173\r\n",
+            CheckRunCompareOutput(new[] { "list", @"TestData/example.packed",
+                "--show-file-offset"},
+                "file1.txt\tOffset: 244" + nl +
+                "file2.txt\tOffset: 348" + nl +
+                "folder1/file1.txt\tOffset: 519" + nl +
+                "folder1/file2.png\tOffset: 975" + nl +
+                "folder2/file1.txt\tOffset: 1475" + nl +
+                "folder2/file2.txt\tOffset: 1724" + nl +
+                "folder2/folder1/file1.txt\tOffset: 1891" + nl +
+                "folder2/folder1/file2.txt\tOffset: 2173" + nl,
                 "List full offsets"
             );
 
-            CheckRunCompareOutput(new[] { "list", @"TestData\example.packed",
-                "--showFileSize", "--showFileOffset"},
-                "file1.txt\tSize: 104\tOffset: 244\r\n" +
-                "file2.txt\tSize: 171\tOffset: 348\r\n" +
-                "folder1/file1.txt\tSize: 456\tOffset: 519\r\n" +
-                "folder1/file2.png\tSize: 500\tOffset: 975\r\n" +
-                "folder2/file1.txt\tSize: 249\tOffset: 1475\r\n" +
-                "folder2/file2.txt\tSize: 167\tOffset: 1724\r\n" +
-                "folder2/folder1/file1.txt\tSize: 282\tOffset: 1891\r\n" +
-                "folder2/folder1/file2.txt\tSize: 85\tOffset: 2173\r\n",
+            CheckRunCompareOutput(new[] { "list", @"TestData/example.packed",
+                "--show-file-size", "--show-file-offset"},
+                "file1.txt\tSize: 104\tOffset: 244" + nl +
+                "file2.txt\tSize: 171\tOffset: 348" + nl +
+                "folder1/file1.txt\tSize: 456\tOffset: 519" + nl +
+                "folder1/file2.png\tSize: 500\tOffset: 975" + nl +
+                "folder2/file1.txt\tSize: 249\tOffset: 1475" + nl +
+                "folder2/file2.txt\tSize: 167\tOffset: 1724" + nl +
+                "folder2/folder1/file1.txt\tSize: 282\tOffset: 1891" + nl +
+                "folder2/folder1/file2.txt\tSize: 85\tOffset: 2173" + nl,
                 "List full filesizes + offsets"
             );
 
-            CheckRunCompareErrorOutput(new[] { "list", @"TestData\example.packed",
-                "--searchString", "nothing"},
-                "Could not find anything by query 'nothing' in 'TestData\\example.packed'\r\n",
+            CheckRunCompareErrorOutput(new[] { "list", @"TestData/example.packed",
+                "--search-string", "nothing"},
+                "Could not find anything by query 'nothing' in 'TestData/example.packed'" + nl,
                 "List could not find"
             );
 
-            CheckRunCompareErrorOutput(new[] { "list", @"TestData\example.packed",
-                "--noErrors", "--searchString", "nothing"},
+            CheckRunCompareErrorOutput(new[] { "list", @"TestData/example.packed",
+                "--no-errors", "--search-string", "nothing"},
                 "",
                 "List could not find no errors"
             );
 
-            CheckRunCompareOutput(new[] { "list", @"TestData\example.packed",
-                "--searchString", "1" },
-                "file1.txt\r\n" +
-                "folder1/file1.txt\r\n" +
-                "folder1/file2.png\r\n" +
-                "folder2/file1.txt\r\n" +
-                "folder2/folder1/file1.txt\r\n" +
-                "folder2/folder1/file2.txt\r\n",
+            CheckRunCompareOutput(new[] { "list", @"TestData/example.packed",
+                "--search-string", "1" },
+                "file1.txt" + nl +
+                "folder1/file1.txt" + nl +
+                "folder1/file2.png" + nl +
+                "folder2/file1.txt" + nl +
+                "folder2/folder1/file1.txt" + nl +
+                "folder2/folder1/file2.txt" + nl,
                 "List 1"
             );
 
-            CheckRunCompareOutput(new[] { "list", @"TestData\example.packed",
-                "--searchString", "file", "--matchBeginning" },
-                "file1.txt\r\n" +
-                "file2.txt\r\n",
-                "List file matchBeginning"
+            CheckRunCompareOutput(new[] { "list", @"TestData/example.packed",
+                "--search-string", "file", "--match-beginning" },
+                "file1.txt" + nl +
+                "file2.txt" + nl,
+                "List file match-beginning"
             );
 
-            CheckRunCompareOutput(new[] { "list", @"TestData\TestReferenceFiles\TestList\listMatchFile.packed",
-                "--searchString", "file1", "--matchFilename" },
-                "file1.txt\r\n" +
-                "folder1/file1.txt\r\n",
-                "List matchFilename"
+            CheckRunCompareOutput(new[] { "list", @"TestData/TestReferenceFiles/TestList/listMatchFile.packed",
+                "--search-string", "file1", "--match-filename" },
+                "file1.txt" + nl +
+                "folder1/file1.txt" + nl,
+                "List match-filename"
             );
 
-            CheckRunCompareOutput(new[] { "list", @"TestData\example.packed",
-                "--searchString", "*.txt" },
-                "file1.txt\r\n" +
-                "file2.txt\r\n" +
-                "folder1/file1.txt\r\n" +
-                "folder2/file1.txt\r\n" +
-                "folder2/file2.txt\r\n" +
-                "folder2/folder1/file1.txt\r\n" +
-                "folder2/folder1/file2.txt\r\n",
+            CheckRunCompareOutput(new[] { "list", @"TestData/example.packed",
+                "--search-string", "*.txt" },
+                "file1.txt" + nl +
+                "file2.txt" + nl +
+                "folder1/file1.txt" + nl +
+                "folder2/file1.txt" + nl +
+                "folder2/file2.txt" + nl +
+                "folder2/folder1/file1.txt" + nl +
+                "folder2/folder1/file2.txt" + nl,
                 "List *.txt"
             );
 
-            CheckRunCompareOutput(new[] { "list", @"TestData\example.packed",
-                "--searchString", "folder2/*.txt" },
-                "folder2/file1.txt\r\n" +
-                "folder2/file2.txt\r\n" +
-                "folder2/folder1/file1.txt\r\n" +
-                "folder2/folder1/file2.txt\r\n",
+            CheckRunCompareOutput(new[] { "list", @"TestData/example.packed",
+                "--search-string", "folder2/*.txt" },
+                "folder2/file1.txt" + nl +
+                "folder2/file2.txt" + nl +
+                "folder2/folder1/file1.txt" + nl +
+                "folder2/folder1/file2.txt" + nl,
                 "List folder2/*.txt");
 
-            CheckRunCompareOutput(new[] { "list", @"TestData\example.packed",
-                "--searchString", @"folder2/.*\.txt", "--regex" },
-                "folder2/file1.txt\r\n" +
-                "folder2/file2.txt\r\n" +
-                "folder2/folder1/file1.txt\r\n" +
-                "folder2/folder1/file2.txt\r\n",
+            CheckRunCompareOutput(new[] { "list", @"TestData/example.packed",
+                "--search-string", @"folder2/.*\.txt", "--regex" },
+                "folder2/file1.txt" + nl +
+                "folder2/file2.txt" + nl +
+                "folder2/folder1/file1.txt" + nl +
+                "folder2/folder1/file2.txt" + nl,
                 "List folder2/.*\\.txt");
 
             // todo: tree output
-            //CheckRunCompareOutput(new[] { "list", @"TestData\example.packed",
-            //    "--outputStyle", "tree"},
-            //    "│   file1.txt\r\n" +
-            //    "│   file2.txt\r\n" +
-            //    "│   \r\n" +
-            //    "├───folder1\r\n" +
-            //    "│       file1.txt\r\n" +
-            //    "│       file2.png\r\n" +
-            //    "│   \r\n" +
-            //    "└───folder2\r\n" +
-            //    "    │   file1.txt\r\n" +
-            //    "    │   file2.txt\r\n" +
-            //    "    │   \r\n" +
-            //    "    └───folder1\r\n" +
-            //    "            file1.txt\r\n" +
-            //    "            file2.txt\r\n",
+            //CheckRunCompareOutput(new[] { "list", @"TestData/example.packed",
+            //    "--output-style", "tree"},
+            //    "│   file1.txt" + nl +
+            //    "│   file2.txt" + nl +
+            //    "│   " + nl +
+            //    "├───folder1" + nl +
+            //    "│       file1.txt" + nl +
+            //    "│       file2.png" + nl +
+            //    "│   " + nl +
+            //    "└───folder2" + nl +
+            //    "    │   file1.txt" + nl +
+            //    "    │   file2.txt" + nl +
+            //    "    │   " + nl +
+            //    "    └───folder1" + nl +
+            //    "            file1.txt" + nl +
+            //    "            file2.txt" + nl,
             //    "List as tree");
 
-            CheckRunCompareOutput(new[] { "list", @"TestData\example.packed",
-                "--outputStyle", "name",
-                "--searchString", "folder2/" },
-                "file1.txt\r\n" +
-                "file2.txt\r\n" +
-                "file1.txt\r\n" +
-                "file2.txt\r\n",
+            CheckRunCompareOutput(new[] { "list", @"TestData/example.packed",
+                "--output-style", "name",
+                "--search-string", "folder2/" },
+                "file1.txt" + nl +
+                "file2.txt" + nl +
+                "file1.txt" + nl +
+                "file2.txt" + nl,
                 "List files with only filename from folder2");
 
-            CheckRunCompareOutput(new[] { "list", @"TestData\example.packed",
-                "--outputStyle", "Name",
-                "--searchString", "folder2/",
-                "--showFileSize", "--showFileOffset"},
-                "file1.txt\tSize: 249\tOffset: 1475\r\n" +
-                "file2.txt\tSize: 167\tOffset: 1724\r\n" +
-                "file1.txt\tSize: 282\tOffset: 1891\r\n" +
-                "file2.txt\tSize: 85\tOffset: 2173\r\n",
+            CheckRunCompareOutput(new[] { "list", @"TestData/example.packed",
+                "--output-style", "Name",
+                "--search-string", "folder2/",
+                "--show-file-size", "--show-file-offset"},
+                "file1.txt\tSize: 249\tOffset: 1475" + nl +
+                "file2.txt\tSize: 167\tOffset: 1724" + nl +
+                "file1.txt\tSize: 282\tOffset: 1891" + nl +
+                "file2.txt\tSize: 85\tOffset: 2173" + nl,
                 "List files with only filename from folder2 + sizes + offsets");
         }
 
@@ -481,24 +488,24 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
         public void TestInputPackedFail() {
             // check uncorrect input
             CheckRunFail(new[] {"add", "/.,*&^$Q*",
-                    "--sourcePath", @"TestData\examplefile1.txt",
-                    "--packedPath", "file.txt"}, 1, "unable to create expected file");
+                    "--source-path", @"TestData/examplefile1.txt",
+                    "--packed-path", "file.txt"}, 1, "unable to create expected file");
 
             // check nonexisted output
             CheckRunFail(new[] {"remove", "nonexsited.packed",
-                    "--packedPath", "file.txt"}, 1, "expected file to not exists");
+                    "--packed-path", "file.txt"}, 1, "expected file to not exists");
 
-            if (!Directory.Exists(@"TestResults\TestInputPackedFail"))
-                Directory.CreateDirectory(@"TestResults\TestInputPackedFail");
-            if (File.Exists(@"TestResults\TestInputPackedFail\packedFile.packed"))
-                File.Delete(@"TestResults\TestInputPackedFail\packedFile.packed");
+            if (!Directory.Exists(@"TestResults/TestInputPackedFail"))
+                Directory.CreateDirectory(@"TestResults/TestInputPackedFail");
+            if (File.Exists(@"TestResults/TestInputPackedFail/packedFile.packed"))
+                File.Delete(@"TestResults/TestInputPackedFail/packedFile.packed");
 
             // check inaccessable packed
-            FileStream fsFile = new(@"TestResults\TestInputPackedFail\packedFile.packed", FileMode.OpenOrCreate);
+            FileStream fsFile = new(@"TestResults/TestInputPackedFail/packedFile.packed", FileMode.OpenOrCreate);
             try {
-                CheckRunFail(new[] {"add", @"TestResults\TestInputPackedFail\packedFile.packed",
-                    "--sourcePath", @"TestData\examplefile1.txt",
-                    "--packedPath", "file.txt"}, 1, "Expected file to be inaccessible");
+                CheckRunFail(new[] {"add", @"TestResults/TestInputPackedFail/packedFile.packed",
+                    "--source-path", @"TestData/examplefile1.txt",
+                    "--packed-path", "file.txt"}, 1, "Expected file to be inaccessible");
             } finally {
                 byte[] someContent = new[] { (byte)'H', (byte)'i' };
                 fsFile.Write(someContent);
@@ -506,36 +513,39 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
             }
 
             // check unreadable/invalid packed
-            CheckRunFail(new[] {"add", @"TestResults\TestInputPackedFail\packedFile.packed",
-                "--sourcePath", @"TestData\exampleFile1.txt",
-                "--packedPath", "file.txt"}, 1, "Expected packed file to be invalid");
+            CheckRunFail(new[] {"add", @"TestResults/TestInputPackedFail/packedFile.packed",
+                "--source-path", @"TestData/exampleFile1.txt",
+                "--packed-path", "file.txt"}, 1, "Expected packed file to be invalid");
 
-            if (File.Exists(@"TestResults\TestInputPackedFail\packedFile.packed"))
-                File.Delete(@"TestResults\TestInputPackedFail\packedFile.packed");
+            if (File.Exists(@"TestResults/TestInputPackedFail/packedFile.packed"))
+                File.Delete(@"TestResults/TestInputPackedFail/packedFile.packed");
         }
 
+#if OS_LINUX
+        [Ignore]
+#endif
         [TestMethod]
         public void TestOutputPackedFail() {
-            Directory.CreateDirectory(@"TestResults\TestOutputPackedFail");
-            File.Copy(@"TestData\empty.packed", @"TestResults\TestOutputPackedFail\packedFile.packed", true);
+            Directory.CreateDirectory(@"TestResults/TestOutputPackedFail");
+            File.Copy(@"TestData/empty.packed", @"TestResults/TestOutputPackedFail/packedFile.packed", true);
 
             // Access denied
-            Directory.CreateDirectory(@"TestResults\TestOutputPackedFail\filenameWasTaken");
-            CheckRunFail(new[] { "add", @"TestResults\TestOutputPackedFail\packedFile.packed",
-                "--sourcePath", @"TestData\examplefile1.txt",
-                "--packedPath", "folder/file.txt",
-                "--outputPackedFile", @"TestResults\TestOutputPackedFail\filenameWasTaken" },
+            Directory.CreateDirectory(@"TestResults/TestOutputPackedFail/filenameWasTaken");
+            CheckRunFail(new[] { "add", @"TestResults/TestOutputPackedFail/packedFile.packed",
+                "--source-path", @"TestData/examplefile1.txt",
+                "--packed-path", "folder/file.txt",
+                "--output-packed-file", @"TestResults/TestOutputPackedFail/filenameWasTaken" },
                 1, "Access to output file is denied");
 
-            Directory.Delete(@"TestResults\TestOutputPackedFail\filenameWasTaken");
+            Directory.Delete(@"TestResults/TestOutputPackedFail/filenameWasTaken");
 
             // check inaccessable output packed
-            FileStream fsFile = new(@"TestResults\TestOutputPackedFail\packedOutFile.packed", FileMode.OpenOrCreate);
+            FileStream fsFile = new(@"TestResults/TestOutputPackedFail/packedOutFile.packed", FileMode.OpenOrCreate, FileAccess.Read, FileShare.None);
             try {
-                CheckRunFail(new[] {"add", @"TestResults\TestOutputPackedFail\packedFile.packed",
-                    "--sourcePath", @"TestData\examplefile1.txt",
-                    "--packedPath", "file.txt",
-                    "--outputPackedFile", @"TestResults\TestOutputPackedFail\packedOutFile.packed" },
+                CheckRunFail(new[] {"add", @"TestResults/TestOutputPackedFail/packedFile.packed",
+                    "--source-path", @"TestData/examplefile1.txt",
+                    "--packed-path", "file.txt",
+                    "--output-packed-file", @"TestResults/TestOutputPackedFail/packedOutFile.packed" },
                     1, "Expected output file to be inaccessible");
             } finally {
                 fsFile.Close();
@@ -547,49 +557,49 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
 
         [TestMethod]
         public void TestBackup() {
-            Directory.CreateDirectory(@"TestResults\TestBackup\");
-            File.Copy(@"TestData\empty.packed", @"TestResults\TestBackup\packedFile.packed", true);
-            File.Copy(@"TestData\examplefile1.txt", @"TestResults\TestBackup\examplefile1.txt", true);
+            Directory.CreateDirectory(@"TestResults/TestBackup/");
+            File.Copy(@"TestData/empty.packed", @"TestResults/TestBackup/packedFile.packed", true);
+            File.Copy(@"TestData/examplefile1.txt", @"TestResults/TestBackup/examplefile1.txt", true);
 
-            CheckRunCompareFile(new[] {"add", @"TestResults\TestBackup\packedFile.packed",
-                "--sourcePath", @"TestData\examplefile1.txt",
-                "--packedPath", @"file.txt",
-                "--keepBackup"},
-                @"TestResults\TestBackup\packedFile.packed.bak",
-                @"TestData\empty.packed",
+            CheckRunCompareFile(new[] {"add", @"TestResults/TestBackup/packedFile.packed",
+                "--source-path", @"TestData/examplefile1.txt",
+                "--packed-path", @"file.txt",
+                "--keep-backup"},
+                @"TestResults/TestBackup/packedFile.packed.bak",
+                @"TestData/empty.packed",
                 "Backup after adding file to new"
             );
 
-            CheckRunCompareFile(new[] {"add", @"TestResults\TestBackup\packedFile.packed",
-                "--sourcePath", @"TestData\examplefile1.txt",
-                "--packedPath", @"file.txt",
-                "--keepBackup"},
-                @"TestResults\TestBackup\packedFile.packed.bak",
-                @"TestResults\TestBackup\packedFile.packed",
+            CheckRunCompareFile(new[] {"add", @"TestResults/TestBackup/packedFile.packed",
+                "--source-path", @"TestData/examplefile1.txt",
+                "--packed-path", @"file.txt",
+                "--keep-backup"},
+                @"TestResults/TestBackup/packedFile.packed.bak",
+                @"TestResults/TestBackup/packedFile.packed",
                 "Backup after re-adding file"
             );
 
-            CheckRunFileExists(new[] {"add", @"TestResults\TestBackup\packedFile.packed",
-                "--sourcePath", @"TestData\examplefile1.txt",
-                "--packedPath", @"file.txt" },
-                @"TestResults\TestBackup\packedFile.packed.bak",
-                "No backup because flag '--keepBackup' is not specified"
+            CheckRunFileExists(new[] {"add", @"TestResults/TestBackup/packedFile.packed",
+                "--source-path", @"TestData/examplefile1.txt",
+                "--packed-path", @"file.txt" },
+                @"TestResults/TestBackup/packedFile.packed.bak",
+                "No backup because flag '--keep-backup' is not specified"
             );
 
-            // todo: this test is not working because app even can't make backup. 
-            //       Need to find way to open file/make folder with name "examplefile1.txt" 
+            // todo: this test is not working because app even can't make backup.
+            //       Need to find way to open file/make folder with name "examplefile1.txt"
             //       after making backup but before tying to extract.
 
 
-            //File.Copy(@"TestData\examplefile3.txt", @"TestResults\TestBackup\examplefile1.txt", true);
-            //var fsFile = new FileStream(@"TestResults\TestBackup\examplefile1.txt", FileMode.Open);
+            //File.Copy(@"TestData/examplefile3.txt", @"TestResults/TestBackup/examplefile1.txt", true);
+            //var fsFile = new FileStream(@"TestResults/TestBackup/examplefile1.txt", FileMode.Open);
             //try
             //{
-            //    CheckRunCompareFile(new[] {"extract", @"TestResults\TestBackup\packedFile.packed",
-            //    "--destinationPath", @"TestResults\TestBackup\examplefile1.txt",
-            //    "--packedPath", @"file.txt" },
-            //    @"TestResults\TestBackup\examplefile1.txt",
-            //    @"TestData\examplefile3.txt",
+            //    CheckRunCompareFile(new[] {"extract", @"TestResults/TestBackup/packedFile.packed",
+            //    "--destination-path", @"TestResults/TestBackup/examplefile1.txt",
+            //    "--packed-path", @"file.txt" },
+            //    @"TestResults/TestBackup/examplefile1.txt",
+            //    @"TestData/examplefile3.txt",
             //    "Restore backup of file after failng extraction", 1
             //    );
             //}
@@ -599,11 +609,11 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
             //}
 
             //NOTE: Becaouse of change in ScrapPackedFile.cs:469 this test is not correct.
-            //CheckRunFileExists(new[] {"extract", @"TestResults\TestBackup\packedFile.packed",
-            //    "--destinationPath", @"TestResults\TestBackup\examplefile1.txt",
-            //    "--packedPath", @"file.txt",
-            //    "--keepBackup"},
-            //    @"TestResults\TestBackup\examplefile1.txt.bak",
+            //CheckRunFileExists(new[] {"extract", @"TestResults/TestBackup/packedFile.packed",
+            //    "--destination-path", @"TestResults/TestBackup/examplefile1.txt",
+            //    "--packed-path", @"file.txt",
+            //    "--keep-backup"},
+            //    @"TestResults/TestBackup/examplefile1.txt.bak",
             //    "Backup of alredy extracted file after extraction"
             //);
 
@@ -611,12 +621,12 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
             // Todo: implement check later
             /* // add file keep backup
             // (create dummy packedFile.packed.bak before call, expect to be unchanged)
-            CheckRun(new[] { "add", @"TestResults\TestAdd\packedFile.packed", "--sourcePath", "'examplefile1.txt'", "--packedPath", "'folder/file.txt'", "--keepBackup" }, "", "");
+            CheckRun(new[] { "add", @"TestResults/TestAdd/packedFile.packed", "--source-path", "'examplefile1.txt'", "--packed-path", "'folder/file.txt'", "--keep-backup" }, "", "");
             // add file keep backup but overwrite old backup
-            CheckRun(new[] { "add", @"TestResults\TestAdd\packedFile.packed", "--sourcePath", "'examplefile3.txt'", "--packedPath", "'folder/file.txt'", "--keepBackup", "--overwriteOldBackup" }, "", "");
+            CheckRun(new[] { "add", @"TestResults/TestAdd/packedFile.packed", "--source-path", "'examplefile3.txt'", "--packed-path", "'folder/file.txt'", "--keep-backup", "--overwriteOldBackup" }, "", "");
             // add file keep do not keep backup and old backup
             // (create dummy packedFile.packed.bak before call, expect to be unchanged)
-            CheckRun(new[] { "add", @"TestResults\TestAdd\packedFile.packed", "--sourcePath", "'examplefile2.png'", "--packedPath", "'folder/file.png'", "--overwriteOldBackup" }, "", "");
+            CheckRun(new[] { "add", @"TestResults/TestAdd/packedFile.packed", "--source-path", "'examplefile2.png'", "--packed-path", "'folder/file.png'", "--overwriteOldBackup" }, "", "");
             */
 
             // todo: find a way to test MakeBackup(), RestoreBackup() and DeleteBackup()
@@ -624,15 +634,15 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
 
         [TestMethod]
         public void TestCat() {
-            CheckRunCompareOutput(new[] {"cat", @"TestData\example.packed",
-                "--packedPath", "file1.txt"},
+            CheckRunCompareOutput(new[] {"cat", @"TestData/example.packed",
+                "--packed-path", "file1.txt"},
                 "Begin of this first file in the example packed container.\r\n" +
-                "Content not relevant. This is already the END\r\n",
+                "Content not relevant. This is already the END" + nl,
                 "Cat expample.packed file1.txt"
             );
 
-            CheckRunCompareOutput(new[] {"cat", @"TestData\example.packed",
-                "--packedPath", "folder1/file2.png"},
+            CheckRunCompareOutput(new[] {"cat", @"TestData/example.packed",
+                "--packed-path", "folder1/file2.png"},
                 "�PNG\r\n\u001a\n\0\0\0\rIHDR\0\0\0\u0019\0\0\0\u0019\u0001\u0003\0\0\0�'\u0017 \0\0\0�z" +
                 "TXtRaw profile type exif\0\0xڅP�\r�0\b�g���\u0001��q�T�\u0006\u001d�8���JA2p\u001c:\f�|" +
                 "�/xtc\u0012��K�)��T��4)h�\\}@Y���\\\u0018�\u0013�%��\u0006+y�V\u000f����Y<\tU�\u001e�#�" +
@@ -642,12 +652,12 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
                 "\u001dH\0\0\0\tpHYs\0\0.#\0\0.#\u0001x�?v\0\0\0\atIME\a�\u0004\u0001\r('7�i�\0\0\0}IDAT" +
                 "\b�c`�~����)�����\"�X\u0002\"��Dm�}\u0006\u0006�P\a\u0006����\u001b\u0018t��40�^\u001d���" +
                 "����a��v\u0006�'w�00L��!��r\u0003ê@�\u0006\u0006���@\u001dJ�\r\f��A@SZ\v��ei`p�v\a\u0012�V" +
-                "\u0002żw\u0001M�2b\0\0Q�(�����\0\0\0\0IEND�B`�\r\n",
+                "\u0002żw\u0001M�2b\0\0Q�(�����\0\0\0\0IEND�B`�" + nl,
                 "Cat expample.packed folder1/file2.png"
             );
 
-            CheckRunCompareOutput(new[] {"cat", @"TestData\example.packed",
-                "--packedPath", "folder1/file2.png", "--asHex"},
+            CheckRunCompareOutput(new[] {"cat", @"TestData/example.packed",
+                "--packed-path", "folder1/file2.png", "--as-hex"},
                 "00000000 8950 4E47 0D0A 1A0A 0000 000D 4948 4452 \r\n" +
                 "00000010 0000 0019 0000 0019 0103 0000 00FE 2717 \r\n" +
                 "00000020 2000 0000 EB7A 5458 7452 6177 2070 726F \r\n" +
@@ -683,8 +693,8 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
                 "Cat expample.packed folder1/file2.png as hex"
             );
 
-            CheckRunCompareOutput(new[] {"cat", @"TestData\example.packed",
-                "--packedPath", "file2.txt", "--asHex", "-g", "2", "-r", "20", "-f", "d3", "-l", "d3"},
+            CheckRunCompareOutput(new[] {"cat", @"TestData/example.packed",
+                "--packed-path", "file2.txt", "--as-hex", "-g", "2", "-r", "20", "-f", "d3", "-l", "d3"},
                 "000 066101 103105 110032 111102 032116 104101 032115 101099 111110 100032 \r\n" +
                 "020 102105 108101 032105 110032 116104 101032 101120 097109 112108 101032 \r\n" +
                 "040 112097 099107 101100 032099 111110 116097 105110 101114 046013 010065 \r\n" +
@@ -697,8 +707,8 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
                 "Cat expample.packed file2.txt as hex with modificators"
             );
 
-            CheckRunCompareOutput(new[] {"cat", @"TestData\example.packed",
-                "--packedPath", "file2.txt", "--asHex", "--noPrintLinesNumbers"},
+            CheckRunCompareOutput(new[] {"cat", @"TestData/example.packed",
+                "--packed-path", "file2.txt", "--as-hex", "--no-print-lines-numbers"},
                 "4265 6769 6E20 6F66 2074 6865 2073 6563 \r\n" +
                 "6F6E 6420 6669 6C65 2069 6E20 7468 6520 \r\n" +
                 "6578 616D 706C 6520 7061 636B 6564 2063 \r\n" +
@@ -716,8 +726,8 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
 
         [TestMethod]
         public void TestCatFailed() {
-            CheckRunFail(new[] {"cat", @"TestData\example.packed",
-                "--packedPath", "nonexsists.txt"},
+            CheckRunFail(new[] {"cat", @"TestData/example.packed",
+                "--packed-path", "nonexsists.txt"},
                 1,
                 "Test cat falied"
             );

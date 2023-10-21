@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScrapPackedLibrary", "Scrap
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScrapPackedTests", "ScrapPackedTests\ScrapPackedTests.csproj", "{382A7E0B-1ADC-40CF-922F-C217206EA4FF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScrapPackedExplorerCli", "ScrapPackedExplorerCli\ScrapPackedExplorerCli.csproj", "{06DA996D-DC2F-4D2C-B48E-42DCB952D10E}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{48FFFBD0-1B47-4FE5-87FA-C6E56195CAA7}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
@@ -19,6 +17,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		LICENSE = LICENSE
 		README.md = README.md
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScrapPackedExplorerCli", "ScrapPackedExplorerCli\ScrapPackedExplorerCli.csproj", "{E129BD5D-D159-46C4-95DF-B3AF9DF7ADBC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScrapPackedExplorerCombined", "ScrapPackedExplorerCombined\ScrapPackedExplorerCombined.csproj", "{02D8C89A-DD24-41F7-8CB5-046F24653054}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,10 +40,14 @@ Global
 		{382A7E0B-1ADC-40CF-922F-C217206EA4FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{382A7E0B-1ADC-40CF-922F-C217206EA4FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{382A7E0B-1ADC-40CF-922F-C217206EA4FF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{06DA996D-DC2F-4D2C-B48E-42DCB952D10E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{06DA996D-DC2F-4D2C-B48E-42DCB952D10E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{06DA996D-DC2F-4D2C-B48E-42DCB952D10E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{06DA996D-DC2F-4D2C-B48E-42DCB952D10E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E129BD5D-D159-46C4-95DF-B3AF9DF7ADBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E129BD5D-D159-46C4-95DF-B3AF9DF7ADBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E129BD5D-D159-46C4-95DF-B3AF9DF7ADBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E129BD5D-D159-46C4-95DF-B3AF9DF7ADBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02D8C89A-DD24-41F7-8CB5-046F24653054}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02D8C89A-DD24-41F7-8CB5-046F24653054}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02D8C89A-DD24-41F7-8CB5-046F24653054}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02D8C89A-DD24-41F7-8CB5-046F24653054}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

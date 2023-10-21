@@ -2,7 +2,6 @@
 using ch.romibi.Scrap.Packed.PackerLib.DataTypes;
 using CommandLine;
 using CommandLine.Text;
-using MS.WindowsAPICodePack.Internal;
 
 using System;
 using System.Collections.Generic;

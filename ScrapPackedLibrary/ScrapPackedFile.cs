@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace ch.romibi.Scrap.Packed.PackerLib {
     public class ScrapPackedFile {
@@ -89,7 +90,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib {
                 if (FileName.EndsWith(".bak"))
                     RestoreBackup(newFileName);
                 throw;
-            } finally { 
+            } finally {
                 if (!p_KeepBackup) {
                     DeleteBackup(newFileName);
                 }
@@ -140,14 +141,20 @@ namespace ch.romibi.Scrap.Packed.PackerLib {
 
         // Add
         private void AddDirectory(string p_ExternalPath, string p_PackedPath) {
-            string externalPath = p_ExternalPath.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
+            string externalPath = p_ExternalPath.TrimEnd(Path.DirectorySeparatorChar).TrimEnd(Path.AltDirectorySeparatorChar) + Path.DirectorySeparatorChar;
             string packedPath = p_PackedPath.TrimEnd('/') + "/";
             if (packedPath == "/")
                 packedPath = "";
 
+            Dictionary<string, string> filesToAdd = new();
             foreach (string file in Directory.EnumerateFiles(externalPath, "*", SearchOption.AllDirectories)) {
                 string packedFilePath = CorrectPath(string.Concat(packedPath, file.AsSpan(externalPath.Length)));
-                AddFile(file, packedFilePath);
+                filesToAdd.Add(file, packedFilePath);
+            }
+
+            filesToAdd = filesToAdd.OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
+            foreach (KeyValuePair<string, string> file in filesToAdd) {
+                AddFile(file.Key, file.Value);
             }
         }
 
@@ -219,7 +226,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib {
             if (fileList.Count == 0)
                 throw new ArgumentException($"Unable to extract {p_PackedPath}: folder does not exists in {FileName}");
 
-            string destinationPath = p_DestinationPath.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
+            string destinationPath = p_DestinationPath.TrimEnd(Path.DirectorySeparatorChar).TrimEnd(Path.AltDirectorySeparatorChar) + Path.DirectorySeparatorChar;
             FileStream fsPacked = new(FileName, FileMode.Open);
             try {
                 foreach (PackedFileIndexData file in fileList)
@@ -240,7 +247,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib {
                 MakeBackup(p_DestinationPath, true);
 
             // If user specified destination path as directory filename needs to be added
-            if (p_DestinationPath.EndsWith(Path.DirectorySeparatorChar)) {
+            if (Path.GetFileName(p_DestinationPath) == "") {
                 string[] path = p_PackedPath.Split('/');
                 p_DestinationPath += path[^1];
             }
@@ -342,7 +349,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib {
             return new PackedFileIndexData(fileName, fileSize, fileOffset);
         }
 
-        // Packed data writing 
+        // Packed data writing
         private static void CreateNewFile(FileStream p_FsPacked) {
             try {
                 byte[] fileHeader = System.Text.Encoding.Default.GetBytes(PackedMetaData.FileHeader);

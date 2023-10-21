@@ -1,13 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0-windows10.0.22000.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>ch.romibi.Scrap.Packed.PackerLib.Tests</RootNamespace>
     <IsPackable>false</IsPackable>
     <Authors>romibi, Strongleong</Authors>
     <Company>romibi</Company>
     <Product>Scrap Packed Explorer</Product>
-    <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
+    <StartupObject></StartupObject>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <IsWindows Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'true'">true</IsWindows>
+    <IsLinux Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))' == 'true'">true</IsLinux>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(IsWindows)'=='true'">
+    <DefineConstants>OS_WINDOWS</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(IsLinux)'=='true'">
+    <DefineConstants>OS_LINUX</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,9 +33,8 @@
     <PackageReference Include="coverlet.collector" Version="1.2.0" />
   </ItemGroup>
 
-	<ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\ScrapPackedExplorerCli\ScrapPackedExplorerCli.csproj" />
-    <ProjectReference Include="..\ScrapPackedExplorer\ScrapPackedExplorer.csproj" />
   </ItemGroup>
 
   <ItemGroup>
