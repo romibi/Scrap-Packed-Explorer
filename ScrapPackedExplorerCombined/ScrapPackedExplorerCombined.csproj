@@ -23,6 +23,16 @@
 
   <ItemGroup>
     <Resource Include="..\ScrapPackedExplorer\Icons\MissingIcon.png" Link="Icons\MissingIcon.png" />
+	<Resource Include="..\ScrapPackedExplorer\Icons\Variety Duotone Filled Icons\add-file-3.png" Link="Icons\Variety Duotone Filled Icons\add-file-3.png" />
+	<Resource Include="..\ScrapPackedExplorer\Icons\Variety Duotone Filled Icons\copy.png" Link="Icons\Variety Duotone Filled Icons\copy.png" />
+	<Resource Include="..\ScrapPackedExplorer\Icons\Variety Duotone Filled Icons\curve-arrow-down-5.png" Link="Icons\Variety Duotone Filled Icons\curve-arrow-down-5.png" />
+	<Resource Include="..\ScrapPackedExplorer\Icons\Variety Duotone Filled Icons\delete-file.png" Link="Icons\Variety Duotone Filled Icons\delete-file.png" />
+	<Resource Include="..\ScrapPackedExplorer\Icons\Variety Duotone Filled Icons\diskette-save.png" Link="Icons\Variety Duotone Filled Icons\diskette-save.png" />
+	<Resource Include="..\ScrapPackedExplorer\Icons\Variety Duotone Filled Icons\file-edit.png" Link="Icons\Variety Duotone Filled Icons\file-edit.png" />
+	<Resource Include="..\ScrapPackedExplorer\Icons\Variety Duotone Filled Icons\file-new.png" Link="Icons\Variety Duotone Filled Icons\file-new.png" />
+	<Resource Include="..\ScrapPackedExplorer\Icons\Variety Duotone Filled Icons\file-search.png" Link="Icons\Variety Duotone Filled Icons\file-search.png" />
+	<Resource Include="..\ScrapPackedExplorer\Icons\Variety Duotone Filled Icons\folder-add.png" Link="Icons\Variety Duotone Filled Icons\folder-add.png" />
+	<Resource Include="..\ScrapPackedExplorer\Icons\Variety Duotone Filled Icons\settings.png" Link="Icons\Variety Duotone Filled Icons\settings.png" />
   </ItemGroup>
 
   <ItemGroup>
