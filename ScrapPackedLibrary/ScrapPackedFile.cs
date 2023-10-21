@@ -226,7 +226,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib {
             if (fileList.Count == 0)
                 throw new ArgumentException($"Unable to extract {p_PackedPath}: folder does not exists in {FileName}");
 
-            string destinationPath = p_DestinationPath.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
+            string destinationPath = p_DestinationPath.TrimEnd(Path.DirectorySeparatorChar).TrimEnd(Path.AltDirectorySeparatorChar) + Path.DirectorySeparatorChar;
             FileStream fsPacked = new(FileName, FileMode.Open);
             try {
                 foreach (PackedFileIndexData file in fileList)
