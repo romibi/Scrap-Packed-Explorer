@@ -541,7 +541,6 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
 
             // check inaccessable output packed
             FileStream fsFile = new(@"TestResults/TestOutputPackedFail/packedOutFile.packed", FileMode.OpenOrCreate, FileAccess.Read, FileShare.None);
-            fsFile.Lock(0, fsFile.Length);
             try {
                 CheckRunFail(new[] {"add", @"TestResults/TestOutputPackedFail/packedFile.packed",
                     "--source-path", @"TestData/examplefile1.txt",
