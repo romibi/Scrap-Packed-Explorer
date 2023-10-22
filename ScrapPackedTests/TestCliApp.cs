@@ -285,8 +285,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
                 "Extract all");
         }
 
-#if OS_WINDOWS
-#else
+#if OS_LINUX
         [Ignore]
 #endif
         [TestMethod]
@@ -522,8 +521,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
                 File.Delete(@"TestResults/TestInputPackedFail/packedFile.packed");
         }
 
-#if OS_WINDOWS
-#else
+#if OS_LINUX
         [Ignore]
 #endif
         [TestMethod]
