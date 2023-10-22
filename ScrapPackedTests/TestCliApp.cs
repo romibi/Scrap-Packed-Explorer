@@ -285,6 +285,10 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
                 "Extract all");
         }
 
+#if OS_WINDOWS
+#else
+        [Ignore]
+#endif
         [TestMethod]
         public void TestRunExtractFailed() {
             CheckRunFail(new[] { "extract", @"TestData/example.packed",
@@ -298,7 +302,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
                 1, "Extract nonexisting folder");
 
             Directory.CreateDirectory(@"TestResults/TestExtract");
-            FileStream fsFile = new(@"TestResults/TestExtract/file.txt", FileMode.OpenOrCreate);
+            FileStream fsFile = new(@"TestResults/TestExtract/file.txt", FileMode.OpenOrCreate, FileAccess.Read, FileShare.None);
             try {
                 CheckRunFail(new[] { "extract", @"TestData/example.packed",
                 "--packed-path", "file1.txt",
@@ -518,6 +522,10 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
                 File.Delete(@"TestResults/TestInputPackedFail/packedFile.packed");
         }
 
+#if OS_WINDOWS
+#else
+        [Ignore]
+#endif
         [TestMethod]
         public void TestOutputPackedFail() {
             Directory.CreateDirectory(@"TestResults/TestOutputPackedFail");
@@ -534,7 +542,8 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
             Directory.Delete(@"TestResults/TestOutputPackedFail/filenameWasTaken");
 
             // check inaccessable output packed
-            FileStream fsFile = new(@"TestResults/TestOutputPackedFail/packedOutFile.packed", FileMode.OpenOrCreate);
+            FileStream fsFile = new(@"TestResults/TestOutputPackedFail/packedOutFile.packed", FileMode.OpenOrCreate, FileAccess.Read, FileShare.None);
+            fsFile.Lock(0, fsFile.Length);
             try {
                 CheckRunFail(new[] {"add", @"TestResults/TestOutputPackedFail/packedFile.packed",
                     "--source-path", @"TestData/examplefile1.txt",
