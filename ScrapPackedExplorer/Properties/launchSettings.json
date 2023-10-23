@@ -1,15 +1,11 @@
 {
   "profiles": {
-    "ScrapPackedExplorerAsGUI": {
+    "ScrapPackedExplorer": {
       "commandName": "Project"
     },
-    "ScrapPackedExplorerAsGUIWithArg": {
+    "ScrapPackedExplorerWithArgs": {
       "commandName": "Project",
       "commandLineArgs": "$(SolutionDir)ScrapPackedTests\\TestData\\example.packed"
-    },
-    "ScrapPackedExplorerAsCLI": {
-      "commandName": "Project",
-      "commandLineArgs": "--help"
     }
   }
 }
