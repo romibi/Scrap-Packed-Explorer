@@ -100,7 +100,7 @@
             </Grid.ColumnDefinitions>
             <TreeView Name="FileTree" SelectedItemChanged="FileTree_SelectedItemChanged">
                 <TreeView.ItemTemplate>
-                    <HierarchicalDataTemplate DataType="{x:Type local:TreeEntry}" ItemsSource="{Binding Items}">
+                    <HierarchicalDataTemplate DataType="{x:Type local:TreeViewTreeEntry}" ItemsSource="{Binding Items}">
                         <TextBlock Text="{Binding Name}" />
                     </HierarchicalDataTemplate>
                 </TreeView.ItemTemplate>
