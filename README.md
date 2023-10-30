@@ -234,10 +234,10 @@ No other dependencies are needed.
 	- [x] extract file/folder
 	- GUI Milestone 1 "[Minimal Usable GUI](/../../milestone/2)"
 		- [x] icons
+		- [x] Open file with ScrapPackedExplorer [#4](/../../issues/4)
 		- [ ] add empty folder for adding file
 		- [ ] replace warning
 		- [ ] rename file/folder
-		- [ ] Open file with ScrapPackedExplorer [#4](/../../issues/4)
 		- [ ] Update README.MD GUI chapter
 	- GUI Milestone 2 "[Basic GUI finished](/../../milestone/3)"
 		- [ ] search name
