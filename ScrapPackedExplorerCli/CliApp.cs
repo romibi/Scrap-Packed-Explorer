@@ -1,4 +1,4 @@
-using ch.romibi.Scrap.Packed.PackerLib;
+﻿using ch.romibi.Scrap.Packed.PackerLib;
 using ch.romibi.Scrap.Packed.PackerLib.DataTypes;
 using CommandLine;
 using CommandLine.Text;
@@ -143,7 +143,70 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli {
             }
         }
         private static void OutputListAsTree(List<PackedFileIndexData> p_List, ListOptions p_Options) {
-        
+            ScrapTreeEntry root = new ScrapTreeEntry(null) { Name = p_Options.PackedFile };
+
+            foreach (PackedFileIndexData file in p_List) {
+                root.AddFileData(file);
+            }
+            root.Sort();
+
+            OutputTreeListEntry("", root);
+        }
+
+        private static void OutputTreeListEntry(string p_CurrentTreePrefix, ScrapTreeEntry p_Entry) {
+            const string TREE_PREFIX_FILE = "│   ";
+            const string TREE_PREFIX_FOLDER = "├───";
+            const string TREE_PREFIX_FOLDER_LAST = "└───";
+            const string TREE_PREFIX_FILE_IN_LAST_FOLDER = "    ";
+            const int TREE_PREFIX_LENGTH = 4;
+
+            var printPrefix = p_CurrentTreePrefix;
+            if (p_Entry.IsDirectory) {
+                // Add "empty" line before directories and convert file prefix to tree prefix
+                if (printPrefix.EndsWith(TREE_PREFIX_FILE)) {
+                    // after this directory there will be another directory: we can just print the current tree prefix once
+                    // and replace the last TREE_PREFIX_FILE with TREE_PREFIX_FOLDER for printing the entry name
+                    Console.WriteLine(p_CurrentTreePrefix);
+                    printPrefix = printPrefix.Substring(0, printPrefix.Length - TREE_PREFIX_LENGTH) + TREE_PREFIX_FOLDER;
+                } else if (printPrefix.EndsWith(TREE_PREFIX_FILE_IN_LAST_FOLDER)) {
+                    // after this directory there will be no other directory in this nexting level: we have to convert TREE_PREFIX_FILE_IN_LAST_FOLDER to TREE_PREFIX_FILE
+                    // for printing an "empty line"
+                    // and replace the last TREE_PREFIX_FILE_IN_LAST_FOLDER with TREE_PREFIX_FOLDER_LAST for printing the entry name
+                    Console.WriteLine(printPrefix.Substring(0, printPrefix.Length - TREE_PREFIX_LENGTH) + TREE_PREFIX_FILE);
+                    printPrefix = printPrefix.Substring(0, printPrefix.Length - 4) + TREE_PREFIX_FOLDER_LAST;
+                }
+            }
+            Console.WriteLine(printPrefix + p_Entry.Name);
+
+            List<ScrapTreeEntry> files = new();
+            List<ScrapTreeEntry> folders = new();
+
+            // split files and folders
+            foreach (var child in p_Entry.Items) {
+                if (child.IsFile) {
+                    files.Add(child);
+                } else {
+                    folders.Add(child);
+                }
+            }
+
+            var newFilePrefix = folders.Count == 0 ? p_CurrentTreePrefix + TREE_PREFIX_FILE_IN_LAST_FOLDER : p_CurrentTreePrefix + TREE_PREFIX_FILE;
+
+            // first output files
+            foreach (var file in files) {
+                OutputTreeListEntry(newFilePrefix, file);
+            }
+
+            // then output folder, but use different tree prefix for the last one
+            if (folders.Count > 0) {
+                for (int i = 0; i < folders.Count; i++) {
+                    if (i < folders.Count - 1) {
+                        OutputTreeListEntry(p_CurrentTreePrefix + TREE_PREFIX_FILE, folders[i]);
+                    } else {
+                        OutputTreeListEntry(p_CurrentTreePrefix + TREE_PREFIX_FILE_IN_LAST_FOLDER, folders[i]);
+                    }
+                }
+            }
         }
 
         private static int RunCat(CatOptions p_Options) {
