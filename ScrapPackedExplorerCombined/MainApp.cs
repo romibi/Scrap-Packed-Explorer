@@ -2,22 +2,36 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace ch.romibi.Scrap.Packed.Explorer.Combined {
     internal class MainApp {
+        static readonly string[] SingleCliArgs = {
+            "help",    "--help",    "-h",
+            "version", "--version", "-v",
+        };
+
         [STAThread]
         public static int Main(string[] p_Args) {
-            if (p_Args != null && p_Args.Length > 0)
-                return CliApp.Run(p_Args);
-            else {
-                HideConsoleWindow();
-                GuiApp guiApp = new();
-                guiApp.InitializeComponent();
-                guiApp.Run();
+            bool isCliArgProvided = false;
 
-                return 0;
+            if (p_Args.Length > 0)
+                isCliArgProvided = SingleCliArgs.Contains(p_Args[0]);
+
+            if (isCliArgProvided || p_Args.Length > 1)
+                return CliApp.Run(p_Args);
+            
+            HideConsoleWindow();
+            GuiApp guiApp = new();
+
+            if (p_Args.Length > 0) {
+                string packedFilePath = p_Args[0];
+                guiApp.LoadPackedFile(packedFilePath);
             }
+
+            guiApp.Run();
+            return 0;
         }
 
         private static void HideConsoleWindow() {

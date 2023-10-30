@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ch.romibi.Scrap.Packed.PackerLib;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -11,5 +12,22 @@ namespace ch.romibi.Scrap.Packed.Explorer {
     /// Interaction logic for App.xaml
     /// </summary>
     public partial class GuiApp : Application {
+        protected string PackedFilePath { get; set; }
+
+        protected override void OnStartup(StartupEventArgs e) {
+            base.OnStartup(e);
+            MainWindow mainWindow = new MainWindow();
+
+            if (PackedFilePath != null) {
+                mainWindow.LoadPackedFileByPath(PackedFilePath);
+            }
+
+            mainWindow.InitializeComponent();
+            mainWindow.Show();
+        }
+
+        public void LoadPackedFile(string p_PackedPath) {
+            PackedFilePath = p_PackedPath;
+        }
     }
 }

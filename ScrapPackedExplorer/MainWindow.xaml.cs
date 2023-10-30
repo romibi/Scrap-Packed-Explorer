@@ -85,6 +85,18 @@ namespace ch.romibi.Scrap.Packed.Explorer {
             PendingChanges = false;
             InitializeComponent();
         }
+              
+        // TODO: Handle exceptions. Everywhere.
+        public void LoadPackedFileByPath(string p_Packed) {
+            try {
+                LoadedPackedFile = new ScrapPackedFile(p_Packed);
+            } catch (Exception ex) {
+                Error(ex);
+            }
+
+            PendingChanges = true;
+            RefreshTreeView();
+        }
 
         private void RefreshTreeView() {
 
@@ -205,9 +217,7 @@ namespace ch.romibi.Scrap.Packed.Explorer {
             };
 
             if (openFileDialog.ShowDialog() == true) {
-                LoadedPackedFile = new ScrapPackedFile(openFileDialog.FileName);
-                PendingChanges = false;
-                RefreshTreeView();
+                LoadPackedFileByPath(openFileDialog.FileName);
             }
         }
 
