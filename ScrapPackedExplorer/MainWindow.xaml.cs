@@ -87,7 +87,7 @@ namespace ch.romibi.Scrap.Packed.Explorer {
         }
               
         // TODO: Handle exceptions. Everywhere.
-        public void LoadPakedFileByPath(string p_Packed) {
+        public void LoadPackedFileByPath(string p_Packed) {
             try {
                 LoadedPackedFile = new ScrapPackedFile(p_Packed);
             } catch (Exception ex) {
@@ -217,7 +217,7 @@ namespace ch.romibi.Scrap.Packed.Explorer {
             };
 
             if (openFileDialog.ShowDialog() == true) {
-                LoadPakedFileByPath(openFileDialog.FileName);
+                LoadPackedFileByPath(openFileDialog.FileName);
             }
         }
 

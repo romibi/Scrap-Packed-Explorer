@@ -7,34 +7,30 @@ using System.Runtime.InteropServices;
 
 namespace ch.romibi.Scrap.Packed.Explorer.Combined {
     internal class MainApp {
-        static readonly string[] AllowedArgs = {
+        static readonly string[] SingleCliArgs = {
             "help",    "--help",    "-h",
             "version", "--version", "-v",
         };
 
         [STAThread]
         public static int Main(string[] p_Args) {
-            bool isAllowedArgsPresented = false;
+            bool isCliArgProvided = false;
 
             if (p_Args.Length > 0)
-                isAllowedArgsPresented = AllowedArgs.Contains(p_Args[0]);
+                isCliArgProvided = SingleCliArgs.Contains(p_Args[0]);
 
-            if (isAllowedArgsPresented || p_Args.Length > 1)
+            if (isCliArgProvided || p_Args.Length > 1)
                 return CliApp.Run(p_Args);
             
             HideConsoleWindow();
             GuiApp guiApp = new();
 
-            if (p_Args.Length == 0) {
-                guiApp.Run();
-                return 0;
+            if (p_Args.Length > 0) {
+                string packedFilePath = p_Args[0];
+                guiApp.LoadPackedFile(packedFilePath);
             }
 
-            string packedFilePath = p_Args[0];
-
-            guiApp.LoadPackedFile(packedFilePath);
             guiApp.Run();
-
             return 0;
         }
 

@@ -19,7 +19,7 @@ namespace ch.romibi.Scrap.Packed.Explorer {
             MainWindow mainWindow = new MainWindow();
 
             if (PackedFilePath != null) {
-                mainWindow.LoadPakedFileByPath(PackedFilePath);
+                mainWindow.LoadPackedFileByPath(PackedFilePath);
             }
 
             mainWindow.InitializeComponent();

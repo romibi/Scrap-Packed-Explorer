@@ -12,14 +12,11 @@ namespace ch.romibi.Scrap.Packed.Explorer {
         public static int Main(string[] p_Args) {
             var guiApp = new GuiApp();
 
-            if (p_Args.Length == 0) {
-                guiApp.Run();
-                return 0;
+            if (p_Args.Length > 0) {
+                string packedFilePath = p_Args[0];
+                guiApp.LoadPackedFile(packedFilePath);
             }
 
-            string packedFilePath = p_Args[0];
-
-            guiApp.LoadPackedFile(packedFilePath);
             guiApp.Run();
             return 0;
         }
