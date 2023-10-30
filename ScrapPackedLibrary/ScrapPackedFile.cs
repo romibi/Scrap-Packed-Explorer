@@ -98,15 +98,6 @@ namespace ch.romibi.Scrap.Packed.PackerLib {
         }
 
         // Getters
-        // todo: deprecate this
-        public List<string> GetFileNames() {
-            // todo refactor list output
-            List<string> list = new();
-            foreach (PackedFileIndexData file in MetaData.FileList) {
-                list.Add($"{file.FilePath}\tSize: {file.FileSize}\tOffset: {file.OriginalOffset}");
-            }
-            return list;
-        }
         public List<IDictionary<string, string>> GetFileList() {
             // todo refactor list output
             List<IDictionary<string, string>> list = new();

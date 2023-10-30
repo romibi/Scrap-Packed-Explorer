@@ -1,4 +1,4 @@
-﻿using ch.romibi.Scrap.Packed.PackerLib;
+using ch.romibi.Scrap.Packed.PackerLib;
 using ch.romibi.Scrap.Packed.PackerLib.DataTypes;
 using CommandLine;
 using CommandLine.Text;
@@ -87,8 +87,8 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli {
         private static int RunList(ListOptions p_Options) {
             try {
                 ScrapPackedFile packedFile = new(p_Options.PackedFile);
-                List<string> FileList = packedFile.GetFileNames();
-                FileList.Sort();
+                List<PackedFileIndexData> FileList = packedFile.GetFileIndexDataList();
+                FileList.Sort((x, y) => x.FilePath.CompareTo(y.FilePath));
 
                 if (FileList.Count == 0) {
                     if (!p_Options.NoErrors) {
@@ -97,7 +97,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli {
                     return 1;
                 }
 
-                List<string> SearchedList = Search(FileList, p_Options.SearchString, p_Options.IsRegex, p_Options.MatchBeginning, p_Options.MatchFilename);
+                List<PackedFileIndexData> SearchedList = Search(FileList, p_Options.SearchString, p_Options.IsRegex, p_Options.MatchBeginning, p_Options.MatchFilename);
 
                 if (SearchedList.Count == 0) {
                     if (!p_Options.NoErrors) {
@@ -106,30 +106,10 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli {
                     return 1;
                 }
 
-                foreach (var File in SearchedList) {
-                    OutputStyles Styles = p_Options.OutputStyle;
-
-                    string[] FileData = File.Split("\t");
-                    string FilePath = Path.GetDirectoryName(FileData[0]).Replace("\\", "/");
-                    string FileName = Path.GetFileName(FileData[0]);
-                    string FileSize = FileData[1];
-                    string FileOffset = FileData[2];
-
-                    if (FilePath != "")
-                        FilePath += "/";
-
-                    string Output = FileName;
-
-                    if (Styles != OutputStyles.Name)
-                        Output = FilePath + Output;
-
-                    if (p_Options.ShowFileSize)
-                        Output += "\t" + FileSize;
-
-                    if (p_Options.ShowFileOffset)
-                        Output += "\t" + FileOffset;
-
-                    Console.WriteLine(Output);
+                if (p_Options.OutputStyle == OutputStyles.Tree) {
+                    OutputListAsTree(SearchedList, p_Options);
+                } else {
+                    OutputList(SearchedList, p_Options);
                 }
                 return 0;
             } catch (Exception ex) {
@@ -138,6 +118,32 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli {
                 }
                 return 1;
             }
+        }
+
+        private static void OutputList(List<PackedFileIndexData> p_List, ListOptions p_Options) {
+            foreach (var File in p_List) {
+                string FilePath = Path.GetDirectoryName(File.FilePath).Replace("\\", "/");
+                string FileName = Path.GetFileName(File.FilePath);
+
+                if (FilePath != "")
+                    FilePath += "/";
+
+                string Output = FileName;
+
+                if (p_Options.OutputStyle != OutputStyles.Name)
+                    Output = FilePath + Output;
+
+                if (p_Options.ShowFileSize)
+                    Output += "\tSize: " + File.FileSize.ToString();
+
+                if (p_Options.ShowFileOffset)
+                    Output += "\tOffset: " + File.OriginalOffset.ToString();
+
+                Console.WriteLine(Output);
+            }
+        }
+        private static void OutputListAsTree(List<PackedFileIndexData> p_List, ListOptions p_Options) {
+        
         }
 
         private static int RunCat(CatOptions p_Options) {
@@ -174,8 +180,8 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli {
             return 0;
         }
 
-        private static List<string> Search(List<string> p_FileList, string p_Query, bool p_IsRegex, bool p_MatchBeginning, bool p_MatchFilename) {
-            List<string> result = new();
+        private static List<PackedFileIndexData> Search(List<PackedFileIndexData> p_FileList, string p_Query, bool p_IsRegex, bool p_MatchBeginning, bool p_MatchFilename) {
+            List<PackedFileIndexData> result = new();
 
             var query = p_Query;
             if (!p_IsRegex)
@@ -191,17 +197,14 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli {
             Regex rg = new(query);
 
             foreach (var File in p_FileList) {
-                string[] FileData = File.Split("\t");
-                var FilePath = Path.GetDirectoryName(FileData[0]).Replace("\\", "/");
-                var FileName = Path.GetFileName(FileData[0]);
-                var FileSize = FileData[1];
-                var FileOffset = FileData[2];
+                var FilePath = Path.GetDirectoryName(File.FilePath).Replace("\\", "/");
+                var FileName = Path.GetFileName(File.FilePath);
 
                 if (FilePath != "")
                     FilePath += "/";
 
                 if (rg.IsMatch(p_MatchFilename ? FileName : FilePath + FileName))
-                    result.Add($"{FilePath}{FileName}\t{FileSize}\t{FileOffset}");
+                    result.Add(File);
             }
 
             return result;
