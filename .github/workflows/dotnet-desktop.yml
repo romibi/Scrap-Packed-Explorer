@@ -1,0 +1,97 @@
+# This workflow will build, test and package a WPF or Windows Forms desktop application
+# built on .NET Core.
+#
+# To configure this workflow:
+#
+# 1. Configure environment variables
+# GitHub sets default environment variables for every workflow run.
+# Replace the variables relative to your project in the "env" section below.
+#
+# For more information on GitHub Actions, refer to https://github.com/features/actions
+# For a complete CI/CD sample to get started with GitHub Action workflows for Desktop Applications,
+# refer to https://github.com/microsoft/github-actions-for-desktop-apps
+
+name: .NET Core Desktop
+
+on:
+  push:
+    branches: [ "master" ]
+    tags: [ "v*" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: windows-latest  # For a list of available runner types, refer to https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
+
+    env:
+      Solution_Name: ScrapPackedExplorer.sln
+      Test_Project_Path: ScrapPackedTests/ScrapPackedTests.csproj
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    # Install the .NET Core workload
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
+
+    - name: Restore dependencies
+      run: dotnet restore ${{ env.Solution_Name }}
+
+    - name: Build Project
+      run: dotnet build ${{ env.Solution_Name }} -c Release --no-restore 
+    
+    - name: Run Tests
+      run: dotnet test
+      
+    - name: Publish Project
+      if: ${{ github.ref == 'refs/tags/v*' }}
+      run: |
+        @rem simplify
+        @echo Building Scrap Packed Explorer GUI
+        msbuild ScrapPackedExplorer\ScrapPackedExplorer.csproj -p:Configuration=Release -restore -t:Publish -p:Platform=AnyCPU -p:PublishProfile="ScrapPackedExplorer\Properties\PublishProfiles\ScrapPackedExplorer.exe (x64).pubxml"
+        msbuild ScrapPackedExplorer\ScrapPackedExplorer.csproj -p:Configuration=Release -restore -t:Publish -p:Platform=x86 -p:PublishProfile="ScrapPackedExplorer\Properties\PublishProfiles\ScrapPackedExplorer.exe (x86).pubxml"
+        ren "Publish (32bit)\ScrapPackedExplorer.exe" "ScrapPackedExplorer32.exe"
+
+        @echo Building Scrap Packed Explorer Combined
+        msbuild ScrapPackedExplorerCombined\ScrapPackedExplorerCombined.csproj -p:Configuration=Release -restore -t:Publish -p:Platform=AnyCPU -p:PublishProfile="ScrapPackedExplorerCombined\Properties\PublishProfiles\ScrapPackedExplorerCombined.exe (x64).pubxml"
+        msbuild ScrapPackedExplorerCombined\ScrapPackedExplorerCombined.csproj -p:Configuration=Release -restore -t:Publish -p:Platform=x86 -p:PublishProfile="ScrapPackedExplorerCombined\Properties\PublishProfiles\ScrapPackedExplorerCombined.exe (x86).pubxml"
+        ren "Publish (32bit)\ScrapPackedExplorerCombined.exe" "ScrapPackedExplorerCombined32.exe"
+
+        @echo Building Scrap Packed Explorer CLI
+        msbuild ScrapPackedExplorerCli\ScrapPackedExplorerCli.csproj -p:Configuration=Release -restore -t:Publish -p:Platform=AnyCPU -p:PublishProfile="ScrapPackedExplorerCli\Properties\PublishProfiles\ScrapPackedExplorerCli.exe (x64).pubxml"
+        msbuild ScrapPackedExplorerCli\ScrapPackedExplorerCli.csproj -p:Configuration=Release -restore -t:Publish -p:Platform=x86 -p:PublishProfile="ScrapPackedExplorerCli\Properties\PublishProfiles\ScrapPackedExplorerCli.exe (x86).pubxml"
+        ren "Publish (32bit)\ScrapPackedExplorerCli.exe" "ScrapPackedExplorerCli32.exe"
+        msbuild ScrapPackedExplorerCli\ScrapPackedExplorerCli.csproj -p:Configuration=Release -restore -t:Publish -p:Platform=AnyCPU -p:PublishProfile="ScrapPackedExplorerCli\Properties\PublishProfiles\ScrapPackedExplorerCli (linux-x86_64).pubxml"
+
+    - name: Prepare Release
+      id: create_release
+      if: ${{ github.ref == 'refs/tags/v*' }}
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: ${{ github.ref }}
+
+    - name: Upload build artifacts (.exe)
+      if: ${{ github.ref == 'refs/tags/v*' }}
+      uses: csexton/release-asset-actions@v2
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        pattern: Publish*/*.exe
+        release-url: ${{ steps.create_release.outputs.upload_url }}
+
+    - name: Upload build artifacts (linux binary)
+      if: ${{ github.ref == 'refs/tags/v*' }}
+      uses: csexton/release-asset-action@v2
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        file: Publish (linux-x86_64)/ScrapPackedExplorerCli
+        release-url: ${{ steps.create_release.outputs.upload_url }}
