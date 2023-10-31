@@ -21,6 +21,39 @@ on:
     branches: [ "master" ]
 
 jobs:
+  lint_csharp:
+    runs-on: windows-latest  # For a list of available runner types, refer to https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
+    env:
+      Solution_Name: ScrapPackedExplorer.sln
+      Test_Project_Path: ScrapPackedTests/ScrapPackedTests.csproj
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    # Install the .NET Core workload
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
+        
+    # Format the output of dotnet format
+    - name: Add dotnet-format problem matcher
+      uses: xt0rted/dotnet-format-problem-matcher@v1
+
+    # Install dotnet format as a global tool
+    - name: Install dotnet format
+      run: dotnet tool update --global dotnet-format
+
+    # Run dotnet format --dry-run --check
+    # By default, the task ensure the exit code is 0
+    # If a file needs to be edited by dotnet format, the exit code will be a non-zero value
+    # So the task will fail
+    - name: Run dotnet format
+      run: dotnet format --check --verbosity diagnostic
+      
   build-test-and-deploy:
     runs-on: windows-latest  # For a list of available runner types, refer to https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
     env:
@@ -112,10 +145,16 @@ jobs:
         dotnet-version: 6.0.x
 
     - name: Restore dependencies
-      run: dotnet restore ${{ env.Solution_Name }}
+      run: |
+        dotnet restore ScrapPackedLibrary/ScrapPackedLibrary.csproj
+        dotnet restore ScrapPackedExplorerCli/ScrapPackedExplorerCli.csproj
+        dotnet restore ScrapPackedTests/ScrapPackedTests.csproj
 
     - name: Build Project
-      run: dotnet build ${{ env.Solution_Name }} -c Release --no-restore 
+      run: |
+        dotnet build ScrapPackedLibrary/ScrapPackedLibrary.csproj -c Release --no-restore 
+        dotnet build ScrapPackedExplorerCli/ScrapPackedExplorerCli.csproj -c Release --no-restore 
+        dotnet build ScrapPackedTests/ScrapPackedTests.csproj -c Release --no-restore 
     
     - name: Run Tests
-      run: dotnet test
+      run: dotnet test --no-restore
