@@ -82,7 +82,7 @@ jobs:
 
     - name: Upload build artifacts (.exe)
       if: ${{ github.ref == 'refs/tags/v*' }}
-      uses: csexton/release-asset-actions@v2
+      uses: csexton/release-asset-action@v2
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         pattern: Publish*/*.exe
