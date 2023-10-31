@@ -29,7 +29,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
@@ -62,7 +62,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
@@ -145,12 +145,14 @@ jobs:
       Solution_Name: ScrapPackedExplorer.sln
       Test_Project_Path: ScrapPackedTests/ScrapPackedTests.csproj
 
-    steps:
-    - name: Set github config
-      run: git config --global core.autocrlf false
-    
+    steps:    
+    - name: Prepare git
+      run: |-
+        git config --global core.autocrlf false
+        git config --global core.eol CRLF
+          
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
@@ -178,6 +180,7 @@ jobs:
       if: failure()
       uses: actions/upload-artifact@v3
       with:
-        name: TestFails
+        name: TestResults
         path: |
           **/TestFails/
+          **/TestData/
