@@ -145,11 +145,7 @@ jobs:
       Solution_Name: ScrapPackedExplorer.sln
       Test_Project_Path: ScrapPackedTests/ScrapPackedTests.csproj
 
-    steps:
-    - name: Set github config
-      run: |
-        git config --system core.autocrlf false
-    
+    steps:    
     - name: Checkout
       uses: actions/checkout@v4
       with:
