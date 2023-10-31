@@ -150,8 +150,6 @@ jobs:
       run: |-
         git config --global core.autocrlf false
         git config --global core.eol CRLF
-        git config core.autocrlf false
-        git config core.eol CRLF
           
     - name: Checkout
       uses: actions/checkout@v4
