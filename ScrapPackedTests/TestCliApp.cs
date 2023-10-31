@@ -435,24 +435,24 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
                 "folder2/folder1/file2.txt" + nl,
                 "List folder2/.*\\.txt");
 
-            // todo: tree output
-            //CheckRunCompareOutput(new[] { "list", @"TestData/example.packed",
-            //    "--output-style", "tree"},
-            //    "│   file1.txt" + nl +
-            //    "│   file2.txt" + nl +
-            //    "│   " + nl +
-            //    "├───folder1" + nl +
-            //    "│       file1.txt" + nl +
-            //    "│       file2.png" + nl +
-            //    "│   " + nl +
-            //    "└───folder2" + nl +
-            //    "    │   file1.txt" + nl +
-            //    "    │   file2.txt" + nl +
-            //    "    │   " + nl +
-            //    "    └───folder1" + nl +
-            //    "            file1.txt" + nl +
-            //    "            file2.txt" + nl,
-            //    "List as tree");
+            CheckRunCompareOutput(new[] { "list", @"TestData/example.packed",
+                "--output-style", "tree"},
+                "TestData/example.packed" + nl +
+                "│   file1.txt" + nl +
+                "│   file2.txt" + nl +
+                "│   " + nl +
+                "├───folder1" + nl +
+                "│       file1.txt" + nl +
+                "│       file2.png" + nl +
+                "│   " + nl +
+                "└───folder2" + nl +
+                "    │   file1.txt" + nl +
+                "    │   file2.txt" + nl +
+                "    │   " + nl +
+                "    └───folder1" + nl +
+                "            file1.txt" + nl +
+                "            file2.txt" + nl,
+                "List as tree");
 
             CheckRunCompareOutput(new[] { "list", @"TestData/example.packed",
                 "--output-style", "name",

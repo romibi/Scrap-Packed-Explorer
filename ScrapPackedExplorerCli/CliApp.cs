@@ -87,8 +87,8 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli {
         private static int RunList(ListOptions p_Options) {
             try {
                 ScrapPackedFile packedFile = new(p_Options.PackedFile);
-                List<string> FileList = packedFile.GetFileNames();
-                FileList.Sort();
+                List<PackedFileIndexData> FileList = packedFile.GetFileIndexDataList();
+                FileList.Sort((x, y) => x.FilePath.CompareTo(y.FilePath));
 
                 if (FileList.Count == 0) {
                     if (!p_Options.NoErrors) {
@@ -97,7 +97,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli {
                     return 1;
                 }
 
-                List<string> SearchedList = Search(FileList, p_Options.SearchString, p_Options.IsRegex, p_Options.MatchBeginning, p_Options.MatchFilename);
+                List<PackedFileIndexData> SearchedList = Search(FileList, p_Options.SearchString, p_Options.IsRegex, p_Options.MatchBeginning, p_Options.MatchFilename);
 
                 if (SearchedList.Count == 0) {
                     if (!p_Options.NoErrors) {
@@ -106,30 +106,10 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli {
                     return 1;
                 }
 
-                foreach (var File in SearchedList) {
-                    OutputStyles Styles = p_Options.OutputStyle;
-
-                    string[] FileData = File.Split("\t");
-                    string FilePath = Path.GetDirectoryName(FileData[0]).Replace("\\", "/");
-                    string FileName = Path.GetFileName(FileData[0]);
-                    string FileSize = FileData[1];
-                    string FileOffset = FileData[2];
-
-                    if (FilePath != "")
-                        FilePath += "/";
-
-                    string Output = FileName;
-
-                    if (Styles != OutputStyles.Name)
-                        Output = FilePath + Output;
-
-                    if (p_Options.ShowFileSize)
-                        Output += "\t" + FileSize;
-
-                    if (p_Options.ShowFileOffset)
-                        Output += "\t" + FileOffset;
-
-                    Console.WriteLine(Output);
+                if (p_Options.OutputStyle == OutputStyles.Tree) {
+                    OutputListAsTree(SearchedList, p_Options);
+                } else {
+                    OutputList(SearchedList, p_Options);
                 }
                 return 0;
             } catch (Exception ex) {
@@ -137,6 +117,95 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli {
                     Console.Error.WriteLine($"Error: {ex.Message}");
                 }
                 return 1;
+            }
+        }
+
+        private static void OutputList(List<PackedFileIndexData> p_List, ListOptions p_Options) {
+            foreach (var File in p_List) {
+                string FilePath = Path.GetDirectoryName(File.FilePath).Replace("\\", "/");
+                string FileName = Path.GetFileName(File.FilePath);
+
+                if (FilePath != "")
+                    FilePath += "/";
+
+                string Output = FileName;
+
+                if (p_Options.OutputStyle != OutputStyles.Name)
+                    Output = FilePath + Output;
+
+                if (p_Options.ShowFileSize)
+                    Output += "\tSize: " + File.FileSize.ToString();
+
+                if (p_Options.ShowFileOffset)
+                    Output += "\tOffset: " + File.OriginalOffset.ToString();
+
+                Console.WriteLine(Output);
+            }
+        }
+        private static void OutputListAsTree(List<PackedFileIndexData> p_List, ListOptions p_Options) {
+            ScrapTreeEntry root = new ScrapTreeEntry(null) { Name = p_Options.PackedFile };
+
+            foreach (PackedFileIndexData file in p_List) {
+                root.AddFileData(file);
+            }
+            root.Sort();
+
+            OutputTreeListEntry("", root);
+        }
+
+        private static void OutputTreeListEntry(string p_CurrentTreePrefix, ScrapTreeEntry p_Entry) {
+            const string TREE_PREFIX_FILE = "│   ";
+            const string TREE_PREFIX_FOLDER = "├───";
+            const string TREE_PREFIX_FOLDER_LAST = "└───";
+            const string TREE_PREFIX_FILE_IN_LAST_FOLDER = "    ";
+            const int TREE_PREFIX_LENGTH = 4;
+
+            var printPrefix = p_CurrentTreePrefix;
+            if (p_Entry.IsDirectory) {
+                // Add "empty" line before directories and convert file prefix to tree prefix
+                if (printPrefix.EndsWith(TREE_PREFIX_FILE)) {
+                    // after this directory there will be another directory: we can just print the current tree prefix once
+                    // and replace the last TREE_PREFIX_FILE with TREE_PREFIX_FOLDER for printing the entry name
+                    Console.WriteLine(p_CurrentTreePrefix);
+                    printPrefix = printPrefix.Substring(0, printPrefix.Length - TREE_PREFIX_LENGTH) + TREE_PREFIX_FOLDER;
+                } else if (printPrefix.EndsWith(TREE_PREFIX_FILE_IN_LAST_FOLDER)) {
+                    // after this directory there will be no other directory in this nexting level: we have to convert TREE_PREFIX_FILE_IN_LAST_FOLDER to TREE_PREFIX_FILE
+                    // for printing an "empty line"
+                    // and replace the last TREE_PREFIX_FILE_IN_LAST_FOLDER with TREE_PREFIX_FOLDER_LAST for printing the entry name
+                    Console.WriteLine(printPrefix.Substring(0, printPrefix.Length - TREE_PREFIX_LENGTH) + TREE_PREFIX_FILE);
+                    printPrefix = printPrefix.Substring(0, printPrefix.Length - 4) + TREE_PREFIX_FOLDER_LAST;
+                }
+            }
+            Console.WriteLine(printPrefix + p_Entry.Name);
+
+            List<ScrapTreeEntry> files = new();
+            List<ScrapTreeEntry> folders = new();
+
+            // split files and folders
+            foreach (var child in p_Entry.Items) {
+                if (child.IsFile) {
+                    files.Add(child);
+                } else {
+                    folders.Add(child);
+                }
+            }
+
+            var newFilePrefix = folders.Count == 0 ? p_CurrentTreePrefix + TREE_PREFIX_FILE_IN_LAST_FOLDER : p_CurrentTreePrefix + TREE_PREFIX_FILE;
+
+            // first output files
+            foreach (var file in files) {
+                OutputTreeListEntry(newFilePrefix, file);
+            }
+
+            // then output folder, but use different tree prefix for the last one
+            if (folders.Count > 0) {
+                for (int i = 0; i < folders.Count; i++) {
+                    if (i < folders.Count - 1) {
+                        OutputTreeListEntry(p_CurrentTreePrefix + TREE_PREFIX_FILE, folders[i]);
+                    } else {
+                        OutputTreeListEntry(p_CurrentTreePrefix + TREE_PREFIX_FILE_IN_LAST_FOLDER, folders[i]);
+                    }
+                }
             }
         }
 
@@ -174,8 +243,8 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli {
             return 0;
         }
 
-        private static List<string> Search(List<string> p_FileList, string p_Query, bool p_IsRegex, bool p_MatchBeginning, bool p_MatchFilename) {
-            List<string> result = new();
+        private static List<PackedFileIndexData> Search(List<PackedFileIndexData> p_FileList, string p_Query, bool p_IsRegex, bool p_MatchBeginning, bool p_MatchFilename) {
+            List<PackedFileIndexData> result = new();
 
             var query = p_Query;
             if (!p_IsRegex)
@@ -191,17 +260,14 @@ namespace ch.romibi.Scrap.Packed.Explorer.Cli {
             Regex rg = new(query);
 
             foreach (var File in p_FileList) {
-                string[] FileData = File.Split("\t");
-                var FilePath = Path.GetDirectoryName(FileData[0]).Replace("\\", "/");
-                var FileName = Path.GetFileName(FileData[0]);
-                var FileSize = FileData[1];
-                var FileOffset = FileData[2];
+                var FilePath = Path.GetDirectoryName(File.FilePath).Replace("\\", "/");
+                var FileName = Path.GetFileName(File.FilePath);
 
                 if (FilePath != "")
                     FilePath += "/";
 
                 if (rg.IsMatch(p_MatchFilename ? FileName : FilePath + FileName))
-                    result.Add($"{FilePath}{FileName}\t{FileSize}\t{FileOffset}");
+                    result.Add(File);
             }
 
             return result;
