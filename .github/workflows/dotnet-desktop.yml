@@ -71,6 +71,9 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.0.x
+        
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.1
 
     - name: Restore dependencies
       run: dotnet restore ${{ env.Solution_Name }}
@@ -80,7 +83,15 @@ jobs:
     
     - name: Run Tests
       run: dotnet test
-      
+
+    - name: Store Failed Test Results
+      if: failure()
+      uses: actions/upload-artifact@v3
+      with:
+        name: TestFails
+        path: |
+          **/TestFails/
+        
     - name: Publish Project
       if: ${{ startsWith(github.ref, 'refs/tags/v') }}
       shell: cmd
@@ -127,6 +138,7 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         file: Publish (linux-x86_64)/ScrapPackedExplorerCli
         release-url: ${{ steps.create_release.outputs.upload_url }}
+        
   build-and-tests-on-linux:
     runs-on: ubuntu-latest
     env:
@@ -161,3 +173,11 @@ jobs:
     
     - name: Run Tests
       run: dotnet test --no-restore
+      
+    - name: Store Failed Test Results
+      if: failure()
+      uses: actions/upload-artifact@v3
+      with:
+        name: TestFails
+        path: |
+          **/TestFails/
