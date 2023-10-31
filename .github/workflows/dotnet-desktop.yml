@@ -1,15 +1,10 @@
-# This workflow will build, test and package a WPF or Windows Forms desktop application
-# built on .NET Core.
-#
-# To configure this workflow:
-#
-# 1. Configure environment variables
-# GitHub sets default environment variables for every workflow run.
-# Replace the variables relative to your project in the "env" section below.
+# This workflow will lint, build, test and package this project on windows and build and test on ubuntu
 #
 # For more information on GitHub Actions, refer to https://github.com/features/actions
 # For a complete CI/CD sample to get started with GitHub Action workflows for Desktop Applications,
 # refer to https://github.com/microsoft/github-actions-for-desktop-apps
+# 
+# todo: cleanup and simplify
 
 name: .NET Core Desktop
 
@@ -56,6 +51,8 @@ jobs:
       
   build-test-and-deploy:
     runs-on: windows-latest  # For a list of available runner types, refer to https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
+    permissions:
+      contents: write
     env:
       Solution_Name: ScrapPackedExplorer.sln
       Test_Project_Path: ScrapPackedTests/ScrapPackedTests.csproj
@@ -113,31 +110,28 @@ jobs:
         ren "Publish (32bit)\ScrapPackedExplorerCli.exe" "ScrapPackedExplorerCli32.exe"
         msbuild ScrapPackedExplorerCli\ScrapPackedExplorerCli.csproj -p:Configuration=Release -restore -t:Publish -p:Platform=AnyCPU -p:PublishProfile="ScrapPackedExplorerCli\Properties\PublishProfiles\ScrapPackedExplorerCli (linux-x86_64).pubxml"
 
-    - name: Prepare Release
-      id: create_release
+    - name: Create Release Draft
       if: ${{ startsWith(github.ref, 'refs/tags/v') }}
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: ncipollo/release-action@v1
       with:
-        tag_name: ${{ github.ref }}
-        release_name: ${{ github.ref }}
-
-    - name: Upload build artifacts (.exe)
-      if: ${{ startsWith(github.ref, 'refs/tags/v') }}
-      uses: csexton/release-asset-action@v2
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        pattern: Publish*/*.exe
-        release-url: ${{ steps.create_release.outputs.upload_url }}
-
-    - name: Upload build artifacts (linux binary)
-      if: ${{ startsWith(github.ref, 'refs/tags/v') }}
-      uses: csexton/release-asset-action@v2
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        file: Publish (linux-x86_64)/ScrapPackedExplorerCli
-        release-url: ${{ steps.create_release.outputs.upload_url }}
+        tag: ${{ github.ref }}
+        name: ${{ github.ref }}
+        artifacts: "Publish*/*.exe,Publish (linux-x86_64)/ScrapPackedExplorerCli"
+        draft: true
+        body: |
+          New Release: <insert big new thing>
+          
+          ### Changelog:
+          - insert more detailed changes
+          
+          ### Info
+          The UI is not tested very much! Expect Bugs!
+          If you are unsure which file to use:
+          - ScrapPackedExplorer.exe if you want a GUI
+          - ScrapPackedExplorerCli.exe if you want to use the command line
+          - ScrapPackedExplorerCombined.exe if you want to use both
+        prerelease: true
+        skipIfReleaseExists: true
         
   build-and-tests-on-linux:
     runs-on: ubuntu-latest
@@ -145,12 +139,7 @@ jobs:
       Solution_Name: ScrapPackedExplorer.sln
       Test_Project_Path: ScrapPackedTests/ScrapPackedTests.csproj
 
-    steps:    
-    - name: Prepare git
-      run: |-
-        git config --global core.autocrlf false
-        git config --global core.eol CRLF
-          
+    steps:         
     - name: Checkout
       uses: actions/checkout@v4
       with:
@@ -169,9 +158,9 @@ jobs:
 
     - name: Build Project
       run: |
-        dotnet build ScrapPackedLibrary/ScrapPackedLibrary.csproj -c Release --no-restore 
-        dotnet build ScrapPackedExplorerCli/ScrapPackedExplorerCli.csproj -c Release --no-restore 
-        dotnet build ScrapPackedTests/ScrapPackedTests.csproj -c Release --no-restore 
+        dotnet build ScrapPackedLibrary/ScrapPackedLibrary.csproj --no-restore 
+        dotnet build ScrapPackedExplorerCli/ScrapPackedExplorerCli.csproj --no-restore 
+        dotnet build ScrapPackedTests/ScrapPackedTests.csproj --no-restore 
     
     - name: Run Tests
       run: dotnet test --no-restore
@@ -183,4 +172,3 @@ jobs:
         name: TestResults
         path: |
           **/TestFails/
-          **/TestData/
