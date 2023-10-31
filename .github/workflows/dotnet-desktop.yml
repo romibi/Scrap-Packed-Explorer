@@ -156,14 +156,6 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Check Git status
-      run: |-
-        git config --global core.autocrlf
-        git config --global core.eol
-        git config core.autocrlf
-        git config core.eol
-        cat .gitattributes
-
     - name: Install .NET Core
       uses: actions/setup-dotnet@v3
       with:
@@ -188,6 +180,7 @@ jobs:
       if: failure()
       uses: actions/upload-artifact@v3
       with:
-        name: TestFails
+        name: TestResults
         path: |
           **/TestFails/
+          **/TestData/
