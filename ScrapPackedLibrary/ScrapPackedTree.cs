@@ -94,14 +94,13 @@ namespace ch.romibi.Scrap.Packed.PackerLib {
         public int CompareTo(object p_Other) {
             ScrapTreeEntry a = this;
             ScrapTreeEntry b = (ScrapTreeEntry)p_Other;
-            if (a.IsDirectory == b.IsDirectory) {
+            if (a.IsDirectory == b.IsDirectory)
                 return a.Name.CompareTo(b.Name);
-            } else {
-                if (a.IsDirectory)
-                    return -1;
-                else
-                    return 1;
-            }
+
+            if (a.IsDirectory)
+                return -1;
+            else
+                return 1;
         }
 
         public void Sort() {
