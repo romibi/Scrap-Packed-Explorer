@@ -21,7 +21,7 @@ namespace ch.romibi.Scrap.Packed.Explorer.Combined {
 
             if (isCliArgProvided || p_Args.Length > 1)
                 return CliApp.Run(p_Args);
-            
+
             HideConsoleWindow();
             GuiApp guiApp = new();
 
