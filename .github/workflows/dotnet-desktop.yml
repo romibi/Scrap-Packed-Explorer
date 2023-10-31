@@ -21,10 +21,8 @@ on:
     branches: [ "master" ]
 
 jobs:
-  build:
-
+  build-test-and-deploy:
     runs-on: windows-latest  # For a list of available runner types, refer to https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
-
     env:
       Solution_Name: ScrapPackedExplorer.sln
       Test_Project_Path: ScrapPackedTests/ScrapPackedTests.csproj
@@ -52,6 +50,7 @@ jobs:
       
     - name: Publish Project
       if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+      shell: cmd
       run: |
         @rem simplify
         @echo Building Scrap Packed Explorer GUI
@@ -95,3 +94,28 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         file: Publish (linux-x86_64)/ScrapPackedExplorerCli
         release-url: ${{ steps.create_release.outputs.upload_url }}
+  build-and-tests-on-linux:
+    runs-on: ubuntu-latest
+    env:
+      Solution_Name: ScrapPackedExplorer.sln
+      Test_Project_Path: ScrapPackedTests/ScrapPackedTests.csproj
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
+
+    - name: Restore dependencies
+      run: dotnet restore ${{ env.Solution_Name }}
+
+    - name: Build Project
+      run: dotnet build ${{ env.Solution_Name }} -c Release --no-restore 
+    
+    - name: Run Tests
+      run: dotnet test
