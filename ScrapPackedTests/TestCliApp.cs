@@ -11,8 +11,18 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
         // Writing Environment.NewLine every time is just tedious and unreadable
         private readonly string nl = Environment.NewLine;
 
+
+        public TestContext TestContext { get; set; }
+
         // Note: if some tests fail for no reason cleanup TestData folder in the output folder
         // Todo: ensure that this is not needed
+
+        [ClassInitialize]
+        public static void ClassInitialize(TestContext testContext) {
+            if (Directory.Exists("TestFails"))
+                Directory.Delete("TestFails", true);
+
+        }
 
         [TestInitialize]
         public void TestInitialize() {
@@ -28,6 +38,15 @@ namespace ch.romibi.Scrap.Packed.PackerLib.Tests {
 
             if (!Directory.Exists(@"TestResults\TestAdd"))
                 Directory.CreateDirectory(@"TestResults\TestAdd"); */
+        }
+
+        [TestCleanup]
+        public void TestCleanup() {
+            if (TestContext.CurrentTestOutcome != UnitTestOutcome.Passed) {
+                if (!Directory.Exists("TestFails"))
+                    Directory.CreateDirectory("TestFails");
+                Directory.Move("TestResults", Path.Combine("TestFails", TestContext.TestName));
+            }
         }
 
 
