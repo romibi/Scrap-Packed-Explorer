@@ -1,9 +1,16 @@
 ﻿using ch.romibi.Scrap.Packed.PackerLib;
+using ch.romibi.Scrap.Packed.PackerLib.DataTypes;
 using Microsoft.Win32;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -15,13 +22,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using ch.romibi.Scrap.Packed.PackerLib.DataTypes;
-using System.IO;
-using System.Diagnostics;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Collections;
-using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace ch.romibi.Scrap.Packed.Explorer {
     /// <summary>
