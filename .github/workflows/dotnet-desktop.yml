@@ -47,12 +47,12 @@ jobs:
     - name: Install dotnet format
       run: dotnet tool update --global dotnet-format
 
-    # Run dotnet format --dry-run --check
+    # Run dotnet format --verify-no-changes
     # By default, the task ensure the exit code is 0
     # If a file needs to be edited by dotnet format, the exit code will be a non-zero value
     # So the task will fail
     - name: Run dotnet format
-      run: dotnet format --check --verbosity diagnostic
+      run: dotnet format --verify-no-changes --verbosity diagnostic
       
   build-test-and-deploy:
     runs-on: windows-latest  # For a list of available runner types, refer to https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
@@ -134,6 +134,9 @@ jobs:
       Test_Project_Path: ScrapPackedTests/ScrapPackedTests.csproj
 
     steps:
+    - name: Set github config
+      run: git config --global core.autocrlf false
+    
     - name: Checkout
       uses: actions/checkout@v3
       with:
