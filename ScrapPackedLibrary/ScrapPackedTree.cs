@@ -8,6 +8,12 @@ using System.Threading.Tasks;
 
 namespace ch.romibi.Scrap.Packed.PackerLib {
     public class ScrapTreeEntry : IComparable {
+        public virtual ScrapTreeEntry CreateAndAdd(ScrapTreeEntry p_Parent, string p_Name = "", PackedFileIndexData p_IndexData = null) {
+            ScrapTreeEntry Result = new ScrapTreeEntry(p_Parent) { Name = p_Name, IndexData = p_IndexData };
+            Items.Add(Result);
+            return Result;
+        }
+
         public ScrapTreeEntry(ScrapTreeEntry p_Parent) {
             Items = new ObservableCollection<ScrapTreeEntry>();
             IndexData = null;
@@ -49,12 +55,11 @@ namespace ch.romibi.Scrap.Packed.PackerLib {
                     }
                 }
                 if (subDir == null) {
-                    subDir = new ScrapTreeEntry(this) { Name = nextDir };
-                    Items.Add(subDir);
+                    subDir = CreateAndAdd(this, nextDir);
                 }
                 subDir.AddFileData(p_File, fileName.Substring(nextDir.Length + 1));
             } else {
-                Items.Add(new ScrapTreeEntry(this) { Name = fileName, IndexData = p_File });
+                CreateAndAdd(this, fileName, p_File);
             }
         }
 
