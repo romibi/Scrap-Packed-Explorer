@@ -20,24 +20,24 @@ namespace ch.romibi.Scrap.Packed.PackerLib {
             Parent = p_Parent;
         }
 
-        public string Name { get; set; }
+        public virtual string Name { get; set; }
 
-        public ScrapTreeEntry Parent { get; set; }
+        public virtual ScrapTreeEntry Parent { get; set; }
 
-        public PackedFileIndexData IndexData { get; set; }
+        public virtual PackedFileIndexData IndexData { get; set; }
         public bool IsFile {
             get {
                 return !IsDirectory;
             }
         }
 
-        public bool IsDirectory {
+        public virtual bool IsDirectory {
             get {
                 return IndexData is null;
             }
         }
 
-        public void AddFileData(PackedFileIndexData p_File, string p_SubdirFilename = "") {
+        public virtual void AddFileData(PackedFileIndexData p_File, string p_SubdirFilename = "") {
             string fileName;
             if (p_SubdirFilename.Length == 0) {
                 fileName = p_File.FilePath;
@@ -63,7 +63,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib {
             }
         }
 
-        public List<ScrapTreeEntry> GetItemPath() {
+        public virtual List<ScrapTreeEntry> GetItemPath() {
             // get a list of TreeItems from parent to selection
             // Todo: move logic inside TreeEntry and cache
             List<ScrapTreeEntry> itemPath = new List<ScrapTreeEntry>();
@@ -78,7 +78,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib {
             return itemPath;
         }
 
-        public string GetItemPathString(bool p_IgnoreRoot = true) {
+        public virtual string GetItemPathString(bool p_IgnoreRoot = true) {
             List<ScrapTreeEntry> itemPath = GetItemPath();
             string pathString = "";
 
@@ -96,7 +96,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib {
             return pathString;
         }
 
-        public int CompareTo(object p_Other) {
+        public virtual int CompareTo(object p_Other) {
             ScrapTreeEntry a = this;
             ScrapTreeEntry b = (ScrapTreeEntry)p_Other;
             if (a.IsDirectory == b.IsDirectory)
@@ -108,7 +108,7 @@ namespace ch.romibi.Scrap.Packed.PackerLib {
                 return 1;
         }
 
-        public void Sort() {
+        public virtual void Sort() {
             var sorted = Items.OrderBy(p_X => p_X).ToList();
 
             for (int i = 0; i < sorted.Count; i++)
@@ -121,6 +121,6 @@ namespace ch.romibi.Scrap.Packed.PackerLib {
             }
         }
 
-        public ObservableCollection<ScrapTreeEntry> Items { get; set; }
+        public virtual ObservableCollection<ScrapTreeEntry> Items { get; set; }
     }
 }
