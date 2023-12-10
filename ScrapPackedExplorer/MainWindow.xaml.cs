@@ -416,7 +416,7 @@ namespace ch.romibi.Scrap.Packed.Explorer {
     }
 
     public class TreeViewTreeEntry : ScrapTreeEntry {
-        public override ScrapTreeEntry CreateAndAdd(ScrapTreeEntry p_Parent, string p_Name = "", PackedFileIndexData p_IndexData = null) {
+        public override ScrapTreeEntry CreateChild(ScrapTreeEntry p_Parent, string p_Name = "", PackedFileIndexData p_IndexData = null) {
             TreeViewTreeEntry Result = new TreeViewTreeEntry(p_Parent) { Name = p_Name, IndexData = p_IndexData };
             Items.Add(Result);
             return Result;
