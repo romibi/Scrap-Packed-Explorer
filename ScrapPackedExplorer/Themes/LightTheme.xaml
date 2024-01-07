@@ -1,11 +1,5 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <SolidColorBrush x:Key="NormalForeground" Color="Black"/>
-    <SolidColorBrush x:Key="ListViewForeground" Color="#FF042271" />
-    <SolidColorBrush x:Key="NormalBackground" Color="White"/>
-    <SolidColorBrush x:Key="SplitterBackground" Color="#FFF0F0F0"/>
-    <SolidColorBrush x:Key="DisabledBackground" Color="LightGray"/>
-    <SolidColorBrush x:Key="NormalBorderBrush" Color="Gray" />
 
     <SolidColorBrush x:Key="Button.MouseOver.Background" Color="#FFBEE6FD"/>
     <SolidColorBrush x:Key="Button.MouseOver.Border" Color="#FF3C7FB1"/>
@@ -14,4 +8,79 @@
     <SolidColorBrush x:Key="Button.Disabled.Background" Color="#FFF4F4F4"/>
     <SolidColorBrush x:Key="Button.Disabled.Border" Color="#FFADB2B5"/>
     <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383"/>
+
+    <SolidColorBrush x:Key="ActiveBorderBrushKey" Color="#FFb4b4b4" />
+    <SolidColorBrush x:Key="ActiveCaptionBrushKey" Color="#FF99b4d1" />
+    <SolidColorBrush x:Key="ActiveCaptionTextBrushKey" Color="#FF000000" />
+    <SolidColorBrush x:Key="AppWorkspaceBrushKey" Color="#FFababab" />
+    <SolidColorBrush x:Key="ControlBrushKey" Color="#FFf0f0f0" />
+    <SolidColorBrush x:Key="ControlDarkBrushKey" Color="#FFa0a0a0" />
+    <SolidColorBrush x:Key="ControlDarkDarkBrushKey" Color="#FF696969" />
+    <SolidColorBrush x:Key="ControlLightBrushKey" Color="#FFe3e3e3" />
+    <SolidColorBrush x:Key="ControlLightLightBrushKey" Color="#FFffffff" />
+    <SolidColorBrush x:Key="ControlTextBrushKey" Color="#FF000000" />
+    <SolidColorBrush x:Key="DesktopBrushKey" Color="#FF000000" />
+    <SolidColorBrush x:Key="GradientActiveCaptionBrushKey" Color="#FFb9d1ea" />
+    <SolidColorBrush x:Key="GradientInactiveCaptionBrushKey" Color="#FFd7e4f2" />
+    <SolidColorBrush x:Key="GrayTextBrushKey" Color="#FF6d6d6d" />
+    <SolidColorBrush x:Key="HighlightBrushKey" Color="#FF0078d7" />
+    <SolidColorBrush x:Key="HighlightTextBrushKey" Color="#FFffffff" />
+    <SolidColorBrush x:Key="HotTrackBrushKey" Color="#FF0066cc" />
+    <SolidColorBrush x:Key="InactiveBorderBrushKey" Color="#FFf4f7fc" />
+    <SolidColorBrush x:Key="InactiveCaptionBrushKey" Color="#FFbfcddb" />
+    <SolidColorBrush x:Key="InactiveCaptionTextBrushKey" Color="#FF000000" />
+    <SolidColorBrush x:Key="InactiveSelectionHighlightBrushKey" Color="#FFf0f0f0" />
+    <SolidColorBrush x:Key="InactiveSelectionHighlightTextBrushKey" Color="#FF000000" />
+    <SolidColorBrush x:Key="InfoBrushKey" Color="#FFffffe1" />
+    <SolidColorBrush x:Key="InfoTextBrushKey" Color="#FF000000" />
+    <SolidColorBrush x:Key="MenuBarBrushKey" Color="#FFf0f0f0" />
+    <SolidColorBrush x:Key="MenuBrushKey" Color="#FFf0f0f0" />
+    <SolidColorBrush x:Key="MenuHighlightBrushKey" Color="#FF0078d7" />
+    <SolidColorBrush x:Key="MenuTextBrushKey" Color="#FF000000" />
+    <SolidColorBrush x:Key="ScrollBarBrushKey" Color="#FFc8c8c8" />
+    <SolidColorBrush x:Key="WindowBrushKey" Color="#FFffffff" />
+    <SolidColorBrush x:Key="WindowFrameBrushKey" Color="#FF646464" />
+    <SolidColorBrush x:Key="WindowTextBrushKey" Color="#FF000000" />
+
+    <Color x:Key="ActiveBorderColorKey">#FFb4b4b4</Color>
+    <Color x:Key="ActiveCaptionColorKey">#FF99b4d1</Color>
+    <Color x:Key="ActiveCaptionTextColorKey">#FF000000</Color>
+    <Color x:Key="AppWorkspaceColorKey">#FFababab</Color>
+    <Color x:Key="ControlColorKey">#FFf0f0f0</Color>
+    <Color x:Key="ControlDarkColorKey">#FFa0a0a0</Color>
+    <Color x:Key="ControlDarkDarkColorKey">#FF696969</Color>
+    <Color x:Key="ControlLightColorKey">#FFe3e3e3</Color>
+    <Color x:Key="ControlLightLightColorKey">#FFffffff</Color>
+    <Color x:Key="ControlTextColorKey">#FF000000</Color>
+    <Color x:Key="DesktopColorKey">#FF000000</Color>
+    <Color x:Key="GradientActiveCaptionColorKey">#FFb9d1ea</Color>
+    <Color x:Key="GradientInactiveCaptionColorKey">#FFd7e4f2</Color>
+    <Color x:Key="GrayTextColorKey">#FF6d6d6d</Color>
+    <Color x:Key="HighlightColorKey">#FF0078d7</Color>
+    <Color x:Key="HighlightTextColorKey">#FFffffff</Color>
+    <Color x:Key="HotTrackColorKey">#FF0066cc</Color>
+    <Color x:Key="InactiveBorderColorKey">#FFf4f7fc</Color>
+    <Color x:Key="InactiveCaptionColorKey">#FFbfcddb</Color>
+    <Color x:Key="InactiveCaptionTextColorKey">#FF000000</Color>
+    <Color x:Key="InfoColorKey">#FFffffe1</Color>
+    <Color x:Key="InfoTextColorKey">#FF000000</Color>
+    <Color x:Key="MenuBarColorKey">#FFf0f0f0</Color>
+    <Color x:Key="MenuColorKey">#FFf0f0f0</Color>
+    <Color x:Key="MenuHighlightColorKey">#FF0078d7</Color>
+    <Color x:Key="MenuTextColorKey">#FF000000</Color>
+    <Color x:Key="ScrollBarColorKey">#FFc8c8c8</Color>
+    <Color x:Key="WindowColorKey">#FFffffff"</Color>
+    <Color x:Key="WindowFrameColorKey">#FF646464</Color>
+    <Color x:Key="WindowTextColorKey">#FF000000</Color>
+
+    <ImageSource x:Key="Create">/Icons/Variety Duotone Filled Icons/file-new.png</ImageSource>
+    <ImageSource x:Key="Open">/Icons/Variety Duotone Filled Icons/file-edit.png</ImageSource>
+    <ImageSource x:Key="Save">/Icons/Variety Duotone Filled Icons/diskette-save.png</ImageSource>
+    <ImageSource x:Key="SaveAs">/Icons/Variety Duotone Filled Icons/copy.png</ImageSource>
+    <ImageSource x:Key="Add">/Icons/Variety Duotone Filled Icons/add-file-3.png</ImageSource>
+    <ImageSource x:Key="AddFolder">/Icons/Variety Duotone Filled Icons/folder-add.png</ImageSource>
+    <ImageSource x:Key="Extract">/Icons/Variety Duotone Filled Icons/curve-arrow-down-5.png</ImageSource>
+    <ImageSource x:Key="Delete">/Icons/Variety Duotone Filled Icons/delete-file.png</ImageSource>
+    <ImageSource x:Key="Search">/Icons/Variety Duotone Filled Icons/file-search.png</ImageSource>
+    <ImageSource x:Key="Options">/Icons/Variety Duotone Filled Icons/settings.png</ImageSource>
 </ResourceDictionary>

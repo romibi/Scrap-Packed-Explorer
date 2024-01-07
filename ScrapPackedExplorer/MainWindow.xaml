@@ -1,11 +1,11 @@
-﻿<Window Background="{StaticResource NormalBackground}" x:Name="window" x:Class="ch.romibi.Scrap.Packed.Explorer.MainWindow"
+<Window Background="{StaticResource WindowBrushKey}" x:Name="window" x:Class="ch.romibi.Scrap.Packed.Explorer.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ch.romibi.Scrap.Packed.Explorer"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" Foreground="{DynamicResource NormalForeground}">
+        Title="MainWindow" Height="450" Width="800" Foreground="{DynamicResource WindowTextBrushKey}">
     <Window.Resources>
         <ControlTemplate x:Key="ButtonTemplate" TargetType="{x:Type ButtonBase}">
             <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="true">
@@ -32,11 +32,11 @@
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
-        
+
         <Style TargetType="Button">
-            <Setter Property="Background" Value="{StaticResource NormalBackground}" />
-            <Setter Property="Foreground" Value="{StaticResource NormalForeground}" />
-            <Setter Property="BorderBrush" Value="{StaticResource NormalBorderBrush}" />
+            <Setter Property="Background" Value="{StaticResource ControlBrushKey}" />
+            <Setter Property="Foreground" Value="{StaticResource ControlTextBrushKey}" />
+            <Setter Property="BorderBrush" Value="{StaticResource ControlDarkBrushKey}" />
             <Setter Property="Template" Value="{DynamicResource ButtonTemplate}" />
         </Style>
 
@@ -44,15 +44,47 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type GridViewColumnHeader}">
-                        <Border BorderBrush="{StaticResource NormalBorderBrush}" Background="Transparent">
+                        <Border BorderBrush="{StaticResource ActiveBorderBrushKey}" Background="Transparent">
                             <TextBlock x:Name="ContentHeader" Text="{TemplateBinding Content}" Padding="5,5,5,0" Width="{TemplateBinding Width}" TextAlignment="Center" />
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-            <Setter Property="Foreground" Value="{StaticResource NormalForeground}" />
+            <Setter Property="Foreground" Value="{StaticResource ControlTextBrushKey}" />
         </Style>
 
+        <SolidColorBrush x:Key="{x:Static SystemColors.ActiveBorderBrushKey}" Color="{StaticResource ActiveBorderColorKey }" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.ActiveCaptionBrushKey}" Color="{StaticResource ActiveCaptionColorKey }" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.ActiveCaptionTextBrushKey}" Color="{StaticResource ActiveCaptionTextColorKey }" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.AppWorkspaceBrushKey}" Color="{StaticResource AppWorkspaceColorKey }" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="{StaticResource ControlColorKey }" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.ControlDarkBrushKey}" Color="{StaticResource ControlDarkColorKey }" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.ControlDarkDarkBrushKey}" Color="{StaticResource ControlDarkDarkColorKey }" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.ControlLightBrushKey}" Color="{StaticResource ControlLightColorKey }" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.ControlLightLightBrushKey}" Color="{StaticResource ControlLightLightColorKey }" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="{StaticResource ControlTextColorKey }" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.DesktopBrushKey}" Color="{StaticResource DesktopColorKey }" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.GradientActiveCaptionBrushKey}" Color="{StaticResource GradientActiveCaptionColorKey }" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.GradientInactiveCaptionBrushKey}" Color="{StaticResource GradientInactiveCaptionColorKey }" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.GrayTextBrushKey}" Color="{StaticResource GrayTextColorKey }" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="{StaticResource HighlightColorKey }" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="{StaticResource HighlightTextColorKey }" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.HotTrackBrushKey}" Color="{StaticResource HotTrackColorKey }" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveBorderBrushKey}" Color="{StaticResource InactiveBorderColorKey }" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveCaptionBrushKey}" Color="{StaticResource InactiveCaptionColorKey }" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveCaptionTextBrushKey}" Color="{StaticResource InactiveCaptionTextColorKey }" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{StaticResource InactiveCaptionColorKey }" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="{StaticResource InactiveCaptionTextColorKey }" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.InfoBrushKey}" Color="{StaticResource InfoColorKey }" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.InfoTextBrushKey}" Color="{StaticResource InfoTextColorKey }" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.MenuBarBrushKey}" Color="{StaticResource MenuBarColorKey }" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.MenuBrushKey}" Color="{StaticResource MenuColorKey }" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.MenuHighlightBrushKey}" Color="{StaticResource MenuHighlightColorKey }" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.MenuTextBrushKey}" Color="{StaticResource MenuTextColorKey }" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.ScrollBarBrushKey}" Color="{StaticResource ScrollBarColorKey }" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.WindowBrushKey}" Color="{StaticResource WindowColorKey }" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.WindowFrameBrushKey}" Color="{StaticResource WindowFrameColorKey }" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.WindowTextBrushKey}" Color="{StaticResource WindowTextColorKey }" />
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -62,25 +94,25 @@
         <DockPanel HorizontalAlignment="Left" Height="64" LastChildFill="False" VerticalAlignment="Top">
             <Button Name="CreateButton" Width="64" Click="CreateButton_Click">
                 <StackPanel>
-                    <Image Source="/Icons/Variety Duotone Filled Icons/file-new.png" Height="42" />
+                    <Image Source="{StaticResource Create}" Height="42" />
                     <TextBlock Text="Create"/>
                 </StackPanel>
             </Button>
             <Button Name="OpenButton" Width="64" Click="OpenButton_Click">
                 <StackPanel>
-                    <Image Source="/Icons/Variety Duotone Filled Icons/file-edit.png" Height="42" />
+                    <Image Source="{StaticResource Open}" Height="42" />
                     <TextBlock Text="Open"/>
                 </StackPanel>
             </Button>
             <Button Name="SaveButton" Width="64" Click="SaveButton_Click" IsEnabled="{Binding Path=PendingChanges, RelativeSource={RelativeSource AncestorType=Window}}">
                 <StackPanel>
-                    <Image Source="/Icons/Variety Duotone Filled Icons/diskette-save.png" Height="42" />
+                    <Image Source="{StaticResource Save}" Height="42" />
                     <TextBlock Text="Save"/>
                 </StackPanel>
             </Button>
             <Button Name="SaveAsButton" Width="64" Click="SaveAsButton_Click" IsEnabled="{Binding Path=ContainerLoaded, RelativeSource={RelativeSource AncestorType=Window}}">
                 <StackPanel>
-                    <Image Source="/Icons/Variety Duotone Filled Icons/copy.png" Height="42" />
+                    <Image Source="{StaticResource SaveAs}" Height="42" />
                     <TextBlock Text="Save as …"/>
                 </StackPanel>
             </Button>
@@ -91,25 +123,25 @@
             <Separator Width="5"></Separator>
             <Button Name="AddButton" Width="64" Click="AddButton_Click" IsEnabled="{Binding Path=ContainerLoaded, RelativeSource={RelativeSource AncestorType=Window}}">
                 <StackPanel>
-                    <Image Source="/Icons/Variety Duotone Filled Icons/add-file-3.png" Height="42" />
+                    <Image Source="{StaticResource Add}" Height="42" />
                     <TextBlock Text="Add File"/>
                 </StackPanel>
             </Button>
             <Button Name="AddFolderButton" Width="64" Click="AddFolderButton_Click" IsEnabled="{Binding Path=ContainerLoaded, RelativeSource={RelativeSource AncestorType=Window}}">
                 <StackPanel>
-                    <Image Source="/Icons/Variety Duotone Filled Icons/folder-add.png" Height="42" />
+                    <Image Source="{StaticResource AddFolder}" Height="42" />
                     <TextBlock Text="Add Folder"/>
                 </StackPanel>
             </Button>
             <Button Name="ExtractToButton" Width="64" Click="ExtractToButton_Click" IsEnabled="{Binding Path=ContentSelected, RelativeSource={RelativeSource AncestorType=Window}}">
                 <StackPanel>
-                    <Image Source="/Icons/Variety Duotone Filled Icons/curve-arrow-down-5.png" Height="42" />
+                    <Image Source="{StaticResource Extract}" Height="42" />
                     <TextBlock Text="Extract to"/>
                 </StackPanel>
             </Button>
             <Button Name="DeleteButton" Width="64" Click="DeleteButton_Click" IsEnabled="{Binding Path=ContentSelected, RelativeSource={RelativeSource AncestorType=Window}}">
                 <StackPanel>
-                    <Image Source="/Icons/Variety Duotone Filled Icons/delete-file.png" Height="42" />
+                    <Image Source="{StaticResource Delete}" Height="42" />
                     <TextBlock Text="Delete"/>
                 </StackPanel>
             </Button>
@@ -117,14 +149,14 @@
             <Button Name="SearchButton" Width="64" Click="SearchButton_Click" IsEnabled="False">
                 <!-- IsEnabled="{Binding Path=ContainerLoaded, RelativeSource={RelativeSource AncestorType=Window}}" -->
                 <StackPanel>
-                    <Image Source="/Icons/Variety Duotone Filled Icons/file-search.png" Height="42" />
+                    <Image Source="{StaticResource Search}" Height="42" />
                     <TextBlock Text="Search"/>
                 </StackPanel>
             </Button>
             <Button Name="OptionsButton" Width="64" Click="OptionsButton_Click" IsEnabled="False">
                 <!-- IsEnabled="{Binding Path=ContainerLoaded, RelativeSource={RelativeSource AncestorType=Window}}" -->
                 <StackPanel>
-                    <Image Source="/Icons/Variety Duotone Filled Icons/settings.png" Height="42" />
+                    <Image Source="{StaticResource Options}" Height="42" />
                     <TextBlock Text="Options"/>
                 </StackPanel>
             </Button>
@@ -137,22 +169,22 @@
                 <ColumnDefinition Width="5"/>
                 <ColumnDefinition Width="0*" MinWidth="100"/>
             </Grid.ColumnDefinitions>
-            <TreeView Name="FileTree" SelectedItemChanged="FileTree_SelectedItemChanged" Background="{StaticResource NormalBackground}" Foreground="{StaticResource NormalForeground}" BorderBrush="{StaticResource NormalBorderBrush}">
+            <TreeView Name="FileTree" SelectedItemChanged="FileTree_SelectedItemChanged">
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate DataType="{x:Type local:TreeViewTreeEntry}" ItemsSource="{Binding Items}">
-                        <TextBlock Text="{Binding Name}" Foreground="{StaticResource NormalForeground}" />
+                        <TextBlock Text="{Binding Name}" />
                     </HierarchicalDataTemplate>
                 </TreeView.ItemTemplate>
             </TreeView>
-            <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Foreground="{StaticResource NormalBackground}" Background="{StaticResource SplitterBackground}"/>
-            <ListView Grid.Column="2"  Name="TreeContent" ItemsSource="{Binding Items}" MouseDoubleClick="TreeContent_MouseDoubleClick" SelectionChanged="TreeContent_SelectionChanged" Foreground="{StaticResource ListViewForeground}" BorderBrush="{StaticResource NormalBorderBrush}" Background="{DynamicResource NormalBackground}">
+            <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
+            <ListView Grid.Column="2"  Name="TreeContent" ItemsSource="{Binding Items}" MouseDoubleClick="TreeContent_MouseDoubleClick" SelectionChanged="TreeContent_SelectionChanged">
                 <ListView.View>
                     <GridView ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle}">
                         <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Name" Width="100"/>
                     </GridView>
                 </ListView.View>
             </ListView>
-            <GridSplitter Grid.Column="3" Width="5" HorizontalAlignment="Stretch" Foreground="{StaticResource NormalBackground}" Background="{StaticResource SplitterBackground}"/>
+            <GridSplitter Grid.Column="3" Width="5" HorizontalAlignment="Stretch" />
             <TextBlock Grid.Column="4" Text="Here File information will be displayed" TextWrapping="Wrap"></TextBlock>
         </Grid>
     </Grid>

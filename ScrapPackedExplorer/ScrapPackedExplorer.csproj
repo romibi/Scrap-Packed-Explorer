@@ -25,6 +25,16 @@
     <None Remove="Icons\Variety Duotone Filled Icons\file-search.png" />
     <None Remove="Icons\Variety Duotone Filled Icons\folder-add.png" />
     <None Remove="Icons\Variety Duotone Filled Icons\settings.png" />
+	<None Remove="Icons\Variety Duotone Filled Icons Dark\add-file-3.png" />
+	<None Remove="Icons\Variety Duotone Filled Icons Dark\copy.png" />
+	<None Remove="Icons\Variety Duotone Filled Icons Dark\curve-arrow-down-5.png" />
+	<None Remove="Icons\Variety Duotone Filled Icons Dark\delete-file.png" />
+	<None Remove="Icons\Variety Duotone Filled Icons Dark\diskette-save.png" />
+	<None Remove="Icons\Variety Duotone Filled Icons Dark\file-edit.png" />
+	<None Remove="Icons\Variety Duotone Filled Icons Dark\file-new.png" />
+	<None Remove="Icons\Variety Duotone Filled Icons Dark\file-search.png" />
+	<None Remove="Icons\Variety Duotone Filled Icons Dark\folder-add.png" />
+	<None Remove="Icons\Variety Duotone Filled Icons Dark\settings.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -60,6 +70,16 @@
     <Resource Include="Icons\Variety Duotone Filled Icons\file-search.png" />
     <Resource Include="Icons\Variety Duotone Filled Icons\folder-add.png" />
     <Resource Include="Icons\Variety Duotone Filled Icons\settings.png" />
+	<Resource Include="Icons\Variety Duotone Filled Icons Dark\add-file-3.png" />
+	<Resource Include="Icons\Variety Duotone Filled Icons Dark\copy.png" />
+	<Resource Include="Icons\Variety Duotone Filled Icons Dark\curve-arrow-down-5.png" />
+	<Resource Include="Icons\Variety Duotone Filled Icons Dark\delete-file.png" />
+	<Resource Include="Icons\Variety Duotone Filled Icons Dark\diskette-save.png" />
+	<Resource Include="Icons\Variety Duotone Filled Icons Dark\file-edit.png" />
+	<Resource Include="Icons\Variety Duotone Filled Icons Dark\file-new.png" />
+	<Resource Include="Icons\Variety Duotone Filled Icons Dark\file-search.png" />
+	<Resource Include="Icons\Variety Duotone Filled Icons Dark\folder-add.png" />
+	<Resource Include="Icons\Variety Duotone Filled Icons Dark\settings.png" />
   </ItemGroup>
 
 </Project>
