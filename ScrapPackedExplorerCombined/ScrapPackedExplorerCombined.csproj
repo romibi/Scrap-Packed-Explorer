@@ -57,6 +57,15 @@
     </Page>
   </ItemGroup>
 
+  <ItemGroup>
+    <Page Include="..\ScrapPackedExplorer\Themes\DarkTheme.xaml" Link="Themes\DarkTheme.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+	  <Page Include="..\ScrapPackedExplorer\Themes\LightTheme.xaml" Link="Themes\LightTheme.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+	  </Page>
+  </ItemGroup>
+
   <ProjectExtensions><VisualStudio><UserProperties properties_4launchsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>

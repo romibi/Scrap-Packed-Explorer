@@ -1,26 +1,65 @@
-﻿<Window x:Name="window" x:Class="ch.romibi.Scrap.Packed.Explorer.MainWindow"
+﻿<Window Background="{StaticResource NormalBackground}" x:Name="window" x:Class="ch.romibi.Scrap.Packed.Explorer.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ch.romibi.Scrap.Packed.Explorer"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800" Foreground="{DynamicResource NormalForeground}">
     <Window.Resources>
+        <ControlTemplate x:Key="ButtonTemplate" TargetType="{x:Type ButtonBase}">
+            <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="true">
+                <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="Button.IsDefaulted" Value="true">
+                    <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="true">
+                    <Setter Property="Background" TargetName="border" Value="{StaticResource Button.MouseOver.Background}"/>
+                    <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.MouseOver.Border}"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="true">
+                    <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Pressed.Background}"/>
+                    <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Pressed.Border}"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="false">
+                    <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Disabled.Background}"/>
+                    <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Disabled.Border}"/>
+                    <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource Button.Disabled.Foreground}"/>
+                    <Setter Property="TextBlock.Foreground" Value="{StaticResource Button.Disabled.Foreground}"/>
+                    <Setter Property="Image.Opacity" Value="0.5"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        
         <Style TargetType="Button">
-            <Style.Resources>
-                <Style TargetType="Image">
-                    <Style.Triggers>
-                        <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Opacity" Value="0.5" />
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </Style.Resources>
+            <Setter Property="Background" Value="{StaticResource NormalBackground}" />
+            <Setter Property="Foreground" Value="{StaticResource NormalForeground}" />
+            <Setter Property="BorderBrush" Value="{StaticResource NormalBorderBrush}" />
+            <Setter Property="Template" Value="{DynamicResource ButtonTemplate}" />
         </Style>
+
+        <Style x:Key="GridViewColumnHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type GridViewColumnHeader}">
+                        <Border BorderBrush="{StaticResource NormalBorderBrush}" Background="Transparent">
+                            <TextBlock x:Name="ContentHeader" Text="{TemplateBinding Content}" Padding="5,5,5,0" Width="{TemplateBinding Width}" TextAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="{StaticResource NormalForeground}" />
+        </Style>
+
     </Window.Resources>
     <Grid>
-        <DockPanel HorizontalAlignment="Left" Height="64" LastChildFill="False" VerticalAlignment="Top">            
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="733*"/>
+            <ColumnDefinition Width="67*"/>
+        </Grid.ColumnDefinitions>
+        <DockPanel HorizontalAlignment="Left" Height="64" LastChildFill="False" VerticalAlignment="Top">
             <Button Name="CreateButton" Width="64" Click="CreateButton_Click">
                 <StackPanel>
                     <Image Source="/Icons/Variety Duotone Filled Icons/file-new.png" Height="42" />
@@ -90,7 +129,7 @@
                 </StackPanel>
             </Button>
         </DockPanel>
-        <Grid Margin="0,64,0,0">
+        <Grid Margin="0,64,0,0" Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="5"/>
@@ -98,22 +137,22 @@
                 <ColumnDefinition Width="5"/>
                 <ColumnDefinition Width="0*" MinWidth="100"/>
             </Grid.ColumnDefinitions>
-            <TreeView Name="FileTree" SelectedItemChanged="FileTree_SelectedItemChanged">
+            <TreeView Name="FileTree" SelectedItemChanged="FileTree_SelectedItemChanged" Background="{StaticResource NormalBackground}" Foreground="{StaticResource NormalForeground}" BorderBrush="{StaticResource NormalBorderBrush}">
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate DataType="{x:Type local:TreeViewTreeEntry}" ItemsSource="{Binding Items}">
-                        <TextBlock Text="{Binding Name}" />
+                        <TextBlock Text="{Binding Name}" Foreground="{StaticResource NormalForeground}" />
                     </HierarchicalDataTemplate>
                 </TreeView.ItemTemplate>
             </TreeView>
-            <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
-            <ListView Grid.Column="2"  Name="TreeContent" ItemsSource="{Binding Items}" MouseDoubleClick="TreeContent_MouseDoubleClick" SelectionChanged="TreeContent_SelectionChanged">
+            <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" Foreground="{StaticResource NormalBackground}" Background="{StaticResource SplitterBackground}"/>
+            <ListView Grid.Column="2"  Name="TreeContent" ItemsSource="{Binding Items}" MouseDoubleClick="TreeContent_MouseDoubleClick" SelectionChanged="TreeContent_SelectionChanged" Foreground="{StaticResource ListViewForeground}" BorderBrush="{StaticResource NormalBorderBrush}" Background="{DynamicResource NormalBackground}">
                 <ListView.View>
-                    <GridView>
+                    <GridView ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle}">
                         <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Name" Width="100"/>
                     </GridView>
                 </ListView.View>
             </ListView>
-            <GridSplitter Grid.Column="3" Width="5" HorizontalAlignment="Stretch"/>
+            <GridSplitter Grid.Column="3" Width="5" HorizontalAlignment="Stretch" Foreground="{StaticResource NormalBackground}" Background="{StaticResource SplitterBackground}"/>
             <TextBlock Grid.Column="4" Text="Here File information will be displayed" TextWrapping="Wrap"></TextBlock>
         </Grid>
     </Grid>
